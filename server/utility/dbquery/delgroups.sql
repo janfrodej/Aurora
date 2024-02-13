@@ -1,0 +1,5 @@
+DELETE from METADATA where entity in (select entity from ANCESTORS where ancestor={1})
+DELETE from MEMBER where memberobject in (select entity from ANCESTORS where ancestor={1})
+DELETE from PERM where permobject in (select entity from ANCESTORS where ancestor={1})
+DELETE from TMPLASSIGN where tmplassignentity in (select entity from ANCESTORS where ancestor={1})
+DELETE from ENTITY where entity in (select entity from ANCESTORS where ancestor={1})

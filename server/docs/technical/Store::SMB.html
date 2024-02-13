@@ -1,0 +1,113 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#open_define">open_define()</a></li>
+      <li><a href="#open_create">open_create()</a></li>
+      <li><a href="#remoteSize">remoteSize()</a></li>
+      <li><a href="#listRemote">listRemote()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>Store::SMB</code> - Class to define a SMB store that perform ftp-like operations between a local- and remote location.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<p>Used in the same way as the Store-class. See the Store-class for more information.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Class to perform ftp-like operations on a SMB/CIFS-share between a local- and remote location.</p>
+
+<p>The class is a wrapper around the smbclient-utility.</p>
+
+<p>It is used in the same way as the Store-class. See the Store-class for more information.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Constructor is inherited from the Store-class. See the Store-class for more information.</p>
+
+<p>It returns the instantiated class.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="open_define">open_define()</h2>
+
+<p>Defines the parameters used on the SMB-store. This methods is inherited from the Store-class. See the Store-class for more information.</p>
+
+<h2 id="open_create">open_create()</h2>
+
+<p>Creates the necessary StoreProcess-instances used by the SMB-store.</p>
+
+<p>It basically creates StoreProcess::Shell-instances for both GET-, PUT- and DEL-operations and inputs the necessary Parameter::Group-class parameters.</p>
+
+<p>This method has overridden a Store-class method. See the Store-class for more information.</p>
+
+<h2 id="remoteSize">remoteSize()</h2>
+
+<p>Calculates the size of the remote area designated by the parameter &quot;remote&quot;.</p>
+
+<p>It uses the smbclient-command &quot;ls&quot; recursively to list the folder and sub-folders and then add the size of the elements found.</p>
+
+<p>Returns the size in Bytes. See the Store-class for more information on this method.</p>
+
+<h2 id="listRemote">listRemote()</h2>
+
+<p>Lists a designated folder on the remote Store.</p>
+
+<p>Input parameter is &quot;path&quot;. If none given it lists the root of the remote area. Because the smbclient-utility command does not accept escaped meta-characters, it is not allowed to have doubleslash, slash, cr or nl in the path-name. This is a limitation due to security to avoid potential injection.</p>
+
+<p>Uses the smbclient-command &quot;ls&quot; to list the folder in question.</p>
+
+<p>Returns a HASH-reference structure upon success. Please the Store-class for more information on this method.</p>
+
+
+</body>
+
+</html>
+
+

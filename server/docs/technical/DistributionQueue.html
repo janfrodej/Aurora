@@ -1,0 +1,349 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#addTask">addTask()</a></li>
+      <li><a href="#removeTask">removeTask()</a></li>
+      <li><a href="#getTaskData">getTaskData()</a></li>
+      <li><a href="#taskTag">taskTag()</a></li>
+      <li><a href="#taskFile">taskFile()</a></li>
+      <li><a href="#changeTaskPhase">changeTaskPhase()</a></li>
+      <li><a href="#enumTasks">enumTasks()</a></li>
+      <li><a href="#raptureTask">raptureTask()</a></li>
+      <li><a href="#getTaskFiles">getTaskFiles()</a></li>
+      <li><a href="#getTaskRandomID">getTaskRandomID()</a></li>
+      <li><a href="#getTaskUserID">getTaskUserID()</a></li>
+      <li><a href="#getTaskDatasetID">getTaskDatasetID()</a></li>
+      <li><a href="#folder">folder()</a></li>
+      <li><a href="#delimiter">delimiter()</a></li>
+      <li><a href="#error">error()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>DistributionQueue</code> - Module to handle an AURORA distribution queue.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code> use DistributionQueue;
+
+ # instantiate
+ my $q=$DistributionQueue-&gt;new();
+
+ # add a task
+ my $userid=3;
+ my $datasetid=104;
+ my $data=&quot;WhatEverWeWant&quot;;
+ my $task=$q-&gt;addTask($userid,$datasetid,$data);
+
+ # add task with optional tags
+ my $task=$q-&gt;addTask($userid,$datasetid,$data,mytag=&gt;&quot;value&quot;,myothertag=&gt;&quot;value&quot;);
+ 
+ # show added task id
+ if (defined $task) {
+    print &quot;New task ID: $task\n&quot;;
+ }
+
+ # enumerate tasks
+ my $tasks=$q-&gt;enumTasks();
+ if (defined $tasks) {
+       print Dumper($tasks);
+ }
+
+ # change task phase to DISTRIBUTING
+ $q-&gt;changeTaskPhase($task,&quot;DISTRIBUTING&quot;);
+
+ # get a task tag value
+ my $value=$q-&gt;taskTag($task,&quot;alive&quot;);
+
+ # set a task tag value
+ $q-&gt;taskTag($task,&quot;alive&quot;,time());
+
+ # get task data
+ my $data=$q-&gt;getTaskData($task);
+
+ # remove a task
+ $q-&gt;removeTask($task);</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Module to handle an AURORA distribution queue. It enables to create new tasks, move tasks between various phases, read and write task tags, enumerate all tasks or tasks based on userid, datasetid, status, retry and/or timeout tags, remove tasks, get task data.</p>
+
+<p>Each added task will create a folder and file hierarchy like thus:</p>
+
+<pre><code>/distributions/
+/distributions/taskid/
+/distributions/taskid/DATA (the data to operate on)
+/distributions/taskid/phase_VALUE (the phase that the distribution is in)
+/distributions/taskid/status_VALUE (the status the task has)
+
+/distributions/INITIALIZED/taskid -&gt; ../taskid   (phase folder with symlink to actual task folder)
+/distributions/ACQUIRING/taskid -&gt; ../taskid     (phase folder)
+/distributions/DELETING/taskid -&gt; ../taskid      (phase folder)
+/distributions/DISTRIBUTING/taskid -&gt; ../taskid  (phase folder)
+/distributions/FAILED/taskid -&gt; ../taskid        (phase folder)</code></pre>
+
+<p>The various tags set on a task will be read out when enumerating the tasks. They can also be read or updated by using the taskTag()-method.</p>
+
+<p>A specific task will only exist in <b>one</b> of the phase folders above at a time and move between them by using the changeTaskPhase()-method.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Module constructor. Instantiates a DistributionQueue-class.</p>
+
+<p>Possible options are:</p>
+
+<ul>
+
+<li><p><b>folder</b> Folder where the distribution queue is located. Defaults to /local/app/aurora/distributions.</p>
+
+</li>
+<li><p><b>delimiter</b> Delimiter between the values in task identifier. Defaults to comma &quot;,&quot;.</p>
+
+</li>
+</ul>
+
+<p>Returns an instantiated class.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="addTask">addTask()</h2>
+
+<p>Adds a task to the distribution queue.</p>
+
+<p>Input parameters are in the following order:</p>
+
+<ul>
+
+<li><p><b>userid</b> Userid of the user that initiated this task. Required.</p>
+
+</li>
+<li><p><b>datasetid</b> Dataset id of the dataset that this task operates on. Required.</p>
+
+</li>
+<li><p><b>data</b> Data associated with the task. This is the data used to perform the task. Required.</p>
+
+</li>
+<li><p>&lt;tags&gt; A HASH with optional tag=&gt;value(s) for the task. Will be added at the same time as the other information ensuring the tags are there when the task is moved into production.</p>
+
+</li>
+</ul>
+
+<p>It will add the task in the distribution folder and put it into the INITIALIZED status awating to start another phase (controlled by the user of the module).</p>
+
+<p>Returns task id upon success, undef upon failure. Please see the error()-method for more information upon failure.</p>
+
+<h2 id="removeTask">removeTask()</h2>
+
+<p>Removes a task from the distribution queue.</p>
+
+<p>Input is the task id to remove from the distribution queue.</p>
+
+<p>Returns 1 upon success, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+<p>The method will remove all traces of the task, including its tags, data and so on. It will even attempt to locate the phase-symlink if the phase tag does not exist and remove it.</p>
+
+<h2 id="getTaskData">getTaskData()</h2>
+
+<p>Gets the operational data of the task.</p>
+
+<p>Input is the task id to get the data on.</p>
+
+<p>Return value is the data upon success, undef upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="taskTag">taskTag()</h2>
+
+<p>Gets or sets a task tag.</p>
+
+<p>Input is the task id and the tag name.</p>
+
+<p>Returns the tag value on both get and set, undef upon failure. Please call the error()-method for more information upon a failure.</p>
+
+<p>All tag names are lower case and all attempt at adding tags with other cases will be changed to lower case. The value can be any allowable character for a POSIX file.</p>
+
+<p>Do not attempt to change the task tag &quot;phase&quot; yourself from this method. It is recommended to instead call the changeTaskPhase()-method that will handle it in the correct manner. If you do change it yourself, expect possible unwanted side-effects.</p>
+
+<h2 id="taskFile">taskFile()</h2>
+
+<p>Adds a task file and its information</p>
+
+<p>Input is in the following order: task, name and data.</p>
+
+<p>Task is the id of the task, name is the name of the file to create in the task and data is the content of the newly created file. Any existing file is overwritten.</p>
+
+<p>The method return 1 upon success and 0 on failure. Please check the error()-method upon failure...</p>
+
+<h2 id="changeTaskPhase">changeTaskPhase()</h2>
+
+<p>Changes a tasks phase and status from one phase to another and moving the symlink and updating the phase and status tag.</p>
+
+<p>Input is the task id and the new phase to set on it. Optionally a diverging status can be specified if it is different than the phase. Or else the status-tag is set to the same as the phase. In addition the last parameter to the method is &quot;samephase&quot;. If set to false/0 it will not accept changing a phase from the same phase as the current phase and in so doing act as if it is atomic, preventing other processes to change the phase at the same time and thereby continue running. Default behaviour is to accept same phase change, so if option is to be used it must be set to a value that evaluates to false, eg. 0.</p>
+
+<p>Returns the 1 upon success, 0 upon failure. Please call the error()-method for more information upon a failure.</p>
+
+<p>The method moves the symlink file between the phase-folders and updates the phase- and status- tags.</p>
+
+<h2 id="enumTasks">enumTasks()</h2>
+
+<p>Enumerates either all tasks that exists or moderated by input parameters.</p>
+
+<p>Possible input parameters are in the following order:</p>
+
+<ul>
+
+<li><p><b>userid</b> Only match tasks that have this userid. Can be undefined.</p>
+
+</li>
+<li><p><b>datasetid</b> Only match tasks that have this datasetid. Can be undefined.</p>
+
+</li>
+<li><p><b>status</b> Only match tasks that have this current status in the status tag. Can be undefined.</p>
+
+</li>
+<li><p><b>retry</b> Maximum retry. Only match tasks that have been retried less than this many times. Can be undefined.</p>
+
+</li>
+<li><p><b>timeout</b> Time before a task times out when not having updated its alive-tag. Only match tasks where the alive tag time + timeout-option is less than current time. In other words the alive tag has not been updated after the timeout periode expired. The timeout value is specified in seconds. Can be undefined.</p>
+
+</li>
+</ul>
+
+<p>All these parameters will be and&#39;ed together if specified. Returned datasets will need to match all specified parameter settings.</p>
+
+<p>The method will return a HASH-reference upon success, undef upon failure. Please call the error()-method for more information upon failure.</p>
+
+<p>The resulting HASH-structure is like this:</p>
+
+<pre><code>(
+   taskid =&gt; { userid =&gt; ID,
+               datasetid =&gt; ID,
+               random =&gt; RANDOMSTRING,
+               tags =&gt; { phase =&gt; INITIALIZED (or whatever other phase the user uses)
+                         status =&gt; INITIALIZED (or whatever other status the user uses)
+                         tagX =&gt; VALUE,
+                         tagY =&gt; VALUE,
+                       },
+             }
+)</code></pre>
+
+<p>Not all of these parameters are necessarily present at once. The user of the class can add any tag(s) he wants.</p>
+
+<p>This method has a special handling of the alive- (moderated by the timeout-option), status- (moderated by the status-option) and retry- (moderated by the retry-option) tags.</p>
+
+<h2 id="raptureTask">raptureTask()</h2>
+
+<p>Moves a task outside and beyond the distribution queue.</p>
+
+<p>Input is the task id to rapture from the distribution queue.</p>
+
+<p>The tasks phase-link is removed and the task is then moved into the rapture folder &quot;._rapture&quot;. There it is not visible anymore for the DistributionQueue-module. This is something that can be done to tasks that are eg. failed for some reason or other.</p>
+
+<p>Returns 1 upon success, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="getTaskFiles">getTaskFiles()</h2>
+
+<p>Gets a tasks files, including DATA-file and tag-files (not . and ..).</p>
+
+<p>Input is the task id.</p>
+
+<p>Return value is LIST-reference with the filenames upon success, or undef upon failure. Please call the error()-method for more information upon failure.</p>
+
+<h2 id="getTaskRandomID">getTaskRandomID()</h2>
+
+<p>Gets the tasks unique and random ID.</p>
+
+<p>Input is the usual task id.</p>
+
+<p>Returns the random ID upon success, undef upon failure. Please call the error()-method for more information upon failure.</p>
+
+<p>The task random ID is the last 32 characters in the task id. These 32 characters are random and should be unique.</p>
+
+<h2 id="getTaskUserID">getTaskUserID()</h2>
+
+<p>Gets the ID of user that owns the task.</p>
+
+<p>Input is the usual task id.</p>
+
+<p>Returns the user ID upon success, undef upon failure. Please call the error()-method for more information upon failure.</p>
+
+<h2 id="getTaskDatasetID">getTaskDatasetID()</h2>
+
+<p>Gets the dataset ID associated with the task.</p>
+
+<p>Input is the usual task id.</p>
+
+<p>Returns the dataset ID upon success, undef upon failure. Please call the error()-method for more information upon failure.</p>
+
+<h2 id="folder">folder()</h2>
+
+<p>Sets or gets the folder where the distribution queue is.</p>
+
+<p>On get there is no accepted input. On set there is the folder location to set.</p>
+
+<p>Return value is always the folder-value.</p>
+
+<h2 id="delimiter">delimiter()</h2>
+
+<p>Sets or gets the delimiter used for the task id.</p>
+
+<p>On get there is no accepted input. On set there is the delimiter to set.</p>
+
+<p>Return value is always the delimiter.</p>
+
+<h2 id="error">error()</h2>
+
+<p>Gets the last error string.</p>
+
+<p>No input is accepted.</p>
+
+<p>Returns the last error of the module.</p>
+
+
+</body>
+
+</html>
+
+

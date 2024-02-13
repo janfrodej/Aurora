@@ -1,0 +1,101 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#time2iso">time2iso()</a></li>
+      <li><a href="#iso2time">iso2time()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>ISO8601</code> - Class for handling conversions to/from unixtime and ISO8601 datetime</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use ISO8601;
+
+# convert without instantiating
+my $dtstring=time2iso(time());
+my $unixtime=iso2time($dtstring);</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>A collection of functions to handle the conversion to and from unixtime and iso8601-time.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<p>This class does not have an instantiator/constructor. The two methods are exported by default and can be used at any time.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="time2iso">time2iso()</h2>
+
+<p>Converts from unixtime to ISO8601-time</p>
+
+<p>Accepts these parameters in the following order:</p>
+
+<ul>
+
+<li><p><b>unixtime</b> The unixtime to be converted. SCALAR. Required.</p>
+
+</li>
+<li><p><b>format</b> Format options to the conversion process. HASH-reference. Optional. Accepted keys in the HASH- reference are: second, minute, hour, date and basic. All of the option keys are boolean and if evaluated to true will give: second (all time, including seconds), minute (all time down to and including minute), hour (only hour time), date (only give date), basic (only give basic time).</p>
+
+</li>
+</ul>
+
+<p>Returns an ISO-string at the end of the conversion.</p>
+
+<h2 id="iso2time">iso2time()</h2>
+
+<p>Converts an ISO string to unix datetime.</p>
+
+<p>Only accepts one parameter: isotime. SCALAR. Required.</p>
+
+<p>The ISO time string is given to the method and it converts it to iso.</p>
+
+<p>Return the unixtime to the user.</p>
+
+
+</body>
+
+</html>
+
+

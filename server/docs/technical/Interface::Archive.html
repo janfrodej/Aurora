@@ -1,0 +1,172 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#doRender">doRender()</a></li>
+      <li><a href="#startArchiving">startArchiving()</a></li>
+      <li><a href="#doUnrender">doUnrender()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>Interface::Archive</code> - A placeholder-class to handle generating archive-sets from dataset data.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use Interface::Archive;
+
+# instantiate
+my $i=Interface::Archive-&gt;new(location=&gt;&quot;/path/whatever&quot;,script=&gt;&quot;https://somedomain/script.pl&quot;);</code></pre>
+
+<p>This class is used in the same way as the Interface-class. See documentation there for more information about the use of this class. None of the implemented methods in this class is meant to be called by the user.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Class to handle the generation and management of archiving-sets of AURORA datasets. This class is just a placeholder and is not meant to be instantiated.</p>
+
+<p>The class has three methods: doRender(), startArchiving() and doUnrender(). The doRender()-method is documented in the Interface.pm-class. The doRender()-class in this module sets up everything needed to generate archives of a AURORA dataset, and logs the process by writing pipe-messages to the parent process.</p>
+
+<p>The doRender()-class in this module calls the method startArchiving() to start the actual archiving process. This method is meant to be overridden by inheriting classes to adapt it to the archive type in question.</p>
+
+<p>The archive-sets that are created are placed in the area denoted by the &quot;location&quot;-option to the new()-method. The MIME result generated upon a successful rendering uses the &quot;script&quot;-option specified to the new()-method to tell it which script to invoke in order to fetch the generated archive.</p>
+
+<p>In the location-area where the archive-files are placed, the file names are as follows:</p>
+
+<pre><code>archive_DATASETID_SHA256SUM_COOKIE.FORMAT.lock
+archive_DATASETID_SHA256SUM_COOKIE.FORMAT</code></pre>
+
+<p>The .lock-ending is used while the archive is being generated. Upon successful completion it is moved to the filename without the &quot;.lock&quot; ending.</p>
+
+<p>DATASETID is the AURORA dataset id. The SHA256SUM is the SHA256-sum of all the input paths to the doRender()-method (see the documentation for the render()-method in the Interface-class for more details), sorted alphabetically and separated with \000-characters. This is to allow a unique signature for the selected archived folders in a dataset, so that the filename can be found by searching for that signature. It also allows for unique signature of an archive-set dependent upon which folders were selected for archiving.</p>
+
+<p>COOKIE is a random 64-byte string containing only a-zA-Z0-9. This is the unique signature used to fetch the filename via the download script mentioned above.</p>
+
+<p>FORMAT is the archive set file ending, such as &quot;tar.gz&quot;, &quot;zip&quot; etc. It is to be set by the inheriting class. It defaults to &quot;unknown&quot;.</p>
+
+<p>Upon a successful render of an archive-set, the renderResult()-method (see the documentation for the Interface-class) will return the MIME formatted URL to the set. This MIME-response uses the script-setting mentioned above, so that the returned URL is a combination of a location and name, appended with the COOKIE-string mentioned above for identification:</p>
+
+<pre><code>https://domain/script.whatever?cookie=COOKIE</code></pre>
+
+<p>The doUnrender()-method removes any archive-set that might have been generated. It is called by the Unrender()-method (see documentation of the Interface-class).</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Instantiates class.</p>
+
+<p>Inherits from Interface-class.</p>
+
+<p>Sets the need for location- and script options. Sets the MIME-type and format. The format is meant to be overridden by inheriting child. It default to &quot;unknown&quot;. See Description-paragraph for more information.</p>
+
+<p>It takes the following additional parameters (see Interface-class documentation for other parameters):</p>
+
+<ul>
+
+<li><p><b>location</b> Sets the path where the archives will be generated. Required.</p>
+
+</li>
+<li><p><b>script</b> Sets the URL to the script where one can download the generated archive by specifying the cookie. Required.</p>
+
+</li>
+<li><p><b>redirect</b> Sets the statement to redirect STDERR to STDOUT. Optional and defaults to 2&gt;&amp;1.</p>
+
+</li>
+<li><p><b>echo</b> Sets location of the echo-binary. Optional and defaults to /bin/echo.</p>
+
+</li>
+</ul>
+
+<p>The method returns the instantiated class.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="doRender">doRender()</h2>
+
+<p>The actual rendering process. Inherited from Interface (see Interface-class for more information on its use and purpose). It is called by the render()-method.</p>
+
+<p>The method sets up the rendering process before calling the method startArchiving() and then monitors the archiving feeding information back to the parent process. The startArchiving()-method is meant to be overridden by inheriting classes.</p>
+
+<p>It first attempts to check if there already exists a archive-file that matches the signature of the SHA256SUM and format (see Description-paragraph). It also checks if there is already a rendering going on by checking for the &quot;.lock&quot;-extension on the files. If a rendering is already running by another process it will start looping waiting for it to finish. If it finishes by removing the &quot;.lock&quot;-extension and the final archive file emerges, it will return a SUCCESS-level message to the parent and send the MIME-message. In will in other words behave as if it was rendering the file itself, although it is just hanging back and waiting for the other process to finish.</p>
+
+<p>If not archive exists already, it will setup the process to start archiving itself. After setting it up, opening the dataset data, it calls the startArchiving()-method and have it start the archiving command or process itself. It will then read and wait for messages from that process and feeding this back to the parent-process (see the doRender()-method documentation in the Interface-class for more information).</p>
+
+<p>This method is not meant to be called by the user.</p>
+
+<h2 id="startArchiving">startArchiving()</h2>
+
+<p>Starts the archiving command or process itself. Returns a pipe read-handler to be able to monitor the process.</p>
+
+<p>This method basically starts and runs the archiving command or process that does the actual work. It is expected to return a read-handler in $self-&gt;{aread} so that the calling method (doRender()) can monitor its progress.</p>
+
+<p>It takes these parameters in the following order: DATASETID,USERID,PATHS,SOURCE,DESTINATION,ENDMARKER.</p>
+
+<p>See the doRender()-method in the documentation of the Interface-class for more information on the DATASETID,USERID and PATHS paremeters.</p>
+
+<p>The SOURCE parameter is where the dataset data is located (the root of it). The DESTINATION parameter gives the location and filename where the archive set is to be generated/stored. ENDMARKER is a random string that is written at the end of the archiving process to make it possible for the doRender()-method to easy know when it ended.</p>
+
+<p>The method returns no data.</p>
+
+<p>This method is not to be called by the user, but by the doRender()-method. The method is meant to be overridden by the inheriting class to start that specific type of archiving.</p>
+
+<h2 id="doUnrender">doUnrender()</h2>
+
+<p>Does the actual unrendering of an archived dataset.</p>
+
+<p>It first checks to see if the given rendering exists or not or if it is still rendering. It does this by checking for the archived dataset file.</p>
+
+<p>If it is still rendering, it returns with a error-message stating that, if it cant find it it also returns with a error message saying that.</p>
+
+<p>It the archived dataset exists, it removes the file and then reports back.</p>
+
+<p>This method is general for the Archive-class family and shouldn&#39;t be needed to be overridden.</p>
+
+<p>See the doUnrender()-method in the Interface-class for more documentation.</p>
+
+
+</body>
+
+</html>
+
+

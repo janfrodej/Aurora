@@ -1,0 +1,359 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#render">render()</a></li>
+      <li><a href="#doRender">doRender()</a></li>
+      <li><a href="#unrender">unrender()</a></li>
+      <li><a href="#doUnrender">doUnrender()</a></li>
+      <li><a href="#abortRender">abortRender()</a></li>
+      <li><a href="#renderResult">renderResult()</a></li>
+      <li><a href="#isRendering">isRendering()</a></li>
+      <li><a href="#meRendering">meRendering()</a></li>
+      <li><a href="#renderType">renderType()</a></li>
+      <li><a href="#renderAlive">renderAlive()</a></li>
+      <li><a href="#renderSuccess">renderSuccess()</a></li>
+      <li><a href="#renderError">renderError()</a></li>
+      <li><a href="#renderSize">renderSize()</a></li>
+      <li><a href="#distinguishable">distinguishable()</a></li>
+      <li><a href="#multiple">multiple()</a></li>
+      <li><a href="#options">options()</a></li>
+      <li><a href="#check">check()</a></li>
+      <li><a href="#error">error()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>Interface</code> - A placeholder class for interfaces to AURORA dataset data.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code> use Interface;
+
+ $i=Interface-&gt;new(cfg=$cfg);
+
+ # render interface for dataset with id 192, userid 3
+ $i-&gt;render(192,3);
+
+ # unrender/remove rendering of interface
+ $i-&gt;unrender(192,3);
+
+ # check if still rendering
+ $i-&gt;isRendering();
+
+ # check if it is this process/instance that is doing the actual
+ # rendering
+ $i-&gt;meRendering();
+
+ # abort rendering
+ $i-&gt;abortRender();
+
+ # check if rendering was successful
+ $i-&gt;renderSuccess();
+
+ # get render error message if rendering not successful
+ $i-&gt;renderError();
+
+ # get result of rendering, conforms to MIME type in renderType()
+ my $loc=$i-&gt;renderResult();
+
+ # get MIME rendertype
+ my $type=$i-&gt;renderType();
+ 
+ # get needed options for class
+ my $opt=$i-&gt;options();
+
+ # does interface-class produce
+ # distinguishable MIME renders?
+ $i-&gt;distinguishable();
+
+ # does interface-class accept
+ # multiple paths for rendering?
+ $i-&gt;multiple();
+
+ # get last error
+ my $err=$i-&gt;error();</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Placeholder class for interfaces to AURORA dataset data. The Interface-classes are meant to be used to render various interface views to the data of a AURORA dataset and then return a location reference to that rendered interface view.</p>
+
+<p>The class is meant to be overridden to offer rendering of interfaces of various types.</p>
+
+<p>It offers rendering, unrendering (for those interfaces where that has meaning), checking if a rendering is still running, get which options are needed.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Contructor of class.</p>
+
+<p>It takes one parameter:</p>
+
+<ul>
+
+<li><p><b>db</b> AuroraDB-class instance for use if class needs to get or set data. Required.</p>
+
+</li>
+<li><p><b>cfg</b> Settings-class instance that gives the configuration file where the configuration settings are residing. This option is required.</p>
+
+</li>
+<li><p><b>timeout</b> Sets the timeout in seconds to wait for non-responsive rendering process before attempting to kill it. The default is an hour. 0 means no timeout or wait forever. Optional.</p>
+
+</li>
+</ul>
+
+<p>This constructor is meant to be overridden by inheriting class, where one first runs the SUPER-method before setting the options hash for the inheriting class in question.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="render">render()</h2>
+
+<p>Attempts to start the rendering process.</p>
+
+<p>It takes as input the dataset id (required), the user id (required) andrelative paths in dataset as a LIST-reference (optional, default /),</p>
+
+<p>The method forks out a separate process to handle the rendering and then returns to the caller. The separate rendering process are to be written in the doRender()-method by the inheriting class.</p>
+
+<p>Status updates on the rendering process are retrieved by the caller by running the isRendering()-method.</p>
+
+<p>Returns 1 upon successfully starting rendering or 0 upon some failure. Check the error()-method for more information on a potential error.</p>
+
+<h2 id="doRender">doRender()</h2>
+
+<p>Performs the actual rendering process and returns status by writing to the opened write-pipe. This method is not to be called by the user, but by the render()-method.</p>
+
+<p>It always takes these inputs: dataset id, user id and paths (LIST-reference).</p>
+
+<p>The method shall always be able to check if a rendering is already running of the given path(s) by checking in a database or in a filesystem without the need to check for a running process or in memory. If one is running already it should wait for this to finish and write INFO-level messages to the parent in the meantime (thereby giving the appearance that is is doing the rendering and the modules method can continue to function as if they were). Upon success it should send a SUCCESS-message. For every MIME-result it is to send a MIME-level message with the right MIME-content (see below). When it has successfully determined if the rendering is already running or not, it is to signal this by writing a MERENDERING-level message to the parent. It is to be either 1 (it is this process that is doing the actual rendering) or 0 (it is another process doing it). By doing this the user can determine if is another process doing the work or not and eg. thereby decide to not keep the current process running since it is not doing any actual work.</p>
+
+<p>The actual implementation of this process is up to the inheriting class. The only requirements are that the process regularly writes to the opened write-pipe ($self-&gt;{write}), so that the parent process can know what is happening? The three valid formats for writing to the write-pipe are:</p>
+
+<pre><code>time INFO somemessage
+time ERROR somemessage
+time MIME MIME-result of rendering (there might be several)
+time SUCCESS SIZE 
+time MERENDERING [0|1]</code></pre>
+
+<p>with time is meant the current time when writing to the pipe. The INFO level is to be used when the rendering process is running to update what is happening? If the process fails, it is to write a ERROR-level message and then clean up and end its process. If the rendering is successful it is to write a SUCCESS-level message and end its process. The SIZE-part of the SUCCESS-level message is the size of the rendered result. If that result is just MIME-strings, then it is to be 0. If the result has been generated by the render()-method, then it should reflect the size of whatever was generated. When a MIME-result has been generated it is to write a MIME-level message. The mime-message is to be followed by the MIME-result (there might be many) of the rendering as defined in the $self-&gt;{type} that is returned by the renderType()-method. The MERENDERING level is to be used as quickly as the process has determined that it is it who is doing the actual rendering/unrendering (and not waiting on another process).</p>
+
+<p>The MIME-level messages should be written in the order that the paths-list is specified into the render()-method, so that the user can expect to get that order on the MIME-return value(s) from the renderResult()-method. This is obviously only important in cases where there is more than one MIME-result.</p>
+
+<p>It is also recommended that an inheriting class writes a SIG-handler for SIGKILL to handle ending the process in a gentle manner and cleaning up although it is not required.</p>
+
+<p>This method returns nothing and it is not checked by the caller (which is the child-process).</p>
+
+<h2 id="unrender">unrender()</h2>
+
+<p>Reverses the render process, if applicable. To be overridden by the inheriting class.</p>
+
+<p>This method takes the dataset id (required), the user id (required) and paths as a LIST-reference (optional, defaults to /).</p>
+
+<p>The method is to reverse any rendering process if it is applicable to the inheriting class. Eg. if the inheriting class is an interface to generate ZIP- or TAR-files the unrender-process might then clean up and remove those generated files. In other cases, such as with the rendering process just returning an URL, there might be no applicable clean up or unrender-process.</p>
+
+<p>It is also good form to check if the rendering-process completed successfully before attempting a cleanup by calling the renderSuccess()-method.</p>
+
+<p>In any event, this method is to always return 1 upon success, whether it did anything or not. 0 upon some possible failure and the error-message set in $self-&gt;{error}.</p>
+
+<h2 id="doUnrender">doUnrender()</h2>
+
+<p>Performs the actual unrendering process and returns status by writing to the opened write-pipe. This method is not to be called by the user, but by the unrender()-method.</p>
+
+<p>It always takes the following input: dataset id, userid and paths.</p>
+
+<p>The method shall always be able to check if an unrendering is already running of the given path(s) by checking in a database or in a filesystem without the need to check for a running process or in memory. If one is running already it should wait for this to finish and write INFO-level messages to the parent in the meantime (thereby giving the appearance that is is doing the rendering and the modules methods can continue to function as if they were). It also is to send one MIME-level message with the &quot;INVALID&quot; as its result. Upon success it should send a SUCCESS-message with the SIZE-part set to 0. When it has successfully determined if the unrendering is already running or not, it is to signal this by writing a MERENDERING level message to the parent. It is to be either 1 (it is this process that is doing the actual unrendering) or 0 (it is another process doing it). By doing this the user can determine if is another process doing the work or not and eg. thereby decide to not keep the current process running since it is not doing any actual work.</p>
+
+<p>The actual implementation of this process is up to the inheriting class. The only requirements are that the process regularly writes to the opened write-pipe ($self-&gt;{write}), so that the parent process can know what is happening? The three valid formats for writing to the write-pipe are:</p>
+
+<pre><code>time INFO somemessage
+time ERROR somemessage
+time MIME MIME-result (it may be many)
+time SUCCESS 0
+time MERENDERING [1|0]</code></pre>
+
+<p>with time is meant the current time when writing to the pipe. The INFO level is to be used when the unrendering process is running to update what is happening? If the process fails, it is to write a ERROR-level message and then clean up and end its process. If the unrendering is successful it is to write a SUCCESS-level message with size 0 and ends its process. MIME-message is to be followed by the the uppercase word INVALID to signify that it no longer has a valid MIME-result to give out. A MERENDERING-level message is to be used as quickly as the process has determined if it is it or not that is doing the actual rendering/unrendering (and not another process).</p>
+
+<p>It is also recommended that an inheriting class writes a SIG-handler for SIGKILL to handle ending the process in a gentle manner and cleaning up although it is not required.</p>
+
+<p>This method returns nothing and it is not checked by the caller (which is the child-process).</p>
+
+<h2 id="abortRender">abortRender()</h2>
+
+<p>Attempt to abort a rendering- or unrendering-process.</p>
+
+<p>This method attempts to abort a rendering- or unrendering-process by running a soft kill on the process and then after 20 seconds if it hasn&#39;t completed, to do a group- or hard kill.</p>
+
+<p>The method accepts one, optional input which is the time to wait for the soft kill in seconds. This will then override the default 20 seconds.</p>
+
+<p>The method returns 1 upon success, 0 upon some failure and undef if no process is rendering/unrendering. Please check the error()-method for more information upon a 0-type failure.</p>
+
+<h2 id="renderResult">renderResult()</h2>
+
+<p>Returns the MIME result of the rendering in conformity with the renderType()-output.</p>
+
+<p>No input accepted.</p>
+
+<p>It returns the MIME result if the rendering was successful, or undef if rendering still running or not successful. Check the error()-method for any potential error-messages.</p>
+
+<p>The MIME-result is returned as a LIST-reference. It may contain 1 or more MIME-results depending upon the Interface-class in question and which paths and options were specified to it. One can inquire about possible multiple answers by calling the multiple()-method. In any event this method will always return a LIST-reference.</p>
+
+<p>The rendered result LIST will come in the order that the inheriting class has fed it back through pipes to the isRendering()-method. However, it is recommended that the order should be based upon the order of the paths-input to the render()-method. So one is to expect the same order as the paths-input if nothing else is stated.</p>
+
+<p>If the process that was run was an unrendering-process, the MIME result should say just &quot;INVALID&quot;.</p>
+
+<h2 id="isRendering">isRendering()</h2>
+
+<p>Checks if the rendering- or unrendering-process is still running.</p>
+
+<p>This method pulls the read-handle of the pipe with the child-process. It does this without blocking. If it hears new lines in the pipe it also updates the alive-timestamp retrievable in by the renderAlive()-method. It also checks to see if the rendering-/unrendering-process failed (ERROR) or completed successfully (SUCCESS). It sets applicable rendersuccess and rendererror information.</p>
+
+<p>It will also check to see if timeout has been reached if no, new information has been received through the pipe. If timeout has been reached, it will kill off the rendering-/unrendering-process by calling the abortRender()-method.</p>
+
+<p>The method returns 1 if rendering-/unrendering-process is still running, 0 if not.</p>
+
+<h2 id="meRendering">meRendering()</h2>
+
+<p>Returns if it is/was this instance of the class that is/was actually doing the rendering/unrendering or not?</p>
+
+<p>It accepts no input.</p>
+
+<p>It will return 1 to signal that it is this process doing the actual rendering/unrendering, 0 if not.</p>
+
+<p>It will also works after the rendering has completed and are to be used in cases where the rendering is so quick that one is not able to determine if it was this process rendering/unrendering in a isRendering()-loop.</p>
+
+<p>It is not able to distinguish between if a process has run or not. It will only return 0 or 1, so take care to only call it after you know that you have run a rendering/unrendering in order to know that result will reflect actual circumstances. This means reading the read buffer by calling isRendering() for some seconds or emptying the read buffer by calling the isRendering()-method until it returns 0 (the latter is not feasable in cases where the rendering takes time).</p>
+
+<h2 id="renderType">renderType()</h2>
+
+<p>Returns the MIME return type of the interface class.</p>
+
+<p>This type is set in the new()-method.</p>
+
+<h2 id="renderAlive">renderAlive()</h2>
+
+<p>Returns the alive timestamp of the rendering-/unrendering-process if applicable.</p>
+
+<p>It will return the timestamp or 0 if no timestamp has been set. If the rendering-/unrendering-process is not running it will return undef.</p>
+
+<h2 id="renderSuccess">renderSuccess()</h2>
+
+<p>Returns if the rendering-/unrendering-process was a success or not.</p>
+
+<p>If the rendering-/unrendering-process was successful it will return 1, 0 if not successful or never ran. If the renderimg-process is still running it will return undef.</p>
+
+<h2 id="renderError">renderError()</h2>
+
+<p>Returns the possible error message of a rendering-/unrendering-failure.</p>
+
+<p>It will return the rendering/unrendering error message if the process has stopped and the rendering-/unrendering was not successful. If the rendering/unrendering was never run it will return a blank string.</p>
+
+<p>If the rendering/unrendering is still running or it was successful it returns undef.</p>
+
+<h2 id="renderSize">renderSize()</h2>
+
+<p>Returns the size of the rendered result.</p>
+
+<p>If that result is just the MIME-string, then it should return 0. If the result is pointed to by the MIME-string and has been generated by the render()-method, then it should return its size in bytes.</p>
+
+<p>The method returns 0 or greater if rendering has ended and it was a render-success. Otherwise it returns undef.</p>
+
+<p>The size is set in the $self-&gt;{rendersize}-variable and this is what is returned by this method. The inheriting class is not to change this method, but send information through the SUCCESS-level message (se the doRender()- and doUnrender()-methods).</p>
+
+<h2 id="distinguishable">distinguishable()</h2>
+
+<p>Returns if the interface class is able to render MIME-results that are distinguishable across differing dataset ids.</p>
+
+<p>If the interface-class will produce the same MIME result from rendering independant of the dataset id given to the class, the distinguishable()-method will return false. If it produces differing MIME result when giving different dataset ids the distinguishable()-method will return true.</p>
+
+<p>No input is accepted. The return value is 1 for true, 0 for false.</p>
+
+<p>The setting is read from the internal $self-&gt;{distinguishable}-variable. If no setting can be found the method will default to 1 (true). The internal variable is meant to be overridden by the inheriting class in the new()-method of that class.</p>
+
+<h2 id="multiple">multiple()</h2>
+
+<p>Returns if the interface-class renders multiple MIME-results or not dependant upon input paths and options.</p>
+
+<p>No input it accepted.</p>
+
+<p>The method returns 1 for true, 0 for false.</p>
+
+<p>The settings is read from the internal $self-&gt;{multiple}-variable. If it has not been set the method will default to 1 (true). The internal variable is to be overridden by the inheriting class in the new()-method.</p>
+
+<h2 id="options">options()</h2>
+
+<p>Returns the options HASH-reference of all needed options for the class.</p>
+
+<p>The format of the options HASH is:</p>
+
+<pre><code>( KEY =&gt; {&nbsp;format =&gt; &quot;[SOME FORMAT EXPLANATION]&quot;,
+           regex  =&gt; &quot;SOME_REGEX_EXPRESSION&quot;,
+           length =&gt; SCALAR,
+           mandatory =&gt; [0|1],
+           default =&gt; DEFAULT_VALUE,
+           description =&gt; DESCRIPTION_OF_OPTION,
+         }
+)</code></pre>
+
+<p>The inheriting class can have as many keys as it wants. This structure is defined in the new()-method of the inheriting class. Format is the textual explanation of the value needed on this key. Regex is the regex-expression that the value needs to meet, length is the maximum length that a value here can be. Mandatory sets if the value needs to be answered or not. Default sets a default value that can be used if not answered in the input to the render()-/unrender()-method. Description sets a textual description of the key.</p>
+
+<p>Returns a hash reference to options HASH.</p>
+
+<h2 id="check">check()</h2>
+
+<p>Checks to see if the options needed fulfill requirements or not. This method is not to be called by the user.</p>
+
+<p>Goes through each options specified to the new()-method and check to see if it can find any overrides in the $self-&gt;{pars}{OPTIONNAME} and then checks if that override meets regex.</p>
+
+<p>Returns 1 upon success, 0 upon failure. Please check the error()-method for more information upon a failure.</p>
+
+<h2 id="error">error()</h2>
+
+<p>Returns the last error message from the class, if any.</p>
+
+
+</body>
+
+</html>
+
+

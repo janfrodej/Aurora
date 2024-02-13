@@ -1,0 +1,201 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#add">add()</a></li>
+      <li><a href="#remove">remove()</a></li>
+      <li><a href="#touch">touch()</a></li>
+      <li><a href="#mtime">mtime()</a></li>
+      <li><a href="#exists">exists()</a></li>
+      <li><a href="#error">error()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>AckHandler</code> - Class to handle ack-files in the ack-folder of the notification-service</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use AckHandler;
+
+# create instance
+my $ah=AckHandler-&gt;new();
+
+# add ack-file
+$ah-&gt;add($id,$rid);
+
+# touch ack-file
+$ah-&gt;touch($id,$rid);
+
+# get ack-file mtime
+my $mtime=$ah-&gt;mtime($id,$rid);
+
+# remove ack-file
+$ah-&gt;remove($id,$rid);
+
+# get last error
+my $err=$ah-&gt;error();</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>A class to handle ack-files in the ack-folder of the notification-service.</p>
+
+<p>The class enables ack-files to be added, removed, touched and retrieved mtime of.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Instantiates class.</p>
+
+<p>The method takes one optional input: folder. It specifies the folder where the AURORA Notification-service saves its ack-files.</p>
+
+<p>Returns an instance upon success.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="add">add()</h2>
+
+<p>Adds an ack-file to the Notification-services ack-folder.</p>
+
+<p>Takes two parameters in the following order:</p>
+
+<ul>
+
+<li><p><b>id</b> The notification ID. See the Notification-class for more information.</p>
+
+</li>
+<li><p><b>rid</b> The RID to create the ack-file for. See the Notification-class for more information.</p>
+
+</li>
+</ul>
+
+<p>Returns 1 upon success, 0 upon failure. It will also return 1 if the file already exists. To get more information on a potential error call the error()-method.</p>
+
+<h2 id="remove">remove()</h2>
+
+<p>Remove an ack-file from the Notification-services ack-folder.</p>
+
+<p>Takes two parameters in the following order:</p>
+
+<ul>
+
+<li><p><b>id</b> The notification ID. See the Notification-class for more information.</p>
+
+</li>
+<li><p><b>rid</b> The RID to remove the ack-file for. See the Notification-class for more information.</p>
+
+</li>
+</ul>
+
+<p>Returns 1 upon success, 0 upon failure. It will also return 1 if the file doesnt exist. To get more information on a failure, call the error()-metod.</p>
+
+<h2 id="touch">touch()</h2>
+
+<p>Touches the mtime of an ack-file in the Notification-services ack-folder.</p>
+
+<p>Takes these parameters in the following order:</p>
+
+<ul>
+
+<li><p><b>id</b> The notification ID. See the Notification-class for more information.</p>
+
+</li>
+<li><p><b>rid</b> The RID of the ack-file to touch. See the Notification-class for more information.</p>
+
+</li>
+</ul>
+
+<p>Returns 1 upon success, 0 upon failure. Check the error()-method for more information upon a failure.</p>
+
+<h2 id="mtime">mtime()</h2>
+
+<p>Get an ack-file&#39;s mtime.</p>
+
+<p>Takes these parameters in the following order:</p>
+
+<ul>
+
+<li><p><b>id</b> The notification ID. See the Notification-class for more information.</p>
+
+</li>
+<li><p><b>rid</b> The RID of the ack-file to get the mtime for. See the Notification-class for more information.</p>
+
+</li>
+</ul>
+
+<p>Returns 1 upon success, undef upon failure. Check the error()-method for more information upon a failure.</p>
+
+<h2 id="exists">exists()</h2>
+
+<p>Checks if an ack-file exists or not.</p>
+
+<p>Takes these parameters in the following order:</p>
+
+<ul>
+
+<li><p><b>id</b> The notification ID. See the Notification-class for more information.</p>
+
+</li>
+<li><p><b>rid</b> The RID of the ack-file to check if exists or not. See the Notification-class for more information.</p>
+
+</li>
+</ul>
+
+<p>Returns 1 upon success, 0 upon failure. Check the error()-method for more information upon a failure.</p>
+
+<h2 id="error">error()</h2>
+
+<p>Gets the last error of the module, if any.</p>
+
+<p>No input accepted.</p>
+
+<p>Returns the last error message generated by the module, if any at all.</p>
+
+
+</body>
+
+</html>
+
+

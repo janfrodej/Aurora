@@ -1,0 +1,195 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#reset">reset()</a></li>
+      <li><a href="#set">set()</a></li>
+      <li><a href="#get">get()</a></li>
+      <li><a href="#encode">encode()</a></li>
+      <li><a href="#decode">decode()</a></li>
+      <li><a href="#type">type()</a></li>
+      <li><a href="#delimiter">delimiter()</a></li>
+      <li><a href="#fields">fields()</a></li>
+      <li><a href="#resetnext">resetnext()</a></li>
+      <li><a href="#next">next()</a></li>
+      <li><a href="#error">error()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>Content</code> - Placeholder class to represent a content of some format and methods to encode and decode between it and a HASH-structure.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>my $c=Content::new();
+
+$c-&gt;encode();
+
+$c-&gt;decode();</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>A class to define content-formats and methods to encode and decode between them and a HASH-structure. It can handle formats with delimiters or with numbered field sizes. It enables the abstraction of the underlying storage format with the manipulation in Perl of a HASH-structure.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Constructor of the class.</p>
+
+<p>It requires no input and the return value is the instance.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="reset">reset()</h2>
+
+<p>Resets the data content of the instance.</p>
+
+<p>The return value is always 1 (success).</p>
+
+<h2 id="set">set()</h2>
+
+<p>Sets the content of the Content-class.</p>
+
+<p>The input must be a pointer to a hash. The return value is 0 upon failure and 1 upon success.</p>
+
+<h2 id="get">get()</h2>
+
+<p>Gets the content of the class.</p>
+
+<p>Returns a pointer to a hash.</p>
+
+<h2 id="encode">encode()</h2>
+
+<p>Encodes the content of the class into the format of the Content-class.</p>
+
+<p>It takes no input and the return values are undef upon failure and upon success the encoded data (usually a scalar).</p>
+
+<p>Upon failure the error message can be read by calling the error()-method.</p>
+
+<p>If the delimiter-type of the class in question is a character type (see the delimiter()-method), then the data between the delimiter is to be Base64-encoded.</p>
+
+<p>This class is to be overridden by the inheriting Content-class.</p>
+
+<h2 id="decode">decode()</h2>
+
+<p>Decodes the formatted input to the method and puts it into a hash.</p>
+
+<p>It takes the format of the Content-class as input and then return undef upon failure or the remainder of the input if any (scalar). Upon success it sets the content of the Content-class to the hash.</p>
+
+<p>To retrieve the decoded data call the get()-method upon success.</p>
+
+<p>To get the error message after a failure call the error()-method.</p>
+
+<p>If the delimiter-type of the class in question is a character type (see the delimiter()-method), then the data between the delimiter is to be Base64-decoded.</p>
+
+<p>This class is to be overridden by the inheriting Content-class.</p>
+
+<h2 id="type">type()</h2>
+
+<p>Returns the MIME type of the Content-class.</p>
+
+<p>The method takes no input and returns a scalar as the MIME type.</p>
+
+<p>This method is to be overridden by the inheriting Content-class</p>
+
+<h2 id="delimiter">delimiter()</h2>
+
+<p>Return the delimiter of the encoded format of the Content-class</p>
+
+<p>The method takes no input and returns the delimiter in one of the following variants:</p>
+
+<ul>
+
+<li><p>As a blank (&quot;&quot;), which means it has no delimiter. It is basically just one field.</p>
+
+</li>
+<li><p>As a character (eg. &quot;;&quot;).</p>
+
+</li>
+<li><p>As an array of numbers (eg. 1,6,20)</p>
+
+</li>
+</ul>
+
+<p>The numbers signifies where one field starts, so in the example above the first field starts at the beginning of the encoded data (position 1, not 0) and the next data field after that starts at 6, then after that at 20 and so on.</p>
+
+<p>The next()-method returns fields of data from the encoded data based on this delimiter setting in the Content-class, with the exception of classes where a hash is returned by others libraries directly (more advanced parsing). That is up to the inheriting Content-class to decide. In cases where the delimiter setting is not used, the delimiter shall be blank (&quot;&quot;).</p>
+
+<p>This method is to be overridden by the inheriting class to deliver the right delimiter as feedback.</p>
+
+<h2 id="fields">fields()</h2>
+
+<p>Returns an array of the field names of the Content-class.</p>
+
+<p>The output will also be an array when getting the field names.</p>
+
+<p>It will always return at least one field name. In cases where the Content is just a converted bulk of data one shall only use one field name. In cases where the content is decoded by a function returning a hash also just set one field name.</p>
+
+<p>Field names should only be set by inheriting Content-class by overriding this class.</p>
+
+<h2 id="resetnext">resetnext()</h2>
+
+<p>Resets he next element iteration of the encoded content of the Content-class. The iteration counter is set to the first element for subsequent calls by the next-method.</p>
+
+<p>The method returns 1 upon success and 0 upon failure.</p>
+
+<h2 id="next">next()</h2>
+
+<p>Gets the next element of the encoded data of the Content-class. The iteration counter is incremented, so that subsequent calls get the next element.</p>
+
+<p>The element is returned based upon the setting of the delimiter-method. If no delimiter is set it will typically just return the whole encoded record.</p>
+
+<h2 id="error">error()</h2>
+
+<p>Gets the last error message from the Content-class.</p>
+
+<p>No input required and the return messages is of type scalar.</p>
+
+
+</body>
+
+</html>
+
+

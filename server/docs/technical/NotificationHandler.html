@@ -1,0 +1,198 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#update">update()</a></li>
+      <li><a href="#resetNext">resetNext()</a></li>
+      <li><a href="#getNext">getNext()</a></li>
+      <li><a href="#delete">delete()</a></li>
+      <li><a href="#folder">folder()</a></li>
+      <li><a href="#move">move()</a></li>
+      <li><a href="#evacute">evacute()</a></li>
+      <li><a href="#error">error()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>NotificationHandler</code> - Class to handle several notifications in a folder.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use NotificationHandler;
+
+# create instance
+my $nh=NotificationHandler-&gt;new();
+
+# update notification list
+$nh-&gt;update();
+
+# reset next notification iteration
+$nh-&gt;resetNext();
+
+# get next notification in list
+my $n=$nh-&gt;getNext();
+
+# delete/remove notification
+$n-&gt;delete($n);
+
+# move notification to another folder and forget about it
+$nh-&gt;move($n,&quot;/MY/NEW/FOLDER/ROOT&quot;);
+
+# get absolute path of 
+# notification-folder
+my $folder=$nh-&gt;folder();
+
+# get last error
+print $nh-&gt;error();</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>A class to handle multiple instances of the AURORA-systems notifications.</p>
+
+<p>The class manages to iterate over notifications in the AURORA notification root-folder and clean away notifications that are to be deleted.</p>
+
+<p>Please see the AURORA notification-service documentation for more information about the structure of the service.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Instantiate class.</p>
+
+<p>The method takes one input: folder. Folder specifies the absolute path to the AURORA main/root notification-folder. If not specified or found as a combination of the environment-variable &quot;AURORA_PATH&quot; appended &quot;/notification&quot;, it will default to &quot;/local/app/aurora/notification&quot;.</p>
+
+<p>Returns a class instance.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="update">update()</h2>
+
+<p>Updates the list of notifications in the root notification-folder. It will only add new notification-instances to its list, retaining the old.</p>
+
+<p>Return 1 upon success, 0 upon failure. Upon failure, please check the error()-method for more information.</p>
+
+<h2 id="resetNext">resetNext()</h2>
+
+<p>Resets the next pos pointer for fetching notification instances.</p>
+
+<p>No input accepted. Always returns 1.</p>
+
+<h2 id="getNext">getNext()</h2>
+
+<p>Gets the next notification in the notification list.</p>
+
+<p>No input is accepted.</p>
+
+<p>Returns the next notification-instance upon success, or undef upon end of list.</p>
+
+<h2 id="delete">delete()</h2>
+
+<p>Deletes a notification instance, its events and folder.</p>
+
+<p>One mandatory input: notification-instance reference. There has to be an instance of the Notification-class reference specified here that is to be deleted.</p>
+
+<p>It first asks the notification-instance to clean up and then attempts to remove the instance folder.</p>
+
+<p>Returns 1 upon success, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="folder">folder()</h2>
+
+<p>Returns the absolute folder path of the notification root-folder.</p>
+
+<p>No input is accepted.</p>
+
+<p>Returns the absolute folder path of the notification root-folder as used by the NotificationHandler instance.</p>
+
+<h2 id="move">move()</h2>
+
+<p>Move a notification to another folder and forget about it.</p>
+
+<p>Accepts the following parameters in this order:</p>
+
+<ul>
+
+<li><p><b>notification</b> The instance of the notification to move.</p>
+
+</li>
+<li><p><b>folder</b> The new folder to put the notification in. It can be either relative or absolute.</p>
+
+</li>
+</ul>
+
+<p>The method will move the notification to the new folder and then evacuate its instance from the notificationhandlers internal list and thereby forgetting about it. The method can be used to move notifications to another place to avoid them causing issues in the notification handling.</p>
+
+<p>Will return 1 upon success, 0 upon some failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="evacute">evacute()</h2>
+
+<p>Evacuates a notification from the notificationhandlers list.</p>
+
+<p>Accepts the following parameters in this order:</p>
+
+<ul>
+
+<li><p><b>notification</b> The instance of the notification to evacuate.</p>
+
+</li>
+<li><p><b>deallocate</b> Decides if the method is to deallocate the notification instance or not after a successful move. An expression evaluating to true means yes, while an expression that evaluates to false means no. It will default to false if parameter is not specified.</p>
+
+</li>
+</ul>
+
+<p>Upon success this method return 1, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+<p>This method is internal and should not be called by others than the notificationhandler-class itself.</p>
+
+<h2 id="error">error()</h2>
+
+<p>Returns the last error that has happened (if any).</p>
+
+<p>No input is accepted.</p>
+
+
+</body>
+
+</html>
+
+

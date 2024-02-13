@@ -1,0 +1,372 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#get_params">_get_params()</a></li>
+      <li><a href="#with_error">_with_error()</a></li>
+      <li><a href="#with_success">_with_success()</a></li>
+      <li><a href="#arrayToFlags">arrayToFlags()</a></li>
+      <li><a href="#arrayToPerm">arrayToPerm()</a></li>
+      <li><a href="#flagsToArray">flagsToArray()</a></li>
+      <li><a href="#getEntityTask">getEntityTask()</a></li>
+      <li><a href="#getInvalidFlagArrayElements">getInvalidFlagArrayElements()</a></li>
+      <li><a href="#getInvalidPermArrayElements">getInvalidPermArrayElements()</a></li>
+      <li><a href="#hasPerm">hasPerm()</a></li>
+      <li><a href="#listFolders">listFolders()</a></li>
+      <li><a href="#mergeMetadata">mergeMetadata()</a></li>
+      <li><a href="#permToArray">permToArray()</a></li>
+      <li><a href="#recurseListing">recurseListing()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>RestTools</code> Module with shared, general utility/tool methods for the AURORA REST-server</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use RestTools;
+
+# merge metadata with same keys from several entity sources
+my $md=mergeMetadata($db,&quot;DATASET&quot;,0,0,@my_entities);
+
+# check if a subject has given permissions on an entity object (all permissions, on any level).
+# we ask for levels: effective, inherit and grant.
+my $ok=hasPerm($db,$subject,$object,[&quot;DATASET_CREATE&quot;,&quot;DATASET_DELETE&quot;],&quot;ALL&quot;,&quot;ANY&quot;,1,1,undef,1);
+
+# get invalid textual permissions in list
+my $invalid=getInvalidPermArrayElements($db,[&quot;DATASET_BLIPP&quot;,&quot;DATASET_CREATE&quot;]);
+
+# deconstruct a bitmask into its textual permission names and deliver as an array
+my $perms=permToArray($db,$mask)
+
+# create a bitmask based on a list-reference of permission names
+my $mask=arrayToPerm($db,$perms);
+
+# get invalid textual flag names returned as a list-reference
+my $invalid=getInvalidFlagArrayElements($db,[&quot;OMIT&quot;,&quot;BLIPPBLAPP&quot;,&quot;MANDATORI&quot;]);
+
+# convert flag bitmask into its textual flag names and deliver as an array
+my $flags=flagsToArray($db,$flagmask);
+
+# convert textual flag names into a flag bitmask
+my $flagmask=arrayToFlags($db,[&quot;OMIT&quot;,&quot;MANDATORY&quot;]);
+
+# extract and clean parameters from query hash
+my ($id, $token, $expire) = _get_params( $query, 
+     id     =&gt; [$Schema::CLEAN{entity}],          
+     token  =&gt; [$SysSchema::CLEAN{token}], 
+     expire =&gt; [$Schema::CLEAN_GLOBAL{trueint}],
+     );
+
+# return an error message 
+my $result=_with_error($content, &quot;User does not have the $required permission on the dataset $id. Unable to fulfill request.&quot;)
+
+# return a success message
+my $return=_with_success($content);
+
+# get closest task of an entity
+my $task=getEntityTask($db,$entity);</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Collection of general utility/tool functions used by the REST-server. All functions are exported and can be used directly in the namespace of the code that uses it.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="get_params">_get_params()</h2>
+
+<p>Extract and clean parameters from query hash</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>query</b> HASH-reference to values that are to be cleaned. This refers to the query-HASH that are delivered automatically to all REST-server methods in AURORA.</p>
+
+</li>
+<li><p><b>params</b> A list of parameters and their cleaning function. One can deliver 1-N number of these parameters in the list as a list of key-&gt;value assignments (HASH) where the value is a LIST-reference, eg: my_param_name =&gt; [$Schema::CLEAN{entity}]. Any value in the LIST-reference after the cleaning function is optional parameters to the cleaning function.</p>
+
+</li>
+</ul>
+
+<p>Returns a LIST of cleaned parameters in return in the same order as they were delivered to the function.</p>
+
+<p>It is useful to assign the LIST to single parameters right away, like so:</p>
+
+<p>my ($my_param1,$my_param2) = _get_param($query,my_param1=&gt;[Schema::CLEAN{entity}],my_param2=&gt;[Schema::CLEAN{entitytype}]);</p>
+
+<h2 id="with_error">_with_error()</h2>
+
+<p>Returns a correctly formatted error message for the AURORA REST-server.</p>
+
+<p>Accepts input in the following order: content,reason. Content is a HASH-reference to the hash that will contain the error-message and its values. Reason is the textual reason given for the error that just happened.</p>
+
+<p>Always returns 0</p>
+
+<h2 id="with_success">_with_success()</h2>
+
+<p>Returns a correctly formatted success message for the AURORA REST-server.</p>
+
+<p>Accepts input in the following order: content. Content is the HASH-reference to the hash that will contain the success-message and its values.</p>
+
+<p>Always returns 1</p>
+
+<h2 id="arrayToFlags">arrayToFlags()</h2>
+
+<p>Converts a textual array of flag names into its bitmask</p>
+
+<p>Accepts the following input in this order: db, array. Db is the reference to the AuroraDB-instance used by the REST-server. Array is a LIST-reference to the textual flag names that are to be converted into a bitmask (as if all the flag names are set in the bitmask).</p>
+
+<p>Returns a bitmask.</p>
+
+<h2 id="arrayToPerm">arrayToPerm()</h2>
+
+<p>Convert a textual array of permission names into its bitmask.</p>
+
+<p>Accepts the following input in this order: db, array. Db is the reference to the AuroraDB-instance used by the REST-server. Array is the LIST-reference to the textual permission names that are to be converted into a bitmask (as if all the permission names are set in the bitmask).</p>
+
+<p>Returns a bitmask.</p>
+
+<h2 id="flagsToArray">flagsToArray()</h2>
+
+<p>Convert flag bitmask into its textual flag names</p>
+
+<p>Accepts the following input in this order: db, bitmask. Db is the reference to the AuroraDB-instance used by the REST-server. Bitmask is the bitmask of flags that are to be converted to its textual counterpart.</p>
+
+<p>Returns a LIST-reference of the textual flags names that have been set in the bitmask.</p>
+
+<h2 id="getEntityTask">getEntityTask()</h2>
+
+<p>Get closest task on an entity in the entity tree.</p>
+
+<p>This method accepts this input in the following order: db, id. Db is the reference to the AuroraDB-instance used by the REST-server. Id is the entity ID from the AURORA database that one wants to get the task of (if any defined).</p>
+
+<p>This method will search from the entity ID specified in id and up the tree to find the closest matching task. If several tasks are defined in the same place in the entity tree, it will select the one that comes first alphabetically on display name of the task entity.</p>
+
+<p>Returns the task ID or 0 if not anyone found or something failed.</p>
+
+<h2 id="getInvalidFlagArrayElements">getInvalidFlagArrayElements()</h2>
+
+<p>Returns the textual flag names in the array that are not valid names for flags.</p>
+
+<p>Accepts the following input in this order: db, array. Db is the reference to the AuroraDB-instance used by the REST-server. Array is the LIST-reference to the list of textual flag names to check for possible invalid items.</p>
+
+<p>Returns a LIST-reference to the flag names that were invalid (if any). If none were invalid, the returned array is empty.</p>
+
+<h2 id="getInvalidPermArrayElements">getInvalidPermArrayElements()</h2>
+
+<p>Returns the textual permission names in the array that are not valid names for permissions.</p>
+
+<p>Accepts the following input in this order: db, array. Db is the reference to the AuroraDB-instance used by the REST-server. Array is the LIST-reference to the list of textual permission names to check for possible invalid items.</p>
+
+<p>Returns a LIST-reference to the permission names that were invalid (if any). If none were invalid, the returned array is empty.</p>
+
+<h2 id="hasPerm">hasPerm()</h2>
+
+<p>Checks if a subject has the specified permission(s) on an object.</p>
+
+<p>Accepts the following input in this order: db, subject, object, perms, pop, oop, effective, inherit, deny, grant.</p>
+
+<p>The meaning of these inputs are as follows:</p>
+
+<ul>
+
+<li><p><b>db</b> Reference to the AuroraDB-instance used by the REST-server.</p>
+
+</li>
+<li><p><b>subject</b> The subject entity id from the AURORA database for which we want to check if has the permission(s).</p>
+
+</li>
+<li><p><b>object</b> The object entity id from the AURORA database for which we want to check the permission(s) on.</p>
+
+</li>
+<li><p><b>perms</b> The textual permission(s) that we want to check for. LIST-reference. The LIST must contain one or more textual permission names that one wants to check if the subject has permission(s) on the object. Be aware that if no permissions are specified the method will return 1 (true) since it has nothing to evaluate. Also note that if you specify a refernce here that is not a LIST or an undefined value, the method will return undef (false).</p>
+
+</li>
+<li><p><b>pop</b> Logical operator for the permissions. If several permissions are specified in the &quot;perms&quot; option, this option decides if one needs to match ALL (logical AND) or ANY (logical OR) of them. Defaults to &quot;ALL&quot;. Valid values are &quot;ALL&quot; or &quot;ANY&quot;.</p>
+
+</li>
+<li><p><b>oop</b> Logical operator for the entity tree permission levels (effective, inherit, grant and deny). This option decides if one need to match ALL (logical AND) or ANY (logical OR) of the given permission(s) on the levels that one have enabled to be targeted (see the effective-, inherit-, deny- and grant-options below). Defaults to &quot;ALL&quot;. Valid values are &quot;ALL&quot; or &quot;ANY&quot;. Please note that if one specifies logically absurd conditions, such as this OOP-option set to ALL, while not targeting/enabling any of the four levels (effective, inherit, deny or grant), this method will return 1 (true): it is in other words true that we do not care for the result on all of the levels. So beware of logical monsters.</p>
+
+</li>
+<li><p><b>effective</b> This option decides if one wants to enable/target the effective permission level when checking if the subject has the given permission(s) on the object (effective on the object that is). Defaults to undef (false). Valid values are undef, 0 and 1. Both undef and 0 basically says to not check this level, however, the difference is that if one specifies undef, the method will not attempt to retrieve the effective permissions of the subject on the object, thus saving time and resources. If 0 is specified the effective permissions will be retrieved. 1 means that we want to enable/target the effective permission level.</p>
+
+</li>
+<li><p><b>inherit</b> This option decides if one wants to enable/target the inherited permission level when checking if the subject has the given permission(s) on the object (inherited from above on the object that is). Defaults to undef (false). Valid values are undef, 0 and 1. Both undef and 0 basically says to not check this level, however, the difference is that if one specifies undef, the method will not attempt to retrieve the inherited permissions of the subject on the object, thus saving time and resources. If 0 is specified the inherited permissions will be retrieved. 1 means that we want to enable/target the inherited permission level.</p>
+
+</li>
+<li><p><b>deny</b> This option decides if one wants to enable/target the deny permission level when checking if the subject has the given permission(s) on the object (denied on the object itself that is). Defaults to undef (false). Valid values are undef, 0 and 1. Both undef and 0 basically says to not check this level, however, the difference is that if one specifies undef, the method will not attempt to retrieve the permissions of the subject on the object itself, thus saving time and resources. If 0 is specified the permission(s) on the object will be retrieved. 1 means that we want to enable/target the deny-level. Please note that if one has disabled the deny-level, but enabled the grant-level, the permission(s) on object will still be retrieved. The reason for this is that both the deny- and grant-level resides on the object itself, so one has to retrieve it if one of deny- or grant is enabled.</p>
+
+</li>
+<li><p><b>grant</b> This option decides if one wants to enable/target the grant permission level when checking if the subject has the given permission(s) on the object (granted on the object itself that is). Defaults to undef (false). Valid values are undef, 0 and 1. Both undef and 0 basically says to not check this level, however, the difference is that if one specifies undef, the method will not attempt to retrieve the permissions of the subject on the object itself, thus saving time and resources. If 0 is specified the permission(s) on the object will be retrieved. 1 means that we want to enable/target the grant-level. Please note that if one has disabled the grant-level, but enabled the deny-level, the permission(s) on object will still be retrieved. The reason for this is that both the deny- and grant-level resides on the object itself, so one has to retrieve it if one of deny- or grant is enabled.</p>
+
+</li>
+</ul>
+
+<p>Will return an expression that either evaluates to true or false. In the case of false it will be either undef or 0. In the case of true it will be a value &gt;= 1. If the expression returned is false, the subject does not fulfill the given permission(s) on the object. If true is returned, the subject has the given permission(s) on the object (and on the levels enabled with the stated logical operators).</p>
+
+<h2 id="listFolders">listFolders()</h2>
+
+<p>List a folder and its subfolders if so specified and return the result in a hash.</p>
+
+<p>Accepts input in the following order: path, recursive, md5sum, tag.</p>
+
+<p>The meaning of these input options are as follows:</p>
+
+<ul>
+
+<li><p><b>path</b> Path to the root of the folder(s) to list. It should be given as an absolute path. If none is specified it will default to /dev/null.</p>
+
+</li>
+<li><p><b>recursive</b> Sets if the listing is to be done recursive down into possible sub-folders. The default setting is true/1. You can use any expression you want to on this, but it needs to evaluate to true or false.</p>
+
+</li>
+<li><p><b>md5sum</b> Sets if files that are discovered will be md5-summed or not? Default setting is true/1. You can use any expression you want to on this, but it needs to evaluate to true or false.</p>
+
+</li>
+<li><p><b>tag</b> Sets if the folder- and file names are to be tagged as UTF8 or not? Default is true/1. This parameter must evaluate to either true or false. Usually one wants to tag I/O content going in/out so that characters are handled correctly.</p>
+
+</li>
+</ul>
+
+<p>This method will return a HASH-reference upon success. Undef upon some failure.</p>
+
+<p>The structure of the HASH-reference is as follows:</p>
+
+<pre><code>%result = (
+   &quot;FolderA&quot; =&gt; { 
+      &quot;.&quot; =&gt; { 
+         name =&gt; &quot;FolderA&quot;,
+         type =&gt; &quot;D&quot;,
+         size =&gt; SCALAR,
+         atime =&gt; SCALAR,
+         mtime =&gt; SCALAR,
+             },
+      &quot;FolderB&quot; =&gt; { ... }
+      &quot;FileX&quot; =&gt; { ... }
+   &quot;FileA&quot; =&gt; {
+      &quot;.&quot; =&gt; {
+         name =&gt; &quot;FileA&quot;,
+         type =&gt; &quot;F&quot;,
+         size =&gt; SCALAR,
+         atime =&gt; SCALAR,
+         mtime =&gt; SCALAR,
+         ctime =&gt; SCALAR,
+         md5 =&gt; SCALAR,
+             },
+   .
+   .
+   &quot;FileZ&quot; &gt; { ... }
+)</code></pre>
+
+<p>Information on the folder entry itself is stored in the dot-folder &quot;.&quot;. This is true for both files and folders and is done for consistency between files and folders. Any entry within a folder is stored inside that folders sub-hash with a entry equal to its name. The &quot;recursive&quot; parameters governs if method recurses into sub-folders or not. Also, the md5-sum of a file might not be present if the md5sum parameters is set to false/undef/0. Errors performing md5-sum will also be saved in the md5-attribute on the sub-hash. It might also be undef, such as when no md5-summing has been requested.</p>
+
+<p>Error-messages on the md5 attribute will have the form: &quot;N/A: Some Error Message&quot;, such as when failing to open or sum the file in question.</p>
+
+<h2 id="mergeMetadata">mergeMetadata()</h2>
+
+<p>Merge metadata with same keys from several entity sources</p>
+
+<p>Accepts this input in the following order: db, entitytype, notemplate, noentity, entities.</p>
+
+<p>The meaning of these input options are as follows:</p>
+
+<ul>
+
+<li><p><b>db</b> Reference to the AuroraDB-instance used by the REST-server.</p>
+
+</li>
+<li><p><b>entitytype</b> The textual entitytype to fetch templates for the entities specified in the entities-option. Defaults to DATASET. This option will be ignored if the notemplate-option is true.</p>
+
+</li>
+<li><p><b>notemplate</b> Disables the fetching of template data for the entities specified in the entities-option. Defaults to 0 (false). Valid values are 0 (false) and 1 (true - do not fetch template metadata). If false the method will fetch template metadata for the entities in the entities-option and merge that with metadata from the entity itself (if not the noentity-option is enabled).</p>
+
+</li>
+<li><p><b>noentity</b> Disables the fetching of metadata for the entities specified in the entities-option. Defaults to 0 (false). Valid values are 0 (false) and 1 (true - do not fetch entity metadata). If false the method will fetch entity metadata for the entities in the entities-option and merge that with metadata from the template (if not the notemplate-option is enabled).</p>
+
+</li>
+<li><p><b>entities</b> The entities that we want to merge metadata for. LIST of entity IDs from the AURORA database.</p>
+
+</li>
+</ul>
+
+<p>This method will merge metadata from the enabled sources (template and/or entity itself) and from all the entities in the entities-option into one HASH with key-&gt;value entries. In other words it merges metadata from both templates and entities into one hash as if the result is for one entity. The merging will take precedence in the order of the entities-option for keys with the same name, where first entity specified is antecedent to the next and so on and the last entity in the list takes precedence over all the previous.</p>
+
+<p>Returns a HASH-reference with all the merged data in a key=&gt;value structure.</p>
+
+<h2 id="permToArray">permToArray()</h2>
+
+<p>Convert permission bitmask into its textual permission names</p>
+
+<p>Accepts the following input in this order: db, bitmask. Db is the reference to the AuroraDB-instance used by the REST-server. Bitmask is the bitmask of permission that are to be converted to its textual counterpart.</p>
+
+<p>Returns a LIST-reference of the textual permission names that have been set in the bitmask.</p>
+
+<h2 id="recurseListing">recurseListing()</h2>
+
+<p>Recurse a listing from the listFolders()-method and produce a iterable array with textual entries.</p>
+
+<p>Accepts these parameters in the following order: listing, newlist, level, path.</p>
+
+<p>The meaning of these parameters are as follows:</p>
+
+<ul>
+
+<li><p><b>listing</b> HASH-reference to the listing produced by the listFolders()-method.</p>
+
+</li>
+<li><p><b>newlist</b> Reference to the array list being produced by this method. All results of the recursion is added to this list.</p>
+
+</li>
+<li><p><b>level</b> The level we are at for a specific run of this method. Should be started with the number 0.</p>
+
+</li>
+<li><p><b>path</b> The preceeding path at any given moment of calling the recurseListing()-method. Is is used to know which folder/part of the listFolders structure one is in at any given moment. Should start with just a blank string (&quot;&quot;) and the rest is handled internally by the recursing method.</p>
+
+</li>
+</ul>
+
+<p>Returns an array list reference in the newlist-option as explained above.</p>
+
+
+</body>
+
+</html>
+
+

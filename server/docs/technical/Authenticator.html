@@ -1,0 +1,313 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#define">define()</a></li>
+      <li><a href="#validate">validate()</a></li>
+      <li><a href="#deValidate">deValidate()</a></li>
+      <li><a href="#generate">generate()</a></li>
+      <li><a href="#namespacesData">namespacesData()</a></li>
+      <li><a href="#save">save()</a></li>
+      <li><a href="#type">type()</a></li>
+      <li><a href="#longevity">longevity()</a></li>
+      <li><a href="#namespaces">namespaces()</a></li>
+      <li><a href="#locations">locations()</a></li>
+      <li><a href="#constraints">constraints()</a></li>
+      <li><a href="#storable">storable()</a></li>
+      <li><a href="#email">email()</a></li>
+      <li><a href="#id">id()</a></li>
+      <li><a href="#anonymize">anonymize()</a></li>
+      <li><a href="#error">error()</a></li>
+      <li><a href="#errorcode">errorcode()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>Authenticator</code> - placeholder class for Authenticator modules in the Aurora REST-server.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>my $db=AuroraDB::new(...);
+my $cfg=Settings::new(...);
+
+my $auth=Authenticator::new(db=&gt;$db,cfg=&gt;$cfg);
+
+my $authstr=&quot;this_is_a_authentication_string&quot;;
+
+my $userid=$auth-&gt;validate($authstr);
+
+if (!$userid) { print &quot;Failed to authenticate: &quot;.$auth-&gt;error().&quot;\n&quot;; }
+
+my $longevity=$auth-&gt;longevity();
+
+$auth-&gt;save($authstr);
+
+my $newauthstr=$auth-&gt;generate($authstr);</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This module is a placeholder class for authentication modules in the Aurora REST-server and is built around the notion of an authentication string whose format is defined by the inheriting class. The return value from the validate()-method is to be the userid from the Aurora DB or 0 if it failed. Undef upon some failure.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Class constructor.</p>
+
+<pre><code>Authenticator::new();</code></pre>
+
+<p>Required input is the parameters &quot;db&quot; and &quot;cfg&quot;. These are to be the AuroraDB instance (db) and the Settings instance (cfg) that defines the configuration settings of Aurora.</p>
+
+<p>Return instance upon success.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="define">define()</h2>
+
+<p>Defines the classes structures with information that are specific to the class in question. It is to be overridden by the inheriting class and are called by the new-constructur method. It is not to be called by the user of the class.</p>
+
+<p>It takes no input.</p>
+
+<p>The method needs to define four structures called type ($self-&gt;{type}), locations ($self-&gt;{MD}), namespaces ($self-&gt;{namespaces}) and constraints ($self-&gt;{constraints}).</p>
+
+<p>The type is just the textual type of the Authenticator and is returned when calling the type()-method. Usually should be set to the Authenticator-class name, eg. &quot;AuroraID&quot;.</p>
+
+<p>The first thing to define is the location-structure which contains all the shortnames for the namespaces of the Authenticator-class:</p>
+
+<pre><code>$MD =&gt; (
+        &quot;authstr&quot; =&gt; &quot;system.authenticator.placeholder.authstr&quot;,
+        &quot;expire&quot;  =&gt; &quot;system.authenticator.placeholder.expire&quot;,
+      );
+# save it
+$self-&gt;{MD}=\%MD;</code></pre>
+
+<p>All code that later need to get the shortnames can refer to $self-&gt;{MD} to get them shortnames HASH. This is to easily allow remapping of the namespace without affecting the code. It also eliminates the need to remember and write correctly long namespace locations.</p>
+
+<p>The namespaces structure is of type HASH and contains all the metadata namespaces and their settings that the authenticator-module in question uses. It also allows for the inheriting child-class to input his own settings to the namespace. Two option-values for each namespace-value is reserved/protected: &quot;public&quot; and &quot;storable&quot;. These cannot be used for any other purpose and has the following purpose: &quot;public&quot; defines if the namespace value is public to everyone outside the authenticator-module or not? The &quot;storable&quot; settings defines if the value in question can be stored to the database or not.</p>
+
+<p>The structure looks like this:</p>
+
+<pre><code>NS =&gt; (
+        $MD{&quot;authstr&quot;} =&gt; {
+                            public =&gt; 0,
+                            storable =&gt; 1,
+                          },
+        $MD{&quot;expire&quot;} =&gt; {
+                           public =&gt; 1,
+                           storable =&gt; 1,
+                         },
+
+      )</code></pre>
+
+<p>All keys entered into the structure are to refer to the $MD-structure. It is also important that the authstr-key is defined for all classes that are to be storable, that is where the authkey is to be stored in the database, because the storable()-method refers to the namespace-structures $MD{&quot;authstr&quot;}{storable} to find out if it is allowed to be stored or not? If no key for this is found, or the storable-setting is 0, the storable()-method will return 0 for storable which will impact what eg. the save()-method can do.</p>
+
+<p>The constraints structure is also of type LIST and is to contain these values in the following order:</p>
+
+<pre><code>- Textual format of the authstr (eg. EMAIL,PASSWORD).
+- Maxmimum length of the authstr in number of characters.
+- Regex with valid format for the authstr.
+- Default longevity setting that will override faulty or missing settings in the config-file.</code></pre>
+
+<p>The regex for the authstr for storable Authenticator-classes is to include enveloping paranthesis for the user ID and the authentication CODE. User ID is expressed as a email-address (which is unique in the AURORA DB). The enveloping paranthesis is to make it possible to address the ID and CODE as $1 and $2 respectively.</p>
+
+<p>It always return 1.</p>
+
+<h2 id="validate">validate()</h2>
+
+<p>Validates the string against the data input to the class.</p>
+
+<p>Input required is the authstr that one wants to validate against the Aurora database. The method is to be overridden by the inheriting class and perform validation based upon that class type. There are several ways of identifying a USER entity for a user in the database, but always by comparing some metadata value of the USER-entity against the authstr given to the method.</p>
+
+<p>Returns AURORA userid upon successful validation of credentials or 0 upon failure.</p>
+
+<p>Failure reason can be fetched by calling the error()-method.</p>
+
+<h2 id="deValidate">deValidate()</h2>
+
+<p>Removes any validation credentials achieved by the class in question.</p>
+
+<p>Input expected: authstr. Its the authstr that one uses to validate against the AURORA database. This method is to be overridden by the inheriting class and remove any validation credentials that class has achieved. If no validation credentials are achieved of any permanent nature, always return 0 (false).</p>
+
+<p>Returns 1 upon successful removal on any credentials, 0 upon not having any credentials to remove or undef if some failure.</p>
+
+<p>Check the error()-method for more information upon failure.</p>
+
+<h2 id="generate">generate()</h2>
+
+<p>Generates an authstr based upon a raw string input. The method can be used to generate a valid authstr based upon some raw input from the user or the system. What the generate method does is up to the inheriting class and it is to be overridden.</p>
+
+<p>Still it is expected that the input is the authstr according to the format defined in the constraints-structure. It will so rework the authstr to include the CODE part in the form that can be stored in the AURORA database.</p>
+
+<p>It cases where the Authenticator-class does not generate a storable authenticator CODE-part (of the authstr) this method shall return a checked and cleaned version of the authstr.</p>
+
+<p>Input to the method is the raw string to generate an authstr based upon according to the return of the constraints()-method.</p>
+
+<p>Return value is always a string or undef upon some failure. The exact error is to be read from the error-method.</p>
+
+<h2 id="namespacesData">namespacesData()</h2>
+
+<p>Get the data for the namespaces keys.</p>
+
+<p>Takes only one input: authstr. It uses the authstr to deteremine if it is a valid user or not and then to fetch that users data for the defined namespaces keys.</p>
+
+<p>Upon success it returns the data in the database for the namespaces where such data exists as a HASH-reference. Upon failure returns undef. Please check the error()-method for more information on the failure in question.</p>
+
+<p>The HASH-structure is as follows:</p>
+
+<pre><code>data =&gt; (
+          KEYNAMEa  =&gt; SCALAR # value of given key from namespaces-definition
+          .
+          .
+          KEYNAMEz  =&gt; SCALAR # value of given key from namespaces-definition
+
+        )</code></pre>
+
+<p>Please note that it only return data where it exists, and if no data is found in the database for the given key, nothing will be returned (not even the key). Further also note that this method returns all values of given keys regardless of the &quot;public&quot;-setting of the namespaces HASH (see the define()-method). It is up to the caller to &quot;wash&quot; the returned data to ensure that not too much is given away to a third party without looking at its public-setting.</p>
+
+<h2 id="save">save()</h2>
+
+<p>Saves the authstr to database.</p>
+
+<p>Accepts two inputs in the following order: authstr and expire. Authstr sets the authstr to save according to the format in constraints. Expire sets the actual time when the authstr expires and are not usable anymore. Expire time is set in unixtime and it is optional. It will default to current time + return from the longevity()-method.</p>
+
+<p>An expire-setting of 0 should mean never expire (but it is is up to the inheriting class how this is implemented in the validate()-method). So a specific class may not allow &quot;eternal&quot; validation strings. If no expire-parameters is set, it will generate one from constraints and settings in the configuration file. See the longevity()-method for more information.</p>
+
+<p>The method uses the generate()-method to rework the authstr to a version that is ready to be stored. It uses the constraints()-settings to get the user ID- and CODE-part of of the string. The method is dependant upon that the Authenticator-class in question is storable. See the storable()-method for more information.</p>
+
+<p>Returns 1 if successful, 0 if something failed. Please check the error()-method upon failure.</p>
+
+<h2 id="type">type()</h2>
+
+<p>Return the Authenticator class type as defined in the define()-method. No input is required and returns the textual type of the class.</p>
+
+<h2 id="longevity">longevity()</h2>
+
+<p>Returns the longevity setting of an authentication string.</p>
+
+<p>It returns how long in seconds an authentication string is valid for. This setting is retrieved in the following steps:</p>
+
+<pre><code>  - The configuration file is read from the cfg-instance to the new()-method. If it finds a setting called 
+system.auth.CLASSNAME.longevity, it is of integer type, it uses this as the longevity setting. CLASSNAME here is what 
+the type()-method reports, but in lowercase.
+  - If it cant find the longevity setting in the configuration file, it uses the default from the constraints()-
+method.</code></pre>
+
+<p>It returns the longevity setting in seconds.</p>
+
+<h2 id="namespaces">namespaces()</h2>
+
+<p>Returns the namespaces in the Aurora db for the authstr and the expire date as a HASH-reference.</p>
+
+<p>Accepts to input.</p>
+
+<p>See the define()-method for more information on the structure of the namespaces HASH.</p>
+
+<h2 id="locations">locations()</h2>
+
+<p>Returns the locations in the Aurora db for the authstr and the expire date as a HASH-reference.</p>
+
+<p>Accepts no input.</p>
+
+<p>See the define()-method for more information on the structure of the location HASH.</p>
+
+<h2 id="constraints">constraints()</h2>
+
+<p>Returns the constraints of the raw string to be generated to an authstr by the generate()-method. It is defined by the define()-method.</p>
+
+<p>It requires no input and the return value is a LIST in the order defined in the define()-method. See the define()-method for more information.</p>
+
+<h2 id="storable">storable()</h2>
+
+<p>Returns if the Store-class result from the generate()-method is meant to be stored in the Aurora DB.</p>
+
+<p>No input accepted.</p>
+
+<p>Returns 0 for not meant to be stored and 1 for meant to be stored.</p>
+
+<h2 id="email">email()</h2>
+
+<p>Returns email (ID) of user in the authstr.</p>
+
+<p>Takes the whole authstr as input.</p>
+
+<p>Returns the email address in the authstr identifying the user or a blank string if it does not contain the user email (ID).</p>
+
+<p>Upon some failure returns undef. Check the error()-method for more information upon failure.</p>
+
+<h2 id="id">id()</h2>
+
+<p>Attempts to find and return the user entity id of the user in the authstr.</p>
+
+<p>Takes authstr as input.</p>
+
+<p>Returns the user entity id upon success or 0 upon some failure. Please check the error()-method for more information upon failure.</p>
+
+<p>This method is to be overridden by the inheriting class.</p>
+
+<h2 id="anonymize">anonymize()</h2>
+
+<p>Anonymize user data in the database.</p>
+
+<p>Input parameter is &quot;id&quot;. It defines the database user id for the user to anonymize data for.</p>
+
+<p>Returns 1 upon success, 0 upon some failure. Check the error()-method for more information upon failure.</p>
+
+<p>This method is a placeholder and is required to be overridden by the inheriting class who knows best which of its authentication data that needs to be anonymized. Only information that may uniquely identify a person/individual is required to be removed, so hashed passwords can still remain (and might open a path to restore the account in case of such requests by the fact that the user remembers the password). Such things as email, name, username and so on needs to be anonymized.</p>
+
+<h2 id="error">error()</h2>
+
+<p>Returns last error from Authenticator-class.</p>
+
+<h2 id="errorcode">errorcode()</h2>
+
+<p>Returns the error code of the last error (see the error()-method).</p>
+
+<p>This error code is to be used by all inheriting sub-classes of Authenticator to set codes for the REST-server that uses the Authenticator-plugins. Error codes are set directly in the instance by using $self-&gt;{errorcode}=NN. See the ErrorAlias-module for more information on setting valid codes.</p>
+
+
+</body>
+
+</html>
+
+

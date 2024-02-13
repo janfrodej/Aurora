@@ -1,0 +1,137 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#open_define">open_define()</a></li>
+      <li><a href="#open_create">open_create()</a></li>
+      <li><a href="#remoteSize">remoteSize()</a></li>
+      <li><a href="#listRemote">listRemote()</a></li>
+      <li><a href="#close">close()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>Store::RSyncSSH</code> - Class to define RSyncSSH store that perform RSync operations between a local- and remote location through a SSH-connection.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<p>Used in the same way as the Store-class. See the Store-class for more information.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Class to perform RSync operations between a local- and remote location through a SSH-connection.</p>
+
+<p>These additional parameters are special to the RSyncSSH-class and are to be used with the open()-method:</p>
+
+<ul>
+
+<li><p><b>knownhosts</b> The knownhosts-file entry that identifies the host that one connects to. It is basically the publickey in the same format as in a SSH knownhosts-file. When this option is specified it creates a random file in /tmp that contains the host-name and the publickey when the open()-method is called. It also appends the sshoptions-parameter in both the get- and put-command to add the option &quot;-o UserKnownHostsFile&quot; and sets it to the temporary file. This means that the host-parameter should not be changed after the open()- method has been called as it could make the host-name in the temporary knownhosts-file invalid. When the DESTROY-method is called it unlinks the temporary knownhosts-file.</p>
+
+</li>
+<li><p><b>passwordfile</b> This parameter must be specified if the authentication mode set to the new()-method is AUTH_PWFILE. It basically defines the location and name of the file to read the password from for the user connecting through SSH to get/put data on the remote location.</p>
+
+</li>
+<li><p><b>privatekey</b> This parameters must be specified if the authentication mode set to the new()-method is AUTH_KEY. The key specified here is in the same format as in the .ssh/id_rsa-file. The parameters is written to a random file in /tmp that is used as the privatekey/identity file when connecting through SSH to the remote location. When the DESTROY()-method is called it unlinks the temporary privatekey-file.</p>
+
+</li>
+</ul>
+
+<p>It is used in the same way as the Store-class. See the Store-class for more information.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Constructor is inherited from the Store-class. See the Store-class for more information.</p>
+
+<p>It uses the inherited new()-method.</p>
+
+<p>It returns the instantiated class.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="open_define">open_define()</h2>
+
+<p>Defines the parameters used on the RSyncSSH-store. This methods is inherited from the Store-class. See the Store-class for more information.</p>
+
+<h2 id="open_create">open_create()</h2>
+
+<p>Creates the necessary StoreProcess-instances used by the RSyncSSH-store.</p>
+
+<p>It basically creates StoreProcess::Shell-instances for GET-, PUT- and DEL-operations and inputs the necessary Parameter::Group-class parameters.</p>
+
+<p>This method has overridden a Store-class method. See the Store-class for more information.</p>
+
+<h2 id="remoteSize">remoteSize()</h2>
+
+<p>Returns the size of the area designated by the remote-parameter to the open()-method.</p>
+
+<p>The size is calculated by using ssh and then running the &quot;ls&quot; command recursively.</p>
+
+<p>It returns the size in Bytes. Please see the Store-class for more information on this method.</p>
+
+<h2 id="listRemote">listRemote()</h2>
+
+<p>Lists a designated remote folder.</p>
+
+<p>Input parameter is path. If none given it defaults to the root of the store area.</p>
+
+<p>The method uses ssh and the &quot;ls&quot; command to list the folder in the remote area.</p>
+
+<p>Returns a HASH-reference structure upon success. Please see the Store-class for more information on this method.</p>
+
+<h2 id="close">close()</h2>
+
+<p>Overrides the close()-method of the placeholder Store-class.</p>
+
+<p>Unlinks temporary files used when store is open. Also calls the placeholder classes close()-method.</p>
+
+<p>Always returns 1.</p>
+
+
+</body>
+
+</html>
+
+

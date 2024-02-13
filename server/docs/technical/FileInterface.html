@@ -1,0 +1,585 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#FileInterface">FileInterface</a>
+    <ul>
+      <li>
+        <ul>
+          <li><a href="#Storage">Storage</a></li>
+          <li><a href="#View">View</a></li>
+        </ul>
+      </li>
+      <li><a href="#Dataset-structure">Dataset structure</a></li>
+      <li><a href="#Access-structure">Access structure</a>
+        <ul>
+          <li><a href="#Local-user-access">Local user access</a></li>
+        </ul>
+      </li>
+      <li><a href="#FI-roles">FI roles</a>
+        <ul>
+          <li><a href="#Aurora-server">Aurora server</a></li>
+          <li><a href="#Aurora-client">Aurora client</a></li>
+          <li><a href="#FI-purger">FI purger</a></li>
+          <li><a href="#FI-sets-unimplemented">FI sets (unimplemented)</a></li>
+        </ul>
+      </li>
+      <li><a href="#Synopsis">Synopsis</a></li>
+      <li><a href="#Methods">Methods</a>
+        <ul>
+          <li><a href="#yell-string">yell([string, ...]))</a></li>
+          <li><a href="#new-AuroraDB-base-http">new(AuroraDB, base, http)</a></li>
+          <li><a href="#server">server()</a></li>
+          <li><a href="#FI">FI()</a></li>
+          <li><a href="#Settings">Settings()</a></li>
+          <li><a href="#adb">adb()</a></li>
+          <li><a href="#dbi">dbi()</a></li>
+          <li><a href="#base">base()</a></li>
+          <li><a href="#absolute-path-path">absolute(path, [path, ...])</a></li>
+          <li><a href="#flush">flush()</a></li>
+          <li><a href="#dataset-id">dataset(id)</a></li>
+          <li><a href="#ensurepath-path-mode">ensurepath(path, mode)</a></li>
+          <li><a href="#newcookie">newcookie()</a></li>
+          <li><a href="#rellink-target-link">rellink(target, link)</a></li>
+          <li><a href="#selectstore-hint">selectstore([hint, ...]);</a></li>
+          <li><a href="#storewcheck-store">storewcheck(store)</a></li>
+          <li><a href="#storeprobe">storeprobe()</a></li>
+          <li><a href="#storescan-store">storescan([store, ...])</a></li>
+          <li><a href="#storelint-store">storelint([store, ...])</a></li>
+          <li><a href="#grantpathview-subject-keycode">grantpathview(subject, keycode)</a></li>
+          <li><a href="#grantpath-subject-keycode-dataset">grantpath(subject, keycode, dataset)</a></li>
+          <li><a href="#purge">purge()</a></li>
+          <li><a href="#purgepoll">purgepoll()</a></li>
+          <li><a href="#mapuserstring-userstring-helper">mapuserstring(userstring [,helper])</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#FileInterfaceDataset">FileInterfaceDataset;</a>
+    <ul>
+      <li>
+        <ul>
+          <li><a href="#new-FI-info">new(FI, info)</a></li>
+          <li><a href="#get-FI-id">get(FI, id)</a></li>
+          <li><a href="#save-store-mode-cookie">save(store, mode, cookie)</a></li>
+          <li><a href="#id">id()</a></li>
+          <li><a href="#info">info()</a></li>
+          <li><a href="#check">check()</a></li>
+          <li><a href="#find">find</a></li>
+          <li><a href="#mode2perm-mode">mode2perm(mode)</a></li>
+          <li><a href="#create">create()</a></li>
+          <li><a href="#close">close()</a></li>
+          <li><a href="#remove">remove()</a></li>
+          <li><a href="#recook-unimplemented">recook() (unimplemented)</a></li>
+          <li><a href="#lint">lint()</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#FileInterfaceClient">FileInterfaceClient;</a>
+    <ul>
+      <li>
+        <ul>
+          <li><a href="#new-connect">new([connect, ...])</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="FileInterface">FileInterface</h1>
+
+<p>FileInterface (FI) is managing the file storage for Aurora. This is intended for direct access trough NFS, SMB/CIFS, HTTP etc. To simplify access control across different platforms the access control is implemented with unix execure only-mode and hard to guess &quot;cookie&quot; directory names. Knowledge of a cookie gives access to the relevant object.</p>
+
+<p>In FI, an Aurora entity may be &quot;dataset&quot;, a &quot;subject&quot;, both or none of them. The entity type is not consulted. A dataset is simply an entity FI has created a dataset storage for. A subject is a entity with DATASET_CREATE or DATASET_READ right on a dataset.</p>
+
+<p>The FI is split into two disinct parts:</p>
+
+<h3 id="Storage">Storage</h3>
+
+<p>This is where the actual data is stored, and may cmprise of different file systems for scalability ao. The different file systems should be available to the FI under a common base directory ($base), here called &quot;/Aurora&quot;. Each file system has a name ($store) and contain two directorys &quot;rw&quot; and &quot;ro&quot;; The store should be available to the FI as tree entries under the base:</p>
+
+<ul>
+
+<li><p>fi-$store - the root of store</p>
+
+</li>
+<li><p>rw-$store - the rw directory</p>
+
+</li>
+<li><p>ro-$store - the ro directory</p>
+
+</li>
+</ul>
+
+<p>This is typically implementetd by NFS like in the example below, but may also be symlinks or loopback mounts if local.</p>
+
+<pre><code>mount -o rw fileserver:/export/aurora_storage01    /Aurora/fi-storage01
+mount -o rw fileserver:/export/aurora_storage01/rw /Aurora/rw-storage01
+mount -o rw fileserver:/export/aurora_storage01/ro /Aurora/ro-storage01</code></pre>
+
+<p>The &quot;fi-&quot; mount must be exported as no_root_squash since FI has to do priveleged operations on it.</p>
+
+<h3 id="View">View</h3>
+
+<p>All access is implemented as symlinks under $base/view. This tree has two functions: Keep track of where the datasets is currently stored, and who may access it.</p>
+
+<h2 id="Dataset-structure">Dataset structure</h2>
+
+<p>When a dataset is created, a storage is selected based on hints to the create method, and a cookie is generated. The resulting storage path to the dataset is like $base/rw-$storage/$scale/$entity/$cookie/. $scale is a scaling to avoid unlimited nmber of elements in one directory. The dataset consists of a data directory with the actual data, alongside other files and folders for metadata etc. The $scale part is derived from the $entity like &#39;$scale = sprintf(&quot;%03d/%03d, int($entity/1000000) % 1000, int($entity/1000) % 1000)&#39;. The data of the dataset should thus reside in a path like &quot;/Aurora/fi-storage01/rw/000/034/34625/FtHugftvcRcrfdfdRD/data/&quot;. Unpriveleged access should be done trough the &quot;rw&quot; path &quot;/Aurora/rw-storage01/000/034/34625/FtHugftvcRcrfdfdRD/data/&quot;.</p>
+
+<p>On close, the dataset is moved from rhe &quot;rw&quot; to the &quot;ro&quot; storage directory, and unpriveleged access is thus done trough the read only ro-$store mount.</p>
+
+<p>To keep track of the eksact location at any time, FI maintain a symbolic links under &quot;$base/view&quot;. This is similary scaled so, &quot;/$base/view/$scale/$entity&quot; will allways be a relative symink to &quot;/$base/$mode-$store/$scale/$entity&quot;, like</p>
+
+<pre><code>/Aurora/view/000/034/34625 -&gt; ../../../rw-storage01/000/034/34625</code></pre>
+
+<h2 id="Access-structure">Access structure</h2>
+
+<p>Any entity with DATASET_CREATE or DATASET_READ is considered a &quot;subject&quot;. The subject is assigned an $keycode and represented by a directory in the view tree as $base/view/$scale/$entity-$keycode. This contain relative symlinks to the dataset folders of all datasets the subject is entitled to. So if entity 450 has keykode lkjKLjLJoihjlIj and access to 34625 there is a symlink like this:</p>
+
+<pre><code>/Aurora/view/000/000/450-lkjKLjLJoihjlIj/34625 -&gt; ../../034/34625/FtHugftvcRcrfdfdRD</code></pre>
+
+<p>So knowlege to 450&#39;s keycode will give access to the dataset 34625.</p>
+
+<h3 id="Local-user-access">Local user access</h3>
+
+<p>If a subject maps to a local user ($username), a directory with exclusive access for the user is created as &quot;$base/view/user/$username&quot;. In this ther wil be a relatin\ve symlink &quot;ALL&quot; pointing to the subjets access directory like</p>
+
+<pre><code>/Aurora/view/user/bt/ALL -&gt; ../../000/000/450-lkjKLjLJoihjlIj</code></pre>
+
+<p>The local user &quot;bt&quot; (entity 450) may this way access the dataset as /Aurora/view/user/bt/ALL/34625/ without knowledge to its keycode or the cookie of the dataset.</p>
+
+<h2 id="FI-roles">FI roles</h2>
+
+<h3 id="Aurora-server">Aurora server</h3>
+
+<p>This is the controlling service for dataset management. This is normally running without privileges, so FI is accesed trough a simple server/client interface. This is based om sudo for escalation, but may easily be adapted to ssh if running on a separat host.</p>
+
+<h3 id="Aurora-client">Aurora client</h3>
+
+<p>A aurora client is an host that provide user access to the data, like login services, http or samba server etc. The clients need to mount the view directroy tree read only and any &quot;$mode-&quot; exports with relevant mode, all prefferably with root squash.</p>
+
+<p>Note tath FI is not responsibel of data transport. Populating the datsets data-directory is done trough a Aurora server or client.</p>
+
+<h3 id="FI-purger">FI purger</h3>
+
+<p>This is an asynchrounus privileged process mainatining the access structure troug the purgepoll() and purge() methods.</p>
+
+<h3 id="FI-sets-unimplemented">FI sets (unimplemented)</h3>
+
+<p>This is a process that populate the users access directory with sets of relative symlinks to datasets ALL/ based on users wish.</p>
+
+<h2 id="Synopsis">Synopsis</h2>
+
+<p>Client usage</p>
+
+<pre><code>use FileInterface;
+$client = FileInterfaceClient-&gt;new;
+$datapath = $client-&gt;create($entity, $user, $parent);
+$datapath = $client-&gt;close($id);
+$datapath = $clinet-&gt;datapath($id);
+$mode = $client-&gt;mode;
+$result = $client-&gt;lint($id);
+$client-&gt;remove($id);</code></pre>
+
+<p>Mainainace processes (priveleged)</p>
+
+<pre><code>use FileInterface;
+my $fi = FileInterface-&gt;new;
+$elapsed = $fi-&gt;purgepoll;
+$elapsed = $fi-&gt;purge;
+$result = $fi-&gt;lint(id);
+$results = $fi-&gt;storelint;</code></pre>
+
+<h2 id="Methods">Methods</h2>
+
+<h3 id="yell-string">yell([string, ...]))</h3>
+
+<p>Most methods return undefined on errors. Any error messages is returned as a list from the yell() method. Any parameters to the yell is added to the list, except for the first parameter which <i>may</i> have special meaning, the most important is &quot;&lt;&quot; which clears the list and adds any subsequent parametes. Other codes can be found in the source. Yell prepend messages with the name of the calling method.</p>
+
+<h3 id="new-AuroraDB-base-http">new(AuroraDB, base, http)</h3>
+
+<p>Return a new FileInterface object. The three parameters i optional and primarely for testing. In production any undefined parameter will default to reasonable values.</p>
+
+<h3 id="server">server()</h3>
+
+<p>Read method and parameters from STDIN and return result and yells on STDOUT as YAML. Primarely used to execute the following dataset methods with privileges.</p>
+
+<ul>
+
+<li><p>create(id, [hint, ...])</p>
+
+</li>
+<li><p>close(id)</p>
+
+</li>
+<li><p>mode(id)</p>
+
+</li>
+<li><p>remove(id)</p>
+
+</li>
+<li><p>datapath(id)</p>
+
+</li>
+<li><p>lint(id)</p>
+
+</li>
+</ul>
+
+<p>All is pure wrappers for similar FileInterfaceDataset methods described below, except for create, close and datapath which return absolute paths (prepend with &quot;$base/&quot;).</p>
+
+<h3 id="FI">FI()</h3>
+
+<p>Return the FileInterface object itself, also for child FileInterfaceDataset objects. The following methods use FI() where relevant allowing inheritanse to child objects for methods conserning the parent FI object.</p>
+
+<h3 id="Settings">Settings()</h3>
+
+<p>Return the Aurora Settings object used for configuration.</p>
+
+<h3 id="adb">adb()</h3>
+
+<p>Return the AuroraDB object.</p>
+
+<h3 id="dbi">dbi()</h3>
+
+<p>Return the DBI object of the AuroraDB</p>
+
+<h3 id="base">base()</h3>
+
+<p>Return the configiured base path.</p>
+
+<h3 id="absolute-path-path">absolute(path, [path, ...])</h3>
+
+<p>Join paths with &quot;/&quot; and prepend with $base.</p>
+
+<h3 id="flush">flush()</h3>
+
+<p>Clear all data and objects cached in the FI object.</p>
+
+<h3 id="dataset-id">dataset(id)</h3>
+
+<p>Return the a FileInterfaceDataset object for the entity id. The object is new unless found in cache.</p>
+
+<h3 id="ensurepath-path-mode">ensurepath(path, mode)</h3>
+
+<p>Make sure the path exists. Set mode on any newly created directory</p>
+
+<h3 id="newcookie">newcookie()</h3>
+
+<p>Return an newly created cookie string for dataset cookie or subject keycard</p>
+
+<h3 id="rellink-target-link">rellink(target, link)</h3>
+
+<p>Create a relative link to target using the shorthest relative path.</p>
+
+<h3 id="selectstore-hint">selectstore([hint, ...]);</h3>
+
+<p>Find the prefferred store according to the hints. The hints is entity id&#39;s, and these will be followed along their entity path for the first hit. The hints are typically the user requesting the creation and the parent of the dataset to be created. A hit is when a store with the entity number or &quot;system.fileinterface.store&quot; metadata as the store name is found.</p>
+
+<h3 id="storewcheck-store">storewcheck(store)</h3>
+
+<p>Check that a store is online and writable.</p>
+
+<p>Takes a store name as parameter. Return 1 if online and rw/ is writable</p>
+
+<p>May find new (empty) stores storeprobe() do not know about.</p>
+
+<h3 id="storeprobe">storeprobe()</h3>
+
+<p>Bring all known stores online.</p>
+
+<p>Return all known stores as an hash. Key in the hash is &quot;$mode-$store&quot;, value is stat() of the directory.</p>
+
+<h3 id="storescan-store">storescan([store, ...])</h3>
+
+<p>Scann the list of stores for datasets, and return a complete list. Store is here the $mode-$store mount.</p>
+
+<p>If no list is given, all rw- and -ro trees present as well as view is scanned. storeprobe() is called prior to the scan to bring all known stores online. Note that any unknown stores (ie with only unknown datasets) has to be brought online in some other way to detect the unknown datasets, unless a &quot;browse&quot; automount option is in effect.</p>
+
+<p>Return a hash with dataset id as key and &quot;$mode-$store&quot; as value;</p>
+
+<h3 id="storelint-store">storelint([store, ...])</h3>
+
+<p>Run lint() on all datasets found by storescan([store, ...]). Any parameters is pased unaltered to storescan();</p>
+
+<p>Return a hash with dataset id as key, The values is the return hash from lint() on the dataset, possibly augmented by storelint();</p>
+
+<h3 id="grantpathview-subject-keycode">grantpathview(subject, keycode)</h3>
+
+<p>Return the subject view path according to the parameters.</p>
+
+<h3 id="grantpath-subject-keycode-dataset">grantpath(subject, keycode, dataset)</h3>
+
+<p>Return the path for a grant. Unless already exixsting, the grantpathview() is crated and subject is registered.</p>
+
+<h3 id="purge">purge()</h3>
+
+<p>Evaluate the actual permissions against registered grants, and do the neccecary adjustments. This is split into tree phases:</p>
+
+<ul>
+
+<li><p>purge_deny() - remove any permission symlinks that should not be there</p>
+
+</li>
+<li><p>purge_grant() - create any permission symlinks</p>
+
+</li>
+<li><p>purge_user() - create any missing view/user directories for subjects with local user.</p>
+
+</li>
+</ul>
+
+<p>Return the elapsed time.</p>
+
+<h3 id="purgepoll">purgepoll()</h3>
+
+<p>Run purge() if any changes in the source.</p>
+
+<p>Return the elapsed time from purge() or 0 if purge() is not run.</p>
+
+<h3 id="mapuserstring-userstring-helper">mapuserstring(userstring [,helper])</h3>
+
+<p>Maps a userstring to a local user for purge_user(). Optional helper parameter is the name of an external program that is passed the userstring, and is expected to return a normal passwd string which is plitted and returned. Without a helper, it expect the userstring to be of the form /^(\w+)\@ntnu.no$/, and return getpwnam($1);</p>
+
+<h1 id="FileInterfaceDataset">FileInterfaceDataset;</h1>
+
+<p>Dataset methods is separated into a subclass. FileInterfaceDataset objects doe allways know its own own entity id and the FileInterface object it is created from.</p>
+
+<h3 id="new-FI-info">new(FI, info)</h3>
+
+<p>Create a new dataset object from an info hash, typically from an SQL query.</p>
+
+<ul>
+
+<li><p>FI is the creating FileInterface object.</p>
+
+</li>
+<li><p>info is a hash where the &quot;entity&quot; is a required key containing the dataset id.</p>
+
+</li>
+</ul>
+
+<p>Returns the newly created object.</p>
+
+<h3 id="get-FI-id">get(FI, id)</h3>
+
+<p>Create and retuurn new dataset object.</p>
+
+<h3 id="save-store-mode-cookie">save(store, mode, cookie)</h3>
+
+<p>Save or update a dataset database entry. Only defined parameters is updated.</p>
+
+<h3 id="id">id()</h3>
+
+<p>Return the id of an dataset</p>
+
+<h3 id="info">info()</h3>
+
+<p>return the info hash of the dataset. The fields is</p>
+
+<ul>
+
+<li><p>entity - Aurora entity id</p>
+
+</li>
+<li><p>scale</p>
+
+</li>
+<li><p>store</p>
+
+</li>
+<li><p>mode</p>
+
+</li>
+<li><p>perm - The numeric permission assosiated with the mode</p>
+
+</li>
+<li><p>cookie</p>
+
+</li>
+<li><p>timestamp - Update timestamp</p>
+
+</li>
+<li><p>datasetpath - view/$scale/$dataset</p>
+
+</li>
+<li><p>privatepath - view/$scale/$dataset/$cookie</p>
+
+</li>
+<li><p>datapath - view/$scale/$dataset/$cookie/data</p>
+
+</li>
+<li><p>viewscale - view/$scale</p>
+
+</li>
+<li><p>rwscale - rw-$store/$scale</p>
+
+</li>
+<li><p>roscale - ro-$store/$scale</p>
+
+</li>
+<li><p>rmscale - rm-$store/$scale (unused)</p>
+
+</li>
+<li><p>rwpath - rw-$store/$scale/$id</p>
+
+</li>
+<li><p>ropath - ro-$store/$scale/$id</p>
+
+</li>
+<li><p>rmpath - rm-$store/$scale/$id (unused)</p>
+
+</li>
+<li><p>linkpath - $mode-$store/$scale/$id</p>
+
+</li>
+<li><p>fipath - fi-$store/$mode/$scale/$id</p>
+
+</li>
+<li><p>fiprivate - fi-$store/$mode/$scale/$id/$cookie</p>
+
+</li>
+</ul>
+
+<p>The values is undefined for missing/unset fields, like fiprivate if no cookie is set.</p>
+
+<p>All of theese may also be obtained as methods with the same name, like entity() etc.</p>
+
+<h3 id="check">check()</h3>
+
+<p>Return $self-&gt;datapath if defined and the path exists.</p>
+
+<h3 id="find">find</h3>
+
+<p>Return $self-&gt;datapath if check() or a meaningful view link is found.</p>
+
+<h3 id="mode2perm-mode">mode2perm(mode)</h3>
+
+<p>Return the numeric permission assosiated with the mode.</p>
+
+<h3 id="create">create()</h3>
+
+<p>Create the a dataset for an entity.</p>
+
+<p>Return datapath if created and online on exit, but yell if it did exists.</p>
+
+<h3 id="close">close()</h3>
+
+<p>Move a dataset from rw to ro mode and return the new dataset path. Creates a new cookie in the process.</p>
+
+<h3 id="remove">remove()</h3>
+
+<p>Remove a dataset and return the id. Currently just renames it out of view.</p>
+
+<h3 id="recook-unimplemented">recook() (unimplemented)</h3>
+
+<p>Set a new cookie and update all relevant links.</p>
+
+<h3 id="lint">lint()</h3>
+
+<p>Clean up any discrepancys. Does also some auxilary tasks like maintaining html shortcuts etc.</p>
+
+<p>Return a hash of the following lists:</p>
+
+<ul>
+
+<li><p>errors - list of uncorrectable errors</p>
+
+</li>
+<li><p>warnings - list of discrepancys of less importance</p>
+
+</li>
+<li><p>done - list of corrections taken</p>
+
+</li>
+</ul>
+
+<h1 id="FileInterfaceClient">FileInterfaceClient;</h1>
+
+<h3 id="new-connect">new([connect, ...])</h3>
+
+<p>Return a FileInterfaceClient object for privilege escalation. The optional connect parameters is passed to open2 if another connection escalation method than the default &quot;sudo&quot; is required. Should be transparent to FileInterface for the following methods:</p>
+
+<ul>
+
+<li><p>create(id, [hint, ...])</p>
+
+</li>
+<li><p>close(id)</p>
+
+</li>
+<li><p>datapath(id)</p>
+
+</li>
+<li><p>mode(id)</p>
+
+</li>
+<li><p>lint(id)</p>
+
+</li>
+<li><p>remove(id)</p>
+
+</li>
+</ul>
+
+<p>This method is made noop in the client, since it is function now should be handled by an asynchrounous process:</p>
+
+<ul>
+
+<li><p>purge()</p>
+
+</li>
+</ul>
+
+<p>The following methods is internal to the client:</p>
+
+<ul>
+
+<li><p>_connect() - make the connection when required (lazy connect)</p>
+
+</li>
+<li><p>_request(method, [arg, ...] - build an request</p>
+
+</li>
+<li><p>_generic([arg, ...]) - generic wrapper for request</p>
+
+</li>
+</ul>
+
+
+</body>
+
+</html>
+
+

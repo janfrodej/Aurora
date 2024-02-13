@@ -1,0 +1,214 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#struct1">struct()</a></li>
+      <li><a href="#convert">convert()</a></li>
+      <li><a href="#quoteType">quoteType()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>SQLStruct</code> - Create logical SQL statements from a structure of LISTS and HASHES.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use SQLStruct;
+
+my $sstruct=SQLStruct-&gt;new();
+
+my @s=( &#39;OR&#39;,
+        { &#39;Creator&#39; =&gt; &#39;B&aring;rd&#39;,
+          &#39;Created&#39; =&gt; { &#39;&gt;&#39; =&gt; &#39;1990&#39;, &#39;&lt;&#39; =&gt; &#39;2000&#39; }
+        },
+        { &#39;Creator&#39; =&gt; &#39;Jan Frode*&#39;,
+        },
+        { &#39;Religion&#39; =&gt; { &#39;!&#39; =&gt; &quot;NULL&quot;, &#39;-&#39; =&gt; &quot;NULL&quot; }
+        },
+        &#39;1&#39;,
+        [ &#39;not&#39;,
+           { &#39;Group&#39; =&gt; &#39;Whatever&#39;,
+           },
+          &#39;11&#39;
+        ],
+      );
+
+my $sql=$sstruct-&gt;convert(\@s);
+
+print $sql;</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This module creates logical SQL statements from a structure containing LIST(s) and HASH(es). The created logical SQL-statements are meant to be used after the WHERE-clause in a SQL-query.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Required input is none. Optional parameters are:</p>
+
+<dl>
+
+<dt id="struct"><i>struct</i></dt>
+<dd>
+
+<p>The structure to create SQL from. It should be either an ARRAY or a HASH. The structure can be set after instantiation by calling the struct()-method.</p>
+
+</dd>
+<dt id="dbi"><i>dbi</i></dt>
+<dd>
+
+<p>Sets the DBI-instance used by the caller so that one can perform proper SQL quoting, both for identifiers and values. If no DBI-instance is specified it will use internal, unsafe and simplified quoting functions.</p>
+
+</dd>
+<dt id="forcequote"><i>forcequote</i></dt>
+<dd>
+
+<p>Toggles that all values are to be quoted no matter what type they might be or what flags have been set on them.</p>
+
+</dd>
+<dt id="iname"><i>iname</i></dt>
+<dd>
+
+<p>Sets the identifier table name in case the identifier resides in one table and the value in another (see ivname parameter). This should typically be in the format:</p>
+
+<p>TABLE.FIELD</p>
+
+<p>The conversion process will assume that the field names in the structure are to be checked against the value in TABLE.FIELD.</p>
+
+</dd>
+<dt id="ivname"><i>ivname</i></dt>
+<dd>
+
+<p>Sets the identifier value name in the the identifier resides in on table and the value in another (see iname parameter). This should typially be in the format:</p>
+
+<p>TABLE.FIELD</p>
+
+<p>The conversion process will assume that the values specified in the structure are to be checked against the value in TABLE.FIELD.</p>
+
+</dd>
+<dt id="iclean"><i>iclean</i></dt>
+<dd>
+
+<p>Sets the reference to the function that clean the identifier. This cleans the identifier specified in the structure, not the identifier specified in the parameter iname.</p>
+
+</dd>
+<dt id="vclean"><i>vclean</i></dt>
+<dd>
+
+<p>Sets the reference to the function that clean the value of the identifier. This cleans the value of the identifier in the structure.</p>
+
+</dd>
+<dt id="prepar"><i>prepar</i></dt>
+<dd>
+
+<p>Sets the prepended SQL before the paranthesis that contains the logical sub query statement. Can allow for checking of values that would normally come on multiple rows. Eg. prepar=&gt;&quot;id in&quot; (see complimentary option example in prelog below).</p>
+
+</dd>
+<dt id="prelog"><i>prelog</i></dt>
+<dd>
+
+<p>Sets the prepended SQL before the logical sub query statement. Can allow for checking of values that would normally come on multiple rows. Eg. prelog=&gt;&quot;SELECT id FROM T1 LEFT JOIN T2 on T1.id=T2.id LEFT JOIN T3 on T2.key=T3.key WHERE&quot;.</p>
+
+</dd>
+</dl>
+
+<p>Return instance upon success.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="struct1">struct()</h2>
+
+<p>Sets or gets the structure used by the class.</p>
+
+<p>The function takes one optional parameter when setting the structure.</p>
+
+<p>When setting the structure the type must be a reference to a HASH or an ARRAY. When retrieving the structure returned will be a reference to a HASH or LIST.</p>
+
+<h2 id="convert">convert()</h2>
+
+<p>The main function of the class that converts the structure into standard SQL.</p>
+
+<p>Takes one optional parameter with the structure to be used for conversion instead of using the one set at instantiation or through the struct()-method.</p>
+
+<p>The structure is either a LIST or HASH-reference. The structure must be in the form:</p>
+
+<pre><code>( &quot;LOP&quot;,
+
+   { FIELDx =&gt; { &quot;COP&quot; =&gt; &quot;VALUE&quot;, &quot;COP&quot; =&gt; &quot;VALUE&quot;, }, 
+
+   { FIELDy =&gt; { &quot;COP&quot; =&gt; &quot;VALUE&quot; }, 
+
+   { FIELDz =&gt; { &quot;COP&quot; =&gt; &quot;VALUE&quot; }, 
+
+) </code></pre>
+
+<p>Where the first element of every LIST/ARRAY is the LOP or logical operator for the rest of the elements in the LIST. Default operator is &quot;OR&quot; if an invalid one is specified. It always assumes that the first element is the logical operator and will skip this when handling the lists elements. If the logical operator in a LISt is a unary the elements in that list are comma-separated.</p>
+
+<p>The COP is the comparison operator that are to be used. All hash key/value pairs in a specific hash are always AND&#39;ed together.</p>
+
+<p>Valid LOPs are: <i>ALL</i>, <i>AND</i>, <i>ANY</i>, <i>BETWEEN</i>, <i>EXISTS</i>, <i>IN</i>, <i>LIKE</i>, <i>NOT</i>, <i>OR</i> and <i>SOME</i>. Accepted prefix&#39;es to unary LOPs are whatever you want to (usual SQL engines only accepts ones like NOT, +, - etc.). The convert function only looks at the last word after the last space to know which operator is requested. Please also note that not all these LOPs might be supported by the SQL-engine being used.</p>
+
+<p>Valid COPs are: &gt; (greater than), &lt; (lesser than), &lt;&gt; (not equal to), = (equal to), &gt;= (greater than or equal), &lt;= (lesser than or equal), ! (is not), - (not), &amp; (bitwise and), | (bitwise or) and ^ (bitwise xor).</p>
+
+<p>If the value of a comparison contains a wildcard &quot;*&quot; it is converted to &quot;%&quot; and if the comparator is &quot;=&quot; or &quot;&lt;&gt;&quot;, the comparator is converted to &quot;LIKE&quot; or &quot;NOT LIKE&quot; accordingly. If &quot;*&quot; is to be used as the value itself it must be escaped.</p>
+
+<p>When setting option iname and/or ivname (see new()-method) the conversion process also allows wildcards in the field name, since both the field-name and the value resides in columns in tables.</p>
+
+<p>One can force quoting of a value by either prefix&#39;ing the value with a <b>&#39;</b> or by setting the forcequote option in the constructor to 1. If a value is neither prefixed to be quoted or forcequote is turned on, it will decide to quote or not based upon if the value is a purely decimal value or not? If it is a purely decimal value it will not be quoted.</p>
+
+<p>It should also be noted that if force quoting is disabled, the convert()-method will handle comparators with INTEGER-values in a special manner. INTEGER values are specified as consisting of &quot;-&quot;, &quot;.&quot; and numbers 0-9. In this scenario, if the search value for a field consists of an INTEGER, it will follow a logic that ensures typecasting in such a manner that even VARCHAR data fields will be able to understand that we are dealing with INTEGER comparisons and not STRING or VARCHAR. It is especially important to handle comparisons with zero correctly as how this is interpreted depends on the SQL engine in question and how it typecasts the field and value. It has been attempted to keep this logic working on the following SQL-engines: MySQL, SQLite, Oracle and PostgreSQL. We have not done extensive testing with SQLStruct on these engines, but we have checked and tested type cast logic on: &gt;= MySQL 5.6, &gt;= SQLite 3.22.0, &gt;= Oracle 11g R2, &gt;= PostgreSQL 9.6 (thanks to SQL Fiddle - sqlfiddle.com). When checking against zero values, this forced typecasting will understand &quot;0&quot; as well as &quot;0.0&quot; being the same value.</p>
+
+<h2 id="quoteType">quoteType()</h2>
+
+<p>Returns the type of quoting used. Two types exists: SIMPLE and DBI. The SIMPLE type is the built-in, simple quoting functions, while DBI uses the DBI instance&#39;s quoting routines (quote()- and quote_identifier()-methods).</p>
+
+<p>The return value is a SCALAR.</p>
+
+
+</body>
+
+</html>
+
+

@@ -1,0 +1,264 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#add">add()</a></li>
+      <li><a href="#resetNext">resetNext()</a></li>
+      <li><a href="#resetNextReverse">resetNextReverse()</a></li>
+      <li><a href="#getNext">getNext()</a></li>
+      <li><a href="#getFirst">getFirst()</a></li>
+      <li><a href="#getLast">getLast()</a></li>
+      <li><a href="#getFirstAsString">getFirstAsString()</a></li>
+      <li><a href="#getLastAsString">getLastAsString()</a></li>
+      <li><a href="#entryAsString">entryAsString()</a></li>
+      <li><a href="#reset">reset()</a></li>
+      <li><a href="#getLog">getLog()</a></li>
+      <li><a href="#updated">updated()</a></li>
+      <li><a href="#count">count()</a></li>
+      <li><a href="#error">error()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>SmartLog</code> - A Smart log that is either limited (circular) or of unspecified length (unbounded, not circular).</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use SmartLog;
+
+# instantiate
+my $log=SmartLog-&gt;new();
+# add a log entry
+$log-&gt;add(&quot;message&quot;,time());
+# start iteration over log elements in forward order
+$log-&gt;resetNext();
+# iterate
+while (my @data=$log-&gt;getNext()) {
+   my $message=$data[0];
+   my $time=$data[1];
+
+   print &quot;$time: $message\n&quot;;
+}
+# start iteration over log elements in reverse order
+$log-&gt;resetNextReverse();
+# get first N log entry(ies)
+my $items=$log-&gt;getFirst (10);
+# get last N log entry(ies);
+my $items=$log-&gt;getLast (11);
+# get first N log entry(ies) as a string
+my $str=$log-&gt;getFirstAsString (10);
+# get last N log entry(ies) as a string
+my $str=$log-&gt;getLastAsString (11,&quot;%m &quot;);
+# convert a log entry to a string in given format
+my $str=$log-&gt;entryAsString($entry,&quot;%m (%t)&quot;);
+# reset the log instance and its contents
+$log-&gt;reset();</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>A pseudo circular log that is either limited (circular) or of unspecified length (unbounded, not circular in effect). In other words it is a circular list where the size is optionally set.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Instantiates the class.</p>
+
+<p>No input is required, but accepts the following parameter:</p>
+
+<ul>
+
+<li><p><b>bufsize</b> Sets the size of the circular log to be bounded. By default it is set to 0, which means it is unbounded.</p>
+
+</li>
+</ul>
+
+<p>Returns the instantiated class.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="add">add()</h2>
+
+<p>Adds a log entry to the instance.</p>
+
+<p>Accepts these parameters in the following order:</p>
+
+<ul>
+
+<li><p><b>message</b> The message to be added to the log. If not given it will default to a blank string.</p>
+
+</li>
+<li><p><b>time</b> The timestamp of the log message. If not given it will default to now-time.</p>
+
+</li>
+</ul>
+
+<p>Returns 1 upon completion (always successful).</p>
+
+<h2 id="resetNext">resetNext()</h2>
+
+<p>Resets the iteration over the items in the circular log. It resets a pointer to where it is in the log to the first and oldest item (tail).</p>
+
+<h2 id="resetNextReverse">resetNextReverse()</h2>
+
+<p>Resets the iteration over items in the circular log. It sets the pointer to the head of the log and marks the iteration to go in reverse.</p>
+
+<h2 id="getNext">getNext()</h2>
+
+<p>Gets the next item in the circular log. If resetNext() or resetNextReverse() have not been called at any time since instantiation or a call to the reset()-method, it will call resetNext() for you (it favorizes a forward direction iteration.</p>
+
+<p>Returns a LIST-reference upon success. The LIST-structure is as follows:</p>
+
+<pre><code>[ MESSAGE. TIME ]</code></pre>
+
+<p>So that the log item message comes first and then the timestamp of the message.</p>
+
+<p>Returns undef upon failure (no items or no more items).</p>
+
+<h2 id="getFirst">getFirst()</h2>
+
+<p>Get first N log entries as a list pointer.</p>
+
+<p>It accepts one input and that is the number of entries to return. This parameters is optional and if none is given it will default to 1.</p>
+
+<p>Remember that the method always resets the getNext()-counter like when calling the resetNext()-method.</p>
+
+<p>It returns a LIST-reference upon success, undef if no entries.</p>
+
+<p>The LIST-reference structure is like this:</p>
+
+<pre><code>[ [message,time],
+  [message,time],
+  [message,time],
+]</code></pre>
+
+<h2 id="getLast">getLast()</h2>
+
+<p>Get last N log entries as a list pointer.</p>
+
+<p>It accepts one input and that is the number of entries to return. This parameters is optional and if none is given it will default to 1.</p>
+
+<p>Remember that the method always resets the getNext()-counter like when calling the resetNextReverse()-method.</p>
+
+<p>It returns a LIST-reference upon success, undef if no entries.</p>
+
+<p>The LIST-reference structure is like this:</p>
+
+<pre><code>[ [message,time],
+  [message,time],
+  [message,time],
+]</code></pre>
+
+<p>The order of the list will be in first to last, so the last log message of the log will come last in the list.</p>
+
+<h2 id="getFirstAsString">getFirstAsString()</h2>
+
+<p>Gets the first N log entries as a string.</p>
+
+<p>It accepts two input parameters. The first is the number of log entries to return, the second is the format of the string to return them in. Both parameters are optional and will default to 1 and &quot;time: message &quot; respectively.</p>
+
+<p>For the structure of the format-parameter see the entryAsString()-method.</p>
+
+<p>The returned string will be a concatenation of all the log entries in the given format, so remember to add some kind of spacing at the end (between each entry in other words).</p>
+
+<p>It returns the string of the log entries upon success, or undef if no log entries could be retrieved.</p>
+
+<h2 id="getLastAsString">getLastAsString()</h2>
+
+<p>Gets the last N log entries as a string.</p>
+
+<p>It accepts two input parameters. The first is the number of log entries to return, the second is the format of the string to return them in. Both parameters are optional and will default to 1 and &quot;time: message &quot; respectively.</p>
+
+<p>For the structure of the format-parameter see the entryAsString()-method.</p>
+
+<p>The returned string will be a concatenation of all the log entries in the given format, so remember to add some kind of spacing at the end (between each entry in other words).</p>
+
+<p>It returns the string of the log entries upon success, or undef if no log entries could be retrieved.</p>
+
+<h2 id="entryAsString">entryAsString()</h2>
+
+<p>Convert a single log entry into a string of given format.</p>
+
+<p>It accepts two parameters in the following order: entry, format.</p>
+
+<p>Entry is an ARRAY-reference to the log entry in question. Format is the string format to use when converting the entry. Format is optional and will default to &quot;%t: %m&quot;.</p>
+
+<p>The format can be specified as a string in the following way:</p>
+
+<pre><code>&quot;Time: (%t) Message: (%m)&quot;</code></pre>
+
+<p>Where %t is designated as the time part of the log entry and %m as the message part. You can repeat %t and %m as many times as you like in the string or omit one or both (if you like to shoot yourself in the leg, go ahead).</p>
+
+<p>It returns the converted string upon success or undef upon failure (missing or wrong entry format).</p>
+
+<h2 id="reset">reset()</h2>
+
+<p>Reset the log entries and getNext()-pointers so that the log entry collection can start anew.</p>
+
+<h2 id="getLog">getLog()</h2>
+
+<p>Returns a copy of the log HASH at that moment in time.</p>
+
+<p>No input is accepted.</p>
+
+<p>Return value is a HASH of the entire log-data, including circular list pointers, head- and tail positions etc.</p>
+
+<h2 id="updated">updated()</h2>
+
+<p>Returns the timestamp of the last log entry update (head) or undef if no updates yet.</p>
+
+<h2 id="count">count()</h2>
+
+<p>Returns the number of log entries.</p>
+
+<h2 id="error">error()</h2>
+
+<p>Returns the last error message of the log instance.</p>
+
+
+</body>
+
+</html>
+
+

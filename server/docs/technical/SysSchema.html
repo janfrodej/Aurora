@@ -1,0 +1,98 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>SysSchema</code> Module to check and clean values coming into the AURORA-system and defining metadata namespace.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use SysSchema;
+
+# clean value
+my $email=&quot;john.doe@somedomain.top&quot;;
+$email=$SysSchema::CLEAN{email}-&gt;($email);
+
+# get metadata namespace
+my $usernamelocation=$SysSchema::MD{username};
+
+# get constant
+my $setcreated=$SysSchema::C{&quot;status.open&quot;};</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Module to check and clean values entered into the AURORA-system, but also to get namespace locations of specific metadata that are often used in some way.</p>
+
+<p>This module is used everywhere in the AURORA-system when cleaning and checking of values are needed, so that the definition of it is in one place. The only exception is AuroraDB who has its own schema-module (Schema.pm).</p>
+
+<p>It also contains a constant-section.</p>
+
+<p>The various data-structures in order of appearance are:</p>
+
+<ul>
+
+<li><p><b>NTYP</b> HASH that defines notification types and their voting defaults.</p>
+
+</li>
+<li><p><b>C</b> HASH that defines Constants.</p>
+
+</li>
+<li><p><b>CLEAN</b> HASH that defines cleaning for various values used by the AURORA-system and their defaults.</p>
+
+</li>
+<li><p><b>MD</b> HASH that contains metadata namespace definitions of where often used information is located.</p>
+
+</li>
+<li><p><b>MDPUB</b> HASH that contains metadata namespace locations that are considered public metadata that can be handed out, even though it is located in the non-public part of the metadata (not starting with &quot;.&quot;).</p>
+
+</li>
+<li><p><b>CFG</b> HASH that defines where in the AURORA configuration file that various values are set.</p>
+
+</li>
+</ul>
+
+<p>In addition to these structures, the SysSchema-module also contains a definition of sources for various Notifications. Valid definitions are: $FROM_UNKNOWN, $FROM_REST, $FROM_MAINTENANCE, $FROM_NOTIFICATION, $FROM_LOG and $FROM_STORE.</p>
+
+<p>Beyond this have a look in the SysSchema-module itself for more information about what is defined within the various structures themselves.</p>
+
+
+</body>
+
+</html>
+
+

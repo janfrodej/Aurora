@@ -1,0 +1,279 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#mine">mine()</a></li>
+      <li><a href="#inhibit">inhibit()</a></li>
+      <li><a href="#commit">commit()</a></li>
+      <li><a href="#setcommiterr">setcommiterr()</a></li>
+      <li><a href="#commiterr">commiterr()</a></li>
+      <li><a href="#rollback">rollback()</a></li>
+      <li><a href="#rollbackonerror">rollbackonerror()</a></li>
+      <li><a href="#rollbackonerror1">rollbackonerror()</a></li>
+      <li><a href="#rollingback">rollingback()</a></li>
+      <li><a href="#cancelrollback">cancelrollback()</a></li>
+      <li><a href="#setrollbackerr">setrollbackerr()</a></li>
+      <li><a href="#rollbackerr">rollbackerr()</a></li>
+      <li><a href="#end">end()</a></li>
+      <li><a href="#clear">clear()</a></li>
+      <li><a href="#DESTROY">DESTROY()</a></li>
+      <li><a href="#AUTOLOAD">AUTOLOAD()</a></li>
+    </ul>
+  </li>
+  <li><a href="#POD-ERRORS">POD ERRORS</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>DBItransaction</code> - Class to handle transactions on a DBI-instance.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use DBItransaction;
+
+# DBI instance
+my $dbi=DBI-&gt;new(SOME_INIT....);
+
+# create instance
+my $t=DBItransaction-&gt;new($dbi);
+
+# create instance with error values set in a class instances data
+my $t=DBItransaction-&gt;new($dbi,$instance);</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Class to handle transactions on a DBI-instance. If nested, the outmost instance will own the transaction. mine() will reflect ownership to the transaction.</p>
+
+<p>On end() (called implicitely from DESTROY) a rollback() will be run if commit() fails.</p>
+
+<p>commit() fails if $DBItransaction::DBItransaction{rollingback} is true or DBI-&gt;err is true and rollbackonerror() is true or mine() and DBI-&gt;commit fails</p>
+
+<p>rollback() do a DBI-&gt;rollback if mine(), otherwise it signals a rollback by setting $DBItransaction::DBItransaction{rollingback} to true;</p>
+
+<p>A signalled rollback can be cancelled by cancelrollback() if the problem is resolved.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Instantiates the DBItransaction class.</p>
+
+<p>It takes one parameter:</p>
+
+<ul>
+
+<li><p><b>DBI</b> The DBI-instance that one is performing transactions on. Required.</p>
+
+</li>
+</ul>
+
+<p>Returns the DBItransaction instance upon success.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="mine">mine()</h2>
+
+<p>Returns if the commit belongs to this DBItransaction instance or not.</p>
+
+<p>The return can be moderated by the inhibit()-method. See the inhibit()-method for more information.</p>
+
+<h2 id="inhibit">inhibit()</h2>
+
+<p>Inhibits committing changes even if this instance of DBItransaction owns the commit/started the transaction.</p>
+
+<p>No accepted input to this method.</p>
+
+<p>No return from this method.</p>
+
+<h2 id="commit">commit()</h2>
+
+<p>Commits the transactional record.</p>
+
+<p>This is only done if this instance of DBItransaction owns the commit/started the transaction (see the mine()-method).</p>
+
+<p>It also not done if a rollback is already in progress for some reason.</p>
+
+<p>Returns 1 upon success, 0 upon failure.</p>
+
+<p>Please check the commiterr()-method for more information upon failure. Or in the case of automatic DBItransaction-DESTROY upon end of a function or block and the err-option was set on instantiation, the error will be found in the err-instance (see the new()-method).</p>
+
+<h2 id="setcommiterr">setcommiterr()</h2>
+
+<p>Set the commit error.</p>
+
+<p>Input is the error-string as a SCALAR.</p>
+
+<p>No return from method.</p>
+
+<p>This is an internal method and is not to be called by user.</p>
+
+<h2 id="commiterr">commiterr()</h2>
+
+<p>Gets the commit error.</p>
+
+<p>No input accepted.</p>
+
+<p>The return is the commit error SCALAR (if any).</p>
+
+<h2 id="rollback">rollback()</h2>
+
+<p>Attempts to run a rollback of the transactional record of the DBI-instance.</p>
+
+<p>Optional input is the reason for the rollback.</p>
+
+<p>It will only attempt a rollback if the DBItransaction-instance in question own the commit/start of the transaction (see the mine()-method). If the transaction is not &quot;mine&quot; a rollback request is signalled by detting the package global $DBItransaction{rollingback} to true (reason || 1);</p>
+
+<p>It returns 1 upon success, 0 upon failure.</p>
+
+<p>Please check the rollbackerr()-method for more information upon failure.</p>
+
+<h2 id="rollbackonerror">rollbackonerror()</h2>
+
+<p>Sets/get rollbackonerror policy. If rollbackonerror is set on this DBItransaction object, a rollback is attempted/signalled on $trancsaction-&gt;end (or DESTROY).</p>
+
+<ul>
+
+<li><p>b&lt;boolean&gt; Optional parameter to set rollbackonerror status.</p>
+
+</li>
+</ul>
+
+<h2 id="rollbackonerror1">rollbackonerror()</h2>
+
+<p>Optional input is a boolen. If defined, sets the rollbackonerror option to the indicated value. On end() (or DESTROY()) rollback(DBI-&gt;errstr) is called if DBI-&gt;err;</p>
+
+<p>Returns the rollbackonerror flag if given without parameter. With parameter it returns $self.</p>
+
+<h2 id="rollingback">rollingback()</h2>
+
+<p>Returns the rollingback flag of the err-option.</p>
+
+<p>See the new()-method for more information on the err-option.</p>
+
+<h2 id="cancelrollback">cancelrollback()</h2>
+
+<p>Removes the rollingback flag of the err-option.</p>
+
+<p>See the new()-method for more information on the err-option.</p>
+
+<h2 id="setrollbackerr">setrollbackerr()</h2>
+
+<p>Sets the rollback error.</p>
+
+<p>Input is the rollback error as a SCALAR.</p>
+
+<p>It has no return.</p>
+
+<p>See the rollbackerr()-method for information on getting the rollback-error. This is an internal method and should not be called by the user.</p>
+
+<h2 id="rollbackerr">rollbackerr()</h2>
+
+<p>Gets the rollback error message.</p>
+
+<p>It has no accepted input.</p>
+
+<p>Returns the rollback error message as a SCALAR.</p>
+
+<p>See the err-option of the new()-method for more information on the location of error-messages.</p>
+
+<h2 id="end">end()</h2>
+
+<p>If mine() Attempts to commit transaction or rollback if any error.</p>
+
+<p>No input is accepted.</p>
+
+<p>Returns the output from method commit() or rollback(). A commit or a rollback will only be performed if this instance owns the commit/start of the transaction and it has not been inhibited (see the mine()- and inhibit()-methods).</p>
+
+<h2 id="clear">clear()</h2>
+
+<p>Clears the instance commit error, cancels any rollback and enables inhibiting of commits.</p>
+
+<p>No input accepted and no return value.</p>
+
+<h2 id="DESTROY">DESTROY()</h2>
+
+<p>Handles de de-instantiation of the DBItransaction instance.</p>
+
+<p>It de-instantiates the DBItransaction-instance by calling the end()-method. See the end()-method for more information.</p>
+
+<p>It will basically automatically handle commits and rollback for you, even when the DBItransaction instance is being destroyed by a function- exit or end of a block.</p>
+
+<h2 id="AUTOLOAD">AUTOLOAD()</h2>
+
+<p>AUTOLOAD-handler.</p>
+
+<p>Makes it possible to call any DBI-method on the DBItransaction instance and thereby using it as a class that has inherited from the DBI-class.</p>
+
+<p>See Autoloading in perlsub in the Perl documentation for more information on the AUTOLOAD mechanism.</p>
+
+<h1 id="POD-ERRORS">POD ERRORS</h1>
+
+<p>Hey! <b>The above document had some coding errors, which are explained below:</b></p>
+
+<dl>
+
+<dt id="Around-line-312">Around line 312:</dt>
+<dd>
+
+<p>&#39;=item&#39; outside of any &#39;=over&#39;</p>
+
+</dd>
+<dt id="Around-line-320">Around line 320:</dt>
+<dd>
+
+<p>=cut found outside a pod block.  Skipping to next block.</p>
+
+</dd>
+<dt id="Around-line-322">Around line 322:</dt>
+<dd>
+
+<p>You forgot a &#39;=back&#39; before &#39;=head2&#39;</p>
+
+</dd>
+</dl>
+
+
+</body>
+
+</html>
+
+

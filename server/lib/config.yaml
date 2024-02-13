@@ -1,0 +1,143 @@
+# Settings for AURORA
+system.rest.host            : "localhost"
+system.rest.port            : 1000
+system.rest.listen          : 10
+system.rest.timeout         : 3600
+system.rest.privatekey      : "/local/app/aurora/certs/privatekey.key"
+system.rest.publickey       : "/local/app/aurora/certs/publickey.crt"
+system.rest.enableipv6      : 1
+
+# database settings
+system.database.host        : "mysql.it.ntnu.no"
+system.database.datasource  : "DBI:mysql(mysql_auto_reconnect=>1):database=aurora;host=mysql.it.ntnu.no"
+system.database.user        : ""
+system.database.pw          : ""
+
+system.fileinterface.user   : ""
+system.fileinterface.pw     : ""
+
+# user settings
+system.user.retiregroup     : 333
+
+# authentication settings
+system.auth.methods                       : [ "AuroraID","OAuthAccessToken","Crumbs" ]
+system.auth.groupinfo.classes             : [ "NTNU" ]
+system.auth.groupinfo.interval            : 600
+system.auth.log.success                   : [ "AuroraID", "OAuthAccessToken" ]
+system.auth.proxy.hosts                   : [ "webhotell03.it.ntnu.no", "webhotell04.it.ntnu.no", "webhotell05.it.ntnu.no", "webhotell06.it.ntnu.no" ]
+system.auth.proxy.modules                 : [ "OAuthAccessToken" ]
+
+# settings for the crumbs class
+system.auth.crumbs.timeout                : 14400
+system.auth.crumbs.lifespan               : 43200
+system.auth.crumbs.salt                   : "$6$ZZRPp7TNN7.GufX2$"
+
+# settings for the oauthaccesstoken class
+system.auth.oauthaccesstoken.audience     : "9c27ff7d-2f39-4343-8e6d-b5ab54372a5e"
+system.auth.oauthaccesstoken.host         : "auth.dataporten.no:443"
+system.auth.oauthaccesstoken.endpoint     : "/userinfo"
+system.auth.oauthaccesstoken.emailfield   : [ "user","email" ]
+system.auth.oauthaccesstoken.namefield    : [ "user","name" ]
+system.auth.oauthaccesstoken.userfield    : [ "user","userid_sec" ]
+system.auth.oauthaccesstoken.createuser   : 1
+system.auth.oauthaccesstoken.createsorted : 1
+system.auth.oauthaccesstoken.userparent   : 1
+system.auth.oauthaccesstoken.usergroup    : 0
+
+# settings for logging
+system.log.filename                       : "/local/app/aurora/log.db"
+system.log.location                       : "DBI:SQLite:dbname=/local/app/aurora/log.db"
+system.log.tablename                      : "log"
+system.log.username                       : ""
+system.log.password                       : ""
+
+# settings for sandbox (files, certs etc. used by users)
+system.sandbox.location                     : "/local/app/aurora/sandbox"
+
+# settings for distributions
+system.dist.location                        : "/local/app/aurora/distributions"
+system.dist.timeout                         : 1800
+system.dist.maxretry                        : 2
+
+# settings for computer
+system.computer.privatekey                : "/local/app/aurora/certs/computers.key"
+system.computer.folderlistlimited         : 1
+system.computer.folderlistallow           : [ "rest.aurora.somedomain.tldomain" ]
+
+# settings for notifications
+system.notification.location              : "/local/app/aurora/notification"
+system.notification.wwwuser               : 33
+system.notification.wwwgroup              : 33
+system.notification.wait                  : 259200
+system.notification.from                  : "noreply@whatever.no"
+system.notification.types                 :
+  user.create :
+    votes             : 0
+    subject           : "AURORA create user"
+  dataset.close :
+    votes             : 2
+    subject           : "AURORA close dataset"
+  dataset.closed :
+    votes             : 0
+    subject           : "AURORA dataset closed"
+  dataset.info :
+    votes             : 0
+    subject           : "AURORA dataset information"
+  dataset.remove :
+    votes             : 2
+    subject           : "AURORA remove dataset"
+  dataset.expire :
+    votes             : 0
+    subject           : "AURORA dataset expiring"
+  distribution.acquire.failed :
+    votes             : 0
+    subject           : "AURORA acquire failed"
+  distribution.acquire.success :
+    votes             : 0
+    subject           : "AURORA acquire successful"
+  distribution.distribute.failed :
+    votes             : 0
+    subject           : "AURORA distribute failed"
+  distribution.distribute.success :
+    votes             : 0
+    subject           : "AURORA distribute successful"  
+  distribution.delete.failed :
+    votes             : 0
+    subject           : "AURORA delete failed"
+  distribution.delete.success :
+    votes             : 0
+    subject           : "AURORA delete successful"
+system.notification.classes               : [ "Email" ]
+system.notification.class.email.params    :
+  host            : "smtp.whatever.no"
+
+# settings for the maintenance-service
+system.maintenance.dist.timeout                       : 2592000
+system.maintenance.interface.tmp.timeout              : 1209600
+system.maintenance.statlog.lifespan                   : 7776000
+system.maintenance.tunnellog.lifespan                 : 7776000
+system.maintenance.userlog.lifespan                   : 7776000
+
+system.maintenance.operations.expire.interval         : 18000
+system.maintenance.operations.expired.interval        : 18000
+system.maintenance.operations.notification.interval   : 18000
+system.maintenance.operations.distribution.interval   : 18000
+system.maintenance.operations.interface.interval      : 18000
+system.maintenance.operations.token.interval          : 18000
+system.maintenance.operations.sequence.interval       : 3600
+system.maintenance.operations.permeffective.interval  : 5
+system.maintenance.operations.metadata.interval       : 30
+system.maintenance.operations.entitymetadata.interval : 300
+system.maintenance.operations.dbcleanup.interval      : 86400
+
+# general settings
+system.binary.ssh.location                : "/usr/bin/ssh"
+
+# web settings
+system.www.base                           : "https://www.aurora.whatever.no"
+interface.archive.location                : "/some/storage/location/for/archives"
+
+# File interface
+fileinterface.base                        : "/Aurora"
+fileinterface.http                        : "https://www.aurora.whatever.no"
+fileinterface.oauthdomain                 : "ntnu.no"

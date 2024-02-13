@@ -1,0 +1,135 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#randstr">randstr()</a></li>
+      <li><a href="#sha256sum">sha256sum()</a></li>
+      <li><a href="#sha256sum_file">sha256sum_file()</a></li>
+      <li><a href="#md5sum">md5sum()</a></li>
+      <li><a href="#md5sum_file">md5sum_file()</a></li>
+      <li><a href="#xxhsum_file">xxhsum_file()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>sectools</code> Module with security related functions.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use sectools;
+
+# create truly random string of N characters
+my $random=sectools::randstr(64);
+
+# create a sha256 sum of SCALAR
+my $sum=sectools::sha256sum(&quot;SomethingIWantTheSumOf&quot;);
+
+# create a md5sum of SCALAR
+my $sum=sectools::md5sum(&quot;SomethingIWantTheSumOf&quot;);
+
+# create a 128-bit xxhash sum of SCALAR
+my $sum=sectools::xxhsum_file(&quot;MY_FILE_NAME&quot;);</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Collection of functions related to security, such as truly random strings and sha256- and md5- sums.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<p>No constructor in this module - separate functions.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="randstr">randstr()</h2>
+
+<p>Create a random string of N characters.</p>
+
+<p>Accepts the following input: size. SCALAR. Optional. Defaults to 32. It sets how many random characters to generate.</p>
+
+<p>The random string will only consists of charaters in a-z, A-Z and 0-9.</p>
+
+<p>Returns the random SCALAR.</p>
+
+<h2 id="sha256sum">sha256sum()</h2>
+
+<p>Creates the sha256-sum of the specified SCALAR.</p>
+
+<p>Accepts one input: data. SCALAR. Required. Defines the data to create a sha256 sum of.</p>
+
+<p>Returns the SHA256-sum as a hex-digest.</p>
+
+<h2 id="sha256sum_file">sha256sum_file()</h2>
+
+<p>Creates the sha256-sum of the specified filename (SCALAR).</p>
+
+<p>Accepts one input: filename with path. SCALAR. Required. Defines the file to open and calculate the sha256sum of.</p>
+
+<p>Returns the sha256sum as a hex-digest or a string starting with &quot;Error!&quot; upon failure.</p>
+
+<h2 id="md5sum">md5sum()</h2>
+
+<p>Creates the md5-sum of the specified SCALAR.</p>
+
+<p>Accepts one input: data. SCALAR. Required. Defines the data to create a md5sum sum of.</p>
+
+<p>Returns the md5-sum as a hex-digest.</p>
+
+<h2 id="md5sum_file">md5sum_file()</h2>
+
+<p>Creates the md5-sum of the specified filename (SCALAR).</p>
+
+<p>Accepts one input: filename with path. SCALAR. Required. Defines the file to open and calculate the md5sum of.</p>
+
+<p>Returns the md5sum as a hex-digest or a string starting with &quot;Error!&quot; upon failure.</p>
+
+<h2 id="xxhsum_file">xxhsum_file()</h2>
+
+<p>Creates the xxhash-sum of the specified filename (SCALAR).</p>
+
+<p>Accepts two inputs: filename (required) and type (optional). Filename must be specified with path. SCALAR. Required. Defines the file to get the xxhash of. Type defines the xxhash-version to use generating the xxhash. Valid versions are 32, 64 and 128. 128 is the default if not specified.</p>
+
+<p>Returns the xxhash sum upon success or a string starting with &quot;Error!&quot; upon failure.</p>
+
+
+</body>
+
+</html>
+
+

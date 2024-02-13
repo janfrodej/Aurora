@@ -1,0 +1,293 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#bind">bind()</a></li>
+      <li><a href="#bound">bound()</a></li>
+      <li><a href="#addMethod">addMethod()</a></li>
+      <li><a href="#removeMethod">removeMethod()</a></li>
+      <li><a href="#setDBHandler">setDBHandler()</a></li>
+      <li><a href="#setAuthHandler">setAuthHandler()</a></li>
+      <li><a href="#loop">loop()</a></li>
+      <li><a href="#message">message()</a></li>
+      <li><a href="#converter">converter()</a></li>
+      <li><a href="#localaddr">localaddr()</a></li>
+      <li><a href="#port">port()</a></li>
+      <li><a href="#error">error()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>HTTPSServer</code> Class for defining and running a REST-server.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use HTTPSServer;
+
+# instantiate
+my $srv=HTTPSServer-&gt;new(LocalAddr=&gt;&quot;10.0.0.1:1234&quot;,Listen=&gt;11,servername=&gt;&quot;My REST-server&quot;,SSL_key_file=&gt;&quot;/folder/myprivate.key&quot;,SSL_cert_file=&gt;&quot;/folder/mypublic.key&quot;);
+
+# add method to server
+$srv-&gt;addMethod(&quot;/MyServerMethod&quot;,\&amp;MySourceCodeFunctionReference,&quot;Some method comment&quot;);
+
+# set authentication handler
+$srv-&gt;setAuthHandler (\&amp;SomeAuthFunction);
+
+# set database handler
+$srv-&gt;setDBHandler (\&amp;someDatabaseFunction);
+
+# attempt bind
+if (!$srv-&gt;bind()) { print &quot;Unable to bind to interface: &quot;.$srv-&gt;error().&quot;\n&quot;; exit; }
+
+# run server loop
+while ($srv-&gt;bound()) {
+   if (!$srv-&gt;loop()) {
+      print &quot;Error! &quot;.$srv-&gt;error().&quot;\n&quot;;
+   }
+}</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Class to define and run a REST-server. It basically have methods to define an authentication handler and a database handler. These two should return information that is passed on to all methods in the REST-server defined through the addMethod()-method.</p>
+
+<p>The Authentication-handler should return any ID or information that the methods of the server know to use to identify the credentials of the one calling the REST-method. For AURORA the handler returns either 0 for not authenticated or a number higher than 0 for a user ID from the AURORA database. All the methods in AURORA expects such a behaviour and can use that ID to identify who it is by talking to the database.</p>
+
+<p>The database handler is meant to ensure that we have a valid database handler for the AURORA database that can be given to the method-function that handles the REST-method call. The database handler is expected to return this database instance (DBI-class type) or undef upon failure.</p>
+
+<p>The loop-method of the HTTPSServer-class handles the waiting for connection and forking out of connections when a client connects. It also handles upgrading the HTTP-connection to a HTTPS or SSL-based connections. All connections to the server needs to be HTTPS-connections.</p>
+
+<p>All calls to the HTTPSServer-class by clients are expected to be POST-type HTTP-data. It does not support different HTTP-method, such as GET, DELETE or what not. The type of HTTP-method being performed is instead defined by the method name itself, such as /getDatasetMetadata or /getName. This deviates from the typical REST-server implementation (where it is normal to use the HTTP-method to signify the verb of the resource being manipulated).</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Constructor. Creates class-instance.</p>
+
+<p>Accepts the following input parameters:</p>
+
+<ul>
+
+<li><p><b>converter</b> Specifies a Content-instance reference that is used as the converter type for the data coming into the HTTPS-server. Optional. If not specified defaults to Content::JSON.</p>
+
+</li>
+<li><p><b>Listen</b> Queue size for listen. See IO::Socket::INET. Optional. Defaults to 5.</p>
+
+</li>
+<li><p><b>LocalPort</b> Local host port address. See IO::Socket::INET/IO::Socket::IP. Optional. Defaults to &quot;1000&quot;.</p>
+
+</li>
+<li><p><b>Log</b> Specifies a Log-instance reference (see AURORA Log-class). This is used to write events to the log if something happens and is also shared by all methods of the HTTPS-server. Optional. Creates a new Log-instance if none specified.</p>
+
+</li>
+<li><p><b>servername</b> Service name of the server that is reported as &quot;Server&quot; in the HTTP-response. Optional. If not specified will default to &quot;MyServerService&quot;.</p>
+
+</li>
+<li><p><b>settings</b> Specified a Settings-instance (see AURORA Settings-class). It basically brings the configuration settings of the HTTPS-server. This instance is shared by all methods of the HTTPS-server. Optional. Creates a new Settings-instance if none specified (or is invalid).</p>
+
+</li>
+<li><p><b>syslog</b> Specified a SystemLogger-instance (see AURORA SystemLogger-class). It gives a way to syslog when something happens for the HTTPS-server. Optional. Creates a new SystemLogger-instance if none specified or the reference is invalid.</p>
+
+</li>
+<li><p><b>SSL_ca_file</b> Specifies the CA for the key set (SSL_key_file and SSL_cert_file). Optional. Defaults to undef. See IO::Socket::SSL.</p>
+
+</li>
+<li><p><b>SSL_cert_file</b> Specifies the public SSL key of the HTTPS-server. Optional. Defaults to undef. See IO::Socket::SSL.</p>
+
+</li>
+<li><p><b>SSL_key_file</b> Specifies the servers private SSL key. Optional. Defaults to undef. See IO::Socket::SSL.</p>
+
+</li>
+<li><p><b>SSL_verify_mode</b> Sets how the certificate of the client is to be checked. Optional. Does not need to be changed and defaults to SSL_VERIFY_NONE (no need to verify the client in other words).</p>
+
+</li>
+<li><p><b>Timeout</b> Sets the HTTPS-server timeout of sockets. Optional. Defaults to 300.</p>
+
+</li>
+</ul>
+
+<p>Besides the parameters given, this method accepts any option from IO::Socket::SSL and/or IO::Socket::INET/IO::Socket::IP. Please note that from version 6.05 of HTTP::Daemon, it uses the IO::Socket::IP instead of IO::Socket::INET. This is preferred because the HTTP::Daemon then supports binding to both ipv4 and ipv6 addresses/interfaces.</p>
+
+<p>By default this module enforces both ipv4 and ipv6 binding by setting the Family-parameter to AF_INET6. To bind to both ipv4 and ipv6 at the same time, only set the LocalPort-parameter and not the LocalAddr and/or LocalHost-parameters.</p>
+
+<p>Returns an HTTPSServer-instance.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="bind">bind()</h2>
+
+<p>Attempts to bind to the local address specified.</p>
+
+<p>No input parameters accepted.</p>
+
+<p>This method uses the parameters specified to new() and attempts to bind to the local interface specified. It will only bind by using a HTTP::Daemon-instance as per recommendation in the IO::Socket::SSL documentation. The connection will attempt upgrade to SSL as soon as the client has connected.</p>
+
+<p>Returns 1 upon success, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="bound">bound()</h2>
+
+<p>Returns if the instance is bound to the interface or not.</p>
+
+<p>No input accepted.</p>
+
+<p>Returns 1 if bound, 0 if not.</p>
+
+<h2 id="addMethod">addMethod()</h2>
+
+<p>Add a method to the HTTPS-server.</p>
+
+<p>Accepts input in the following order: method-link, function-reference, comment.</p>
+
+<p>The method-link is the absolute path from the server root of the REST-method being added. SCALAR. Required. In other words it is the link that the client needs to refer to in order to invoke that REST-method. Eg.: /getDatasetMetadata.</p>
+
+<p>The function-reference is a reference to a Perl-function that does all the work of the REST-method. Required. Eg.: \&amp;MyFunctionReference.</p>
+
+<p>Description is the explanation/comment to the REST-method. SCALAR. Required.</p>
+
+<p>The methods added here are the methods available through the HTTPS-server.</p>
+
+<p>Returns 1 upon success, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="removeMethod">removeMethod()</h2>
+
+<p>Removes method from the REST-server.</p>
+
+<p>Input is the method-link. See the addMethod() for information on formatting of it.</p>
+
+<p>If the given method-link exists it is removed as a method for the REST-server.</p>
+
+<p>Returns 1 upon success, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="setDBHandler">setDBHandler()</h2>
+
+<p>Sets the function handling retrieving a functioning database instance.</p>
+
+<p>Accepts input in the following order: function reference to the function handling connecting/ retrieving the database-instance.</p>
+
+<p>The function handling the authentication process is expected to receive: message-instance (using Content-class of the HTTPSServer, eg. Content::JSON), database instance (same as returned from this method), Settings-instance and Log-instance.</p>
+
+<p>It is up to the user of the HTTPSServer and its methods to define what is considered an acceptable database-instance in return. AURORA returns a connected instance of the AuroraDB-class (which are passed on to the REST-method function).</p>
+
+<p>Returns a database instance upon success, undef upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="setAuthHandler">setAuthHandler()</h2>
+
+<p>Sets the function handling the authentication of the REST-server.</p>
+
+<p>Accepts one input: function reference to Perl function handling the authentication.</p>
+
+<p>The function handling the authentication process is expected to receive: message-instance (using Content-class of the HTTPSServer, eg. Content::JSON), database instance (same as returned from the function set in setDBHandler), Settings-instance and Log-instance.</p>
+
+<p>When authenticated the function is expected to return a user id or 0 upon failure.</p>
+
+<p>Returns &gt; 0 on success, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="loop">loop()</h2>
+
+<p>Main loop of the REST-server.</p>
+
+<p>This method accepts no input.</p>
+
+<p>This method is the main loop of the REST-server. It sits and waits for clients to connect and when a connection arrives, it forks out a separate process to handle it.</p>
+
+<p>The separate process for the client-connection immdiately attempts to upgrade it to HTTPS/SSL. When such an upgrade has been successful it goes into a HTTP-request loop that will exists for this one client-call or if the KeepAlive-flag has been set it will loop until the client disconnects.</p>
+
+<p>This loop handles running the database-handler and the authentication-handler. If database connection and authentication fails the REST-server informs the client and closes the connection and the loop.</p>
+
+<p>If database connection and authentication were successful it invokes a REST-method function, if the REST-method exists, and passes these parameters to each function:</p>
+
+<p>- message-instance (Content-class instance of the HTTPS-server) - Method-parameters as a HASH-reference (after being decoded from the data of the Content-class being used - typically JSON), Database instance (typically AuroraDB-instance) - User id from the Authentication-handler - Settings-instance - Log-instance - SystemLogger-instance.</p>
+
+<p>The loop receives any potential feedback from the function performing the job of the REST-method and sends an answer to the client.</p>
+
+<h2 id="message">message()</h2>
+
+<p>Sends a message to the client.</p>
+
+<p>Input accepted: Content-instance and HTTP code.</p>
+
+<p>This method basically handles sending the response back to the calling client and with the HTTP code specified. It is called by the loop()-method and should not be called directly by the user of this HTTPSServer-class.</p>
+
+<p>Returns 1 upon success, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="converter">converter()</h2>
+
+<p>Get or set the Content-class being used for messaging between client and server.</p>
+
+<p>If input is specified it is interpreted as a set and the input must be a valid Content-class.</p>
+
+<p>Returns the Content-class upon success (also on set), undef upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="localaddr">localaddr()</h2>
+
+<p>Get or set the local interface address and port of the REST-server.</p>
+
+<p>If a set, it accepts one input &quot;addr&quot;. It must specify the address and port (if needed) of the REST-server.</p>
+
+<p>Please note that changing/setting the local interface address does not have any effect on already bound HTTPSServer-instances.</p>
+
+<p>Returns the address upon success (also on set), undef upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="port">port()</h2>
+
+<p>Get or set the port number being used by the HTTPS-server.</p>
+
+<p>If input is specified it is accepted to be a set and must be port number (SCALAR).</p>
+
+<p>Returns the port-number (also on set).</p>
+
+<h2 id="error">error()</h2>
+
+<p>Get the last error of this class.</p>
+
+<p>No input accepted.</p>
+
+<p>Returns the last error message or a blank string.</p>
+
+
+</body>
+
+</html>
+
+

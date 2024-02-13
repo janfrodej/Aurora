@@ -1,0 +1,94 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#DESTROY">DESTROY</a></li>
+      <li><a href="#AUTOLOAD">AUTOLOAD</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>HTTPSClient::Aurora</code> - A HTTPS-client to connect to the AURORA REST-server.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<p>Is used in the same way as the HTTPSClient class. See HTTPSClient for more information.</p>
+
+<p>Module makes it possible to execute any method-name on the HTTPS-server by taking the method-name you call and wrapping it as a servermethod-call through the AUTOLOAD-mechanism.</p>
+
+<pre><code>use HTTPSClient::Aurora;
+
+# after instantiation - see HTTPSClient documentation for that
+my %resp;
+my %parameters;
+$parameters{resourcetype}=&quot;whatever&quot;;
+if ($h-&gt;getServerResources (\%resp,%parameters)) {
+   use Data::Dumper;
+   print &quot;RESULT: &quot;.Dumper(\%resp);
+} else {
+   print &quot;ERROR: &quot;.$h-&gt;error();
+}</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>A HTTPS-client to connect to the AURORA REST-server. It is basically a wrapper that inherits from the HTTPSClient-class and implements the AUTOLOAD mechanism in order to call any server-method that are called on it by using the lazydo()-method.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<p>Inherits from the HTTPSClient-class. See the HTTPSClient-class for more information.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="DESTROY">DESTROY</h2>
+
+<p>Standard Perl DESTROY-method that has to be defined in order to avoid a call to it calling the AUTOLOAD-mechanism.</p>
+
+<h2 id="AUTOLOAD">AUTOLOAD</h2>
+
+<p>Standard AUTOLOAD mechanism that makes it possible to execute any method on the HTTPS-server and have it wrapped in a lazydo()-call.</p>
+
+<p>See AUTOLOAD for more documentation.</p>
+
+
+</body>
+
+</html>
+
+

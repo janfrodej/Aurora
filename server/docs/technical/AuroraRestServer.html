@@ -1,0 +1,4189 @@
+<!--
+       Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+       Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#AURORA-REST-Server-Overview-and-Methods">AURORA REST-Server Overview and Methods</a>
+    <ul>
+      <li><a href="#General-overview">General overview</a></li>
+      <li><a href="#Calling-the-REST-server">Calling the REST-server</a></li>
+      <li><a href="#Permissions">Permissions</a></li>
+      <li><a href="#SQLStruct">SQLStruct</a></li>
+    </ul>
+  </li>
+  <li><a href="#GENERAL-METHODS">GENERAL METHODS</a>
+    <ul>
+      <li><a href="#ackNotification">ackNotification()</a></li>
+      <li><a href="#enumEntityTypes">enumEntityTypes()</a></li>
+      <li><a href="#enumPermTypes">enumPermTypes()</a></li>
+      <li><a href="#getEntities">getEntities()</a></li>
+      <li><a href="#getHostSSHKeys">getHostSSHKeys()</a></li>
+      <li><a href="#getMetadata">getMetadata()</a></li>
+      <li><a href="#getName">getName()</a></li>
+      <li><a href="#getPath">getPath()</a></li>
+      <li><a href="#getType">getType()</a></li>
+      <li><a href="#ping">ping()</a></li>
+      <li><a href="#getTree">getTree()</a></li>
+    </ul>
+  </li>
+  <li><a href="#AUTHENTICATION-METHODS">AUTHENTICATION METHODS</a>
+    <ul>
+      <li><a href="#changeAuth">changeAuth()</a></li>
+      <li><a href="#doAuth">doAuth()</a></li>
+      <li><a href="#doDeAuth">doDeAuth()</a></li>
+      <li><a href="#enumAuthTypes">enumAuthTypes()</a></li>
+      <li><a href="#getAuthData">getAuthData()</a></li>
+    </ul>
+  </li>
+  <li><a href="#COMPUTER-METHODS">COMPUTER METHODS</a>
+    <ul>
+      <li><a href="#createComputer">createComputer()</a></li>
+      <li><a href="#deleteComputer">deleteComputer()</a></li>
+      <li><a href="#deleteComputerMetadata">deleteComputerMetadata()</a></li>
+      <li><a href="#enumComputerPermTypes">enumComputerPermTypes()</a></li>
+      <li><a href="#enumComputers">enumComputers()</a></li>
+      <li><a href="#getComputerAggregatedPerm">getComputerAggregatedPerm()</a></li>
+      <li><a href="#getComputerPerm">getComputerPerm()</a></li>
+      <li><a href="#getComputerMetadata">getComputerMetadata()</a></li>
+      <li><a href="#getComputerName">getComputerName()</a></li>
+      <li><a href="#getComputersByPerm">getComputersByPerm()</a></li>
+      <li><a href="#getComputerTunnelProtocols">getComputerTunnelProtocols()</a></li>
+      <li><a href="#listComputerFolder">listComputerFolder()</a></li>
+      <li><a href="#moveComputer">moveComputer()</a></li>
+      <li><a href="#openComputerTunnel">openComputerTunnel()</a></li>
+      <li><a href="#setComputerMetadata">setComputerMetadata()</a></li>
+      <li><a href="#setComputerName">setComputerName()</a></li>
+    </ul>
+  </li>
+  <li><a href="#DATASET-METHODS">DATASET METHODS</a>
+    <ul>
+      <li><a href="#changeDatasetExpireDate">changeDatasetExpireDate()</a></li>
+      <li><a href="#checkDatasetTemplateCompliance">checkDatasetTemplateCompliance()</a></li>
+      <li><a href="#closeDataset">closeDataset()</a></li>
+      <li><a href="#createDataset">createDataset()</a></li>
+      <li><a href="#createDatasetToken">createDatasetToken()</a></li>
+      <li><a href="#deleteDatasetMetadata">deleteDatasetMetadata()</a></li>
+      <li><a href="#enumDatasetPermTypes">enumDatasetPermTypes()</a></li>
+      <li><a href="#extendDatasetToken">extendDatasetToken()</a></li>
+      <li><a href="#getDatasetAggregatedPerm">getDatasetAggregatedPerm()</a></li>
+      <li><a href="#getDatasetExpirePolicy">getDatasetExpirePolicy()</a></li>
+      <li><a href="#getDatasetLog">getDatasetLog()</a></li>
+      <li><a href="#getDatasetMetadata">getDatasetMetadata()</a></li>
+      <li><a href="#getDatasetPerm">getDatasetPerm()</a></li>
+      <li><a href="#getDatasetPerms">getDatasetPerms()</a></li>
+      <li><a href="#getDatasets">getDatasets()</a></li>
+      <li><a href="#getDatasetSystemAndMetadata">getDatasetSystemAndMetadata()</a></li>
+      <li><a href="#getDatasetSystemMetadata">getDatasetSystemMetadata()</a></li>
+      <li><a href="#getDatasetTemplate">getDatasetTemplate()</a></li>
+      <li><a href="#listDatasetFolder">listDatasetFolder()</a></li>
+      <li><a href="#moveDataset">moveDataset()</a></li>
+      <li><a href="#removeDataset">removeDataset()</a></li>
+      <li><a href="#removeDatasetToken">removeDatasetToken()</a></li>
+      <li><a href="#setDatasetMetadata">setDatasetMetadata()</a></li>
+      <li><a href="#setDatasetPerm">setDatasetPerm()</a></li>
+    </ul>
+  </li>
+  <li><a href="#GROUP-METHODS">GROUP METHODS</a>
+    <ul>
+      <li><a href="#addGroupMember">addGroupMember()</a></li>
+      <li><a href="#assignGroupTemplate">assignGroupTemplate()</a></li>
+      <li><a href="#createGroup">createGroup()</a></li>
+      <li><a href="#deleteGroup">deleteGroup()</a></li>
+      <li><a href="#enumGroupPermTypes">enumGroupPermTypes()</a></li>
+      <li><a href="#enumGroups">enumGroups()</a></li>
+      <li><a href="#getGroupAggregatedPerm">getGroupAggregatedPerm()</a></li>
+      <li><a href="#getGroupMembers">getGroupMembers()</a></li>
+      <li><a href="#getGroupName">getGroupName()</a></li>
+      <li><a href="#getGroupNoticeSubscriptions">getGroupNoticeSubscriptions()</a></li>
+      <li><a href="#getGroupPerm">getGroupPerm()</a></li>
+      <li><a href="#getGroupPerms">getGroupPerms()</a></li>
+      <li><a href="#getGroupsByPerm">getGroupsByPerm()</a></li>
+      <li><a href="#getGroupTaskAssignments">getGroupTaskAssignments()</a></li>
+      <li><a href="#getGroupUsersVotes">getGroupUsersVotes()</a></li>
+      <li><a href="#moveGroup">moveGroup()</a></li>
+      <li><a href="#removeGroupMember">removeGroupMember()</a></li>
+      <li><a href="#setGroupFileInterfaceStore">setGroupFileInterfaceStore()</a></li>
+      <li><a href="#setGroupName">setGroupName()</a></li>
+      <li><a href="#setGroupNoticeSubscriptions">setGroupNoticeSubscriptions()</a></li>
+      <li><a href="#setGroupPerm">setGroupPerm()</a></li>
+      <li><a href="#unassignGroupTemplate">unassignGroupTemplate()</a></li>
+      <li><a href="#setGroupTaskAssignments">setGroupTaskAssignments()</a></li>
+      <li><a href="#setGroupUsersVotes">setGroupUsersVotes()</a></li>
+    </ul>
+  </li>
+  <li><a href="#INTERFACE-METHODS">INTERFACE METHODS</a>
+    <ul>
+      <li><a href="#deleteInterface">deleteInterface()</a></li>
+      <li><a href="#enumInterfaces">enumInterfaces()</a></li>
+      <li><a href="#getInterface">getInterface()</a></li>
+      <li><a href="#moveInterface">moveInterface()</a></li>
+      <li><a href="#renderInterface">renderInterface()</a></li>
+      <li><a href="#setInterfaceName">setInterfaceName()</a></li>
+      <li><a href="#unrenderInterface">unrenderInterface()</a></li>
+    </ul>
+  </li>
+  <li><a href="#NOTICE-METHODS">NOTICE METHODS</a>
+    <ul>
+      <li><a href="#deleteNotice---Delete-a-notice">deleteNotice() - Delete a notice</a></li>
+      <li><a href="#enumNotices---Enumerate-all-notices">enumNotices() - Enumerate all notices</a></li>
+      <li><a href="#moveNotice---Move-notice-to-another-group-parent">moveNotice() - Move notice to another group parent</a></li>
+      <li><a href="#setNoticeName">setNoticeName()</a></li>
+    </ul>
+  </li>
+  <li><a href="#SCRIPT-METHODS">SCRIPT METHODS</a>
+    <ul>
+      <li><a href="#createScript">createScript()</a></li>
+      <li><a href="#deleteScript">deleteScript()</a></li>
+      <li><a href="#enumPermTypes1">enumPermTypes()</a></li>
+      <li><a href="#enumScripts">enumScripts()</a></li>
+      <li><a href="#getScript">getScript()</a></li>
+      <li><a href="#getScriptName">getScriptName()</a></li>
+      <li><a href="#getScriptPerm">getScriptPerm()</a></li>
+      <li><a href="#getScriptPerms">getScriptPerms()</a></li>
+      <li><a href="#moveScript">moveScript()</a></li>
+      <li><a href="#setScript">setScript()</a></li>
+      <li><a href="#setScriptName">setScriptName()</a></li>
+      <li><a href="#setScriptPerm">setScriptPerm()</a></li>
+    </ul>
+  </li>
+  <li><a href="#STORE-METHODS">STORE METHODS</a>
+    <ul>
+      <li><a href="#deleteStore">deleteStore()</a></li>
+      <li><a href="#enumStoreRequiredParameters">enumStoreRequiredParameters()</a></li>
+      <li><a href="#enumStores">enumStores()</a></li>
+      <li><a href="#moveStore">moveStore()</a></li>
+      <li><a href="#setStoreName">setStoreName()</a></li>
+    </ul>
+  </li>
+  <li><a href="#TASK-METHODS">TASK METHODS</a>
+    <ul>
+      <li><a href="#createTask">createTask()</a></li>
+      <li><a href="#deleteTask">deleteTask()</a></li>
+      <li><a href="#enumTaskPermTypes">enumTaskPermTypes()</a></li>
+      <li><a href="#enumTasks">enumTasks()</a></li>
+      <li><a href="#getTask">getTask()</a></li>
+      <li><a href="#getTaskAggregatedPerm">getTaskAggregatedPerm()</a></li>
+      <li><a href="#getTaskName">getTaskName()</a></li>
+      <li><a href="#getTaskPerm">getTaskPerm()</a></li>
+      <li><a href="#getTaskPerms">getTaskPerms()</a></li>
+      <li><a href="#getTasksByPerm">getTasksByPerm()</a></li>
+      <li><a href="#moveTask">moveTask()</a></li>
+      <li><a href="#setTask">setTask()</a></li>
+      <li><a href="#setTaskName">setTaskName()</a></li>
+      <li><a href="#setTaskPerm">setTaskPerm()</a></li>
+    </ul>
+  </li>
+  <li><a href="#TEMPLATE-METHODS">TEMPLATE METHODS</a>
+    <ul>
+      <li><a href="#createTemplate">createTemplate()</a></li>
+      <li><a href="#checkTemplateCompliance">checkTemplateCompliance()</a></li>
+      <li><a href="#deleteTemplate">deleteTemplate()</a></li>
+      <li><a href="#enumTemplateFlags">enumTemplateFlags()</a></li>
+      <li><a href="#enumTemplatePermTypes">enumTemplatePermTypes()</a></li>
+      <li><a href="#enumTemplates">enumTemplates()</a></li>
+      <li><a href="#getEntityTemplateAssignments">getEntityTemplateAssignments()</a></li>
+      <li><a href="#getAggregatedTemplate">getAggregatedTemplate()</a></li>
+      <li><a href="#getTemplate">getTemplate()</a></li>
+      <li><a href="#getTemplateAssignments">getTemplateAssignments()</a></li>
+      <li><a href="#getTemplateAggregatedPerm">getTemplateAggregatedPerm()</a></li>
+      <li><a href="#getTemplatePerm">getTemplatePerm()</a></li>
+      <li><a href="#getTemplatePerms">getTemplatePerms()</a></li>
+      <li><a href="#moveTemplate">moveTemplate()</a></li>
+      <li><a href="#setTemplate">setTemplate()</a></li>
+      <li><a href="#setTemplateName">setTemplateName()</a></li>
+      <li><a href="#setTemplatePerm">setTemplatePerm()</a></li>
+    </ul>
+  </li>
+  <li><a href="#USER-METHODS">USER METHODS</a>
+    <ul>
+      <li><a href="#createUser">createUser()</a></li>
+      <li><a href="#deleteUser">deleteUser()</a></li>
+      <li><a href="#enumUsers">enumUsers()</a></li>
+      <li><a href="#getUserAggregatedPerm">getUserAggregatedPerm()</a></li>
+      <li><a href="#getUserTaskAssignments">getUserTaskAssignments()</a></li>
+      <li><a href="#getUserEmail">getUserEmail()</a></li>
+      <li><a href="#getUserFullname">getUserFullname()</a></li>
+      <li><a href="#getUserId">getUserId()</a></li>
+      <li><a href="#getUserPerm">getUserPerm()</a></li>
+      <li><a href="#getUserPerms">getUserPerms()</a></li>
+      <li><a href="#moveUser">moveUser()</a></li>
+      <li><a href="#setUserTaskAssignments">setUserTaskAssignments()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="AURORA-REST-Server-Overview-and-Methods">AURORA REST-Server Overview and Methods</h1>
+
+<h2 id="General-overview">General overview</h2>
+
+<p>This is the AURORA REST-server which serves requests and responses to and from the AURORA database and system.</p>
+
+<p>For more information and in order to understand the entity tree of AURORA and how the various parts interact, please read the &quot;AURORA Systems Overview&quot;-document.</p>
+
+<p>The AURORA REST-server is as the name suggests based upon the REST principles. However, it does not use various HTTP-methods based on what is being asked (such as &quot;GET&quot;, &quot;DELETE&quot;, &quot;MOVE&quot; etc.). Instead the method is implemented as a name directly under the server root, such as eg.:</p>
+
+<pre><code>/getTree</code></pre>
+
+<p>All HTTP-requests to the server must be sent as HTTP POST-requests. All requests are only served over HTTPS/SSL.</p>
+
+<p>All method names starts with a verb describing what one wishes to do, eg.: get, delete, move, list, check and so on and so forth. Then that is followed by the entity type, such as eg.: Computer, Group, Dataset and so on and so forth (the subject). A few methods will not be associated with any entity types and as such will not have this as the second part of the method name (such as <i>getTree</i>). The last part of the method name will be the object of the verb (ie. what to get, delete, move and so on). Sometimes this will be the entity type as well, such as with the method-name: <i>moveComputer</i>.</p>
+
+<p>The naming scheme of the methods also starts with a lower case letter and all subsequent words have an uppercase letter, eg: <i>moveComputer</i>, <i>checkTemplateCompliance</i>, <i>listComputerFolder</i> and so on and so forth.</p>
+
+<p>In the same manner the AURORA REST-server has standardized its input and output parameters and return data based upon the method-name and some selected names. In most cases a parameter like &quot;id&quot; means the &quot;id&quot; of the subject/ object of the method when used as input. Eg. <i>moveComputer</i> takes &quot;id&quot; as parameter of the computer that one wants to move, <i>checkTemplateCompliance</i> takes &quot;id&quot; as the entity to check the template compliance for and <i>getComputerMetadata</i> takes &quot;id&quot; as the computer to get the metadata of (and so on and so forth). Another input parameter that is common in many instances is &quot;parent&quot; and is usually used to signify the group entity that is the parent of the entity in question. This is eg. used with <i>moveComputer</i>, <i>moveGroup</i> etc.</p>
+
+<p>When it comes to output/result from the various methods, the result always comes in the structure named after the object of the request. So for example, <i>getComputerMetadata</i> will return the metadata in a sub-hash that is called &quot;metadata&quot;. In the method <i>enumTemplates</i> the templates will be returned in a sub-hash called &quot;templates&quot;.</p>
+
+<p>All method requests to the AURORA REST-server uses JSON as encoding and HTTP POST as the HTTP-method.</p>
+
+<p>All requests to the REST-server needs to contain authentication information, since all calls needs to be authenticated. Even so, the server optimizes its mode of operation and one can choose to connect to it by setting the keepalive-flag, so that each subsequent call uses the same established connection. However, no session data is kept and it is still required to authenticate for each call.</p>
+
+<p>The authentication parameters are: authtype and authstr. The first <b>authtype</b> sets the authentication type to use. AURORA supports plugin classes for authentication and are also supplied with its own native AuroraID authentication type as well as OAuth-based authentication (SSO) called OAuthAccessToken. So if one wants to authenticate with the native AuroraID authentication, one sets authtype to &quot;AuroraID&quot; (the name is case sensitive, so be careful to get it right). The other parameter <b>authstr</b> sets the corresponding authentication string that matches the chosen authtype. Usually all authstr parameters will contain an email and then some sort of cookie/string or password. In the case of AuroraID the format of the authstr is as follows:</p>
+
+<pre><code>email,password</code></pre>
+
+<p>or eg.:</p>
+
+<pre><code>myname@mydomain.org,ThisIsMySecretPassword1234</code></pre>
+
+<p>In addition to the authstr and authtype parameters, each REST-server method has its own requirements which can be perused in this very document.</p>
+
+<p>So, eg. for the call moveComputer, one would send a json string which looks like this:</p>
+
+<pre><code>{ &quot;authtype&quot;:&quot;AuroraID&quot;,&quot;authstr&quot;:&quot;myname@mydomain.org,ThisIsMySecretPassword1234&quot;,&quot;id&quot;:314,&quot;parent&quot;:413 }</code></pre>
+
+<p>In addition to these parameter requirements for REST-server methods, it might also be some permission requirements that the user has to fulfill in order to be allowed to successfully run it. These requirements will also be outlined the documentation of the method.</p>
+
+<p>The REST-server will after <b>all</b> method calls issue a response. This response is also in JSON and is a HASH-structure which looks like this:</p>
+
+<pre><code>&quot;received&quot;: STRING # unix datetime (UTC) with hires microseconds for when the request was received by the REST-server
+&quot;delivered&quot;: STRING # unix datetime (UTC) with hires microseconds for when the request reponse was sent by the REST-server
+&quot;err&quot;: INTEGER # 0 for no error, 1 for error.
+&quot;errstr&quot;: STRING # the failure reason upon an error, blank if no error.</code></pre>
+
+<p>The key-values will always be there in all method responses. In addition to these &quot;global&quot; response values, the various REST-methods will add additional key-&gt;values and sub-keys or hashes. These additional responses are documented in the REST-server method description itself.</p>
+
+<p>The time format that are mentioned in the &quot;received&quot; and &quot;delivered&quot; response-values are unix datetime in high resolution format. The time is in UTC without any locales. This means that they come out like (string of float):</p>
+
+<pre><code>12345678.54321</code></pre>
+
+<p>where the hires part is after the dot &quot;.&quot; in microseconds.</p>
+
+<p>Some methods will even return sub-hashes. Eg. the getAggregatedTemplate-method will give you the mentioned global values and in addition a sub-hash called &quot;template&quot; (after the object of the method, the subject being the system or entity tree):</p>
+
+<pre><code>{&quot;delivered&quot;:1593585453.44301,&quot;received&quot;:1593585453.39645,&quot;errstr&quot;:&quot;&quot;,&quot;err&quot;:0,&quot;template&quot;:{&quot;system.user.username&quot;:{&quot;comment&quot;:&quot;This is the users email address&quot;,&quot;max&quot;:&quot;1&quot;,&quot;flags&quot;:[&quot;MANDATORY&quot;,&quot;NONOVERRIDE&quot;],&quot;min&quot;:&quot;1&quot;,&quot;regex&quot;:&quot;[a-zA-Z]{1}[a-zA-Z0-9\\.\\!\\#$\\%\\%\\&amp;\\&#39;\\*\\+\\-\\/\\=\\?\\^\\_\\`\\{\\|\\}\\~\\@]+&quot;,&quot;default&quot;:null},&quot;system.user.fullname&quot;:{&quot;default&quot;:null,&quot;regex&quot;:&quot;[^\\000-\\037\\177]+&quot;,&quot;min&quot;:&quot;1&quot;,&quot;max&quot;:&quot;1&quot;,&quot;flags&quot;:[&quot;MANDATORY&quot;,&quot;NONOVERRIDE&quot;],&quot;comment&quot;:&quot;This is the users full name. Accepts all non-special characters&quot;}}}</code></pre>
+
+<h2 id="Calling-the-REST-server">Calling the REST-server</h2>
+
+<p>One can use many different libraries or software to connect to the AURORA REST-server as long as they support REST-type servers (basically HTTP). It is also possible to do REST-server calls by using the curl-command in linux like so:</p>
+
+<pre><code>curl -v -k -d &#39;{&quot;authtype&quot;:&quot;AuroraID&quot;,&quot;authstr&quot;:&quot;myname@mydomain.org,ThisIsMySecretPassword1234&quot;,&quot;id&quot;:314,&quot;type&quot;:&quot;COMPUTER&quot;}&#39; -H &quot;Content-Type: application/json; charset=utf-8&quot; https://localhost:1000/getAggregatedTemplate</code></pre>
+
+<p>Alternately if you are not comfortable with saving your AURORA authentication details in the history through the the command line, you can put the JSON structure inside a file instead:</p>
+
+<pre><code>curl -v -k -d @myjsonfilename -H &quot;Content-Type: application/json; charset=utf-8&quot; https://localhost:1000/getAggregatedTemplate</code></pre>
+
+<h2 id="Permissions">Permissions</h2>
+
+<p>The AURORA system has a rich system of permissions and all the various permissions can be set in the entire tree, but only on GROUP-, DATASET- and TEMPLATE entities. All permissions set will be inherited down the tree if not denied on the way down, which in essence means that only GROUP-permissions are inherited since the other entity types always resides at branch ends of the tree.</p>
+
+<p>AURORA enforces a permissions scheme where the right to perform a method depends on the users permissions on the entity being manipulated. The permission must either reside on the entity itself or come down through inheritance. Note, however, that in most cases the system will allow the operation if the user in question has the correct permission on the parent of the entity being manipulated (also through inheritance on the parent). The reason for this is to avoid a scenario where denied permissions will lock users from manipulating or seeing entities.</p>
+
+<p>Furthermore, the AURORA-system enforces the following rule when it comes to setting permissions: the user is only allowed to set/give away permissions that he himself has on the entity in question. This is to avoid security defects where having the right to set permissions gives you the option to elevate your own set of permissions, thereby achieving godhood (well, at least in that small part of the hood).</p>
+
+<p>All permissions to and from the AURORA REST-server is specified in textual/string format. All permissions start with the entity type name, such as DATASET, TEMPLATE, GROUP and so on. Examples of permission names are:</p>
+
+<pre><code>DATASET_CREATE
+DATASET_MOVE
+GROUP_CREATE
+GROUP_CHANGE</code></pre>
+
+<p>and so and so forth. All permission names are also uppercase, but the methods are case-insensitive when it comes to specifying the permission name. The permission name might not have a uniform meaning between methods as some methods might sometimes use the permission to signify certain permission variants relevant to that method. This is not the default use and meaning of the permissions, but if such cases exist, they will be documented in the method in question.</p>
+
+<p>So, eg. the permission DATASET_CREATE obviously means that one has the permission to create a dataset on whatever group that one has this permission on. However, this permission is also used by the getTree() REST-method to signify that the user is not allowed to list or view (see that it exists) that dataset if he <b>only</b> has this permission on it. This touches upon the implicit permissions one has through having certain other permissions. In this example, one has the permission to view or list a dataset (not read its data or metadata) when one has any other DATASET-permission, except DATASET_CREATE.</p>
+
+<p>Also, upon creating a dataset, the AURORA-system will assign all dataset permissions to the creating user on the dataset being created, with the exception of DATASET_DELETE, DATASET_MOVE and DATASET_EXTEND_UNLIMITED. This mechanism is to underline the fact that it is the parental group that owns the dataset and therefore manages both its location (move) as well as its state (delete). The DATASET_EXTEND_UNLIMITED is an admin-type permission that allows the holder to extend the expire-date unlimited beyond any expire-policy in the entity tree.</p>
+
+<h2 id="SQLStruct">SQLStruct</h2>
+
+<p>When doing more sophisticated database operations in the AURORA REST-server it utilizes a structure called SQLStruct (for more technical details see the documentation of the SQLStruct-module). This structure makes it possible to define more refined SQL search parameters without actually writing SQL and are used by eg. the getDatasets()-method. The SQLStruct structure can either be a HASH or an ARRAY, while some methods might enforce one or the other (getDatasets()-method requires the main structure to be an ARRAY as in the example below).</p>
+
+<p>The SQLStruct might look like this:</p>
+
+<pre><code>SQLStruct = ( &#39;OR&#39;, # First ARRAY element is ALWAYS the logical operator (LOP) of the ARRAY.
+            { &#39;Creator&#39; =&gt; &#39;B&aring;rd&#39;, # second ARRAY element is a HASH with key &quot;Creator&quot;
+              &#39;Created&#39; =&gt; { &#39;&gt;&#39; =&gt; &#39;1990&#39;, &#39;&lt;&#39; =&gt; &#39;2000&#39; }  # next HASH key is &quot;Created&quot; pointing to a sub-hash comparing years with LOP &quot;AND&quot;.
+            },        
+            { &#39;Creator&#39; =&gt; &#39;Jan Frode*&#39;, # third ARRAY element is a HASH with key &quot;Creator&quot; equals a name and then a wildcard
+            },
+            { &#39;Religion&#39; =&gt; { &#39;!&#39; =&gt; &quot;NULL&quot;, &#39;-&#39; =&gt; &quot;NULL&quot; } # fourth ARRAY element  is a HASH with a key &quot;Religion&quot; pointing to a sub-hash with a nonsensical comparison, of which nonsense religion sometimes mimicks.
+            },
+            &#39;1&#39;, # fifth ARRAY element is just the value 1 (which will evaluate to true)
+            [ &#39;not&#39;,   # the sixth ARRAY element is last and contains an sub-ARRAY, which again has a sub-HASH and so on.
+              { &#39;Group&#39; =&gt; &#39;Whatever&#39;,
+              },
+             &#39;11&#39;
+            ],
+            )</code></pre>
+
+<p>As you can see, both ARRAYS, HASHES and STRINGS are allowed within the structure itself. In the example above Perl notation has been used. &quot;()&quot; is an ARRAY, &quot;{}&quot; is a HASH, &quot;[]&quot; is a ARRAY-reference. &quot;=&gt;&quot; is a value assignment for a key in a HASH.</p>
+
+<p>SQLStruct has the following rule about the difference between an ARRAY and a HASH:</p>
+
+<ul>
+
+<li><p><b>ARRAYS</b> makes it possible to define the logical operator (LOP) between its elements. The first element is ALWAYS to be the LOP (valid LOPs are: OR,AND,NOT,ALL,ANY,BETWEEN,EXISTS,IN,LIKE and SOME). The LOP is case-insensitive. Please be aware that not all logical operators that are supported by SQLStruct in this list might be supported by the underlying SQL-engine.</p>
+
+</li>
+<li><p><b>HASHES</b> cannot define any LOP between its keys and all keys in the HASH are processed together using the logical operator &quot;AND&quot;.</p>
+
+</li>
+</ul>
+
+<p>HASHES are used with various comparative operators (COP). The key or sub-key can be used to define the following valid COPs:</p>
+
+<pre><code>&quot;&gt;&quot;    # greater than
+&quot;&lt;&quot;    # lesser than
+&quot;&lt;&gt;&quot;   # not equal to
+&quot;=&quot;    # equal to
+&quot;&gt;=&quot;   # greater than or equal
+&quot;&lt;=&quot;   # lesser than or equal
+&quot;!&quot;    # is not
+&quot;-&quot;    # not
+&quot;&amp;&quot;    # bitwise and
+&quot;|&quot;    # bitwise or
+&quot;^&quot;    # bitwise xor</code></pre>
+
+<p>If the key is not a COP it must be a key-name that one wants to compare to a value in the following hash assignment:</p>
+
+<pre><code>KEYNAME =&gt; VALUE  # the value can contain wildcards</code></pre>
+
+<p>Values that the COPs are used with can contain wildcards in the form of &quot;*&quot;. If one wishes to use &quot;*&quot; as a value in and of itself, the value must be escaped.</p>
+
+<h1 id="GENERAL-METHODS">GENERAL METHODS</h1>
+
+<h2 id="ackNotification">ackNotification()</h2>
+
+<p>Acknowledges a notice from a Notification.</p>
+
+<p>Accepts the following parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Notification ID of notification that the notice has been generated from. STRING. Required.</p>
+
+</li>
+<li><p><b>rid</b> Notice random id (rid) for the acknowledgement. STRING. Required.</p>
+
+</li>
+</ul>
+
+<p>This methods requires no user permissions except being able to login to the AURORA REST-server.</p>
+
+<p>Returns no special feedback upon success.</p>
+
+<h2 id="enumEntityTypes">enumEntityTypes()</h2>
+
+<p>Enumerates all entity types in the database.</p>
+
+<p>No input is accepted.</p>
+
+<p>Upon success return the following HASH:</p>
+
+<pre><code>types = (
+           ENTITYTYPEa =&gt; STRING # ID to textual name
+           ENTITYTYPEb =&gt; STRING
+           .
+           .
+           ENTITYTYPEz =&gt; STRING
+        )</code></pre>
+
+<p>ENTITYTYPEa and so on are the entitytype ID and the STRING is the textual name of the entitytype type.</p>
+
+<h2 id="enumPermTypes">enumPermTypes()</h2>
+
+<p>Enumerates all permission types in the database.</p>
+
+<p>No input is accepted.</p>
+
+<p>Upon success return the following ARRAY:</p>
+
+<pre><code>types = [&quot;PERMISSIONa&quot;,&quot;PERMISSION_b&quot; ... &quot;PERMISSIONz&quot;]</code></pre>
+
+<p>PERMISSIONa and so on are the textual string name of the permission type.</p>
+
+<h2 id="getEntities">getEntities()</h2>
+
+<p>Search for and retrieve entity(ies) matching name and type.</p>
+
+<p>Accepted input parameters are:</p>
+
+<ul>
+
+<li><p><b>name</b> The entity name to search for. STRING. Required. This is the name to search for when matching entities in the AURORA database. The name parameter also accepts wildcards in the form of &quot;*&quot;. It is possible to place one or several asterix within the search-string as one needs to.</p>
+
+</li>
+<li><p><b>count</b> The number of entity hits to return. INTEGER. Optional. If not specified it will return all matches if not offset has been set (see the offset parameter). The parameter is in the range 1 - N.</p>
+
+</li>
+<li><p><b>offset</b> The window or offset to get hits from. INTEGER. Optional. It specified to start from N offset and then get X number of hits as defined by the count-parameter. If offset is specified, the maximum number of count-parameter hits to return are 2000 at a time. If no offset specified the method will return all matches.</p>
+
+</li>
+<li><p><b>include</b> The entity type(s) to include in the match. ARRAY of STRING. Optional. If not specified will default to matching all entities, except DATASET (consult the separate search-method for datasets: getDatasets()). The include parameter is applied first, then a possible exclude parameter is applied thereafter removing possible entries specified in include.</p>
+
+</li>
+<li><p><b>exclude</b> The entity type(s) to exclude in the match. ARRAY of STRING. Optional. If not specified will default to only excluding DATASET- entities. If specified, DATASET-entites will still be excluded. The include-parameter is applied before the entries in the exclude-parameter. That means that the exclude-parameter will potentially remove entries in the include-parameter list.</p>
+
+</li>
+<li><p></p>
+
+</li>
+</ul>
+
+<p>Upon success this method returns the following structures:</p>
+
+<pre><code>entities =&gt; (
+              entityID1 =&gt; {
+                             name =&gt; STRING,  # textual name of entity
+                             type =&gt; STRING,  # textual entity type
+                             parent =&gt; INTEGER, # entity parent id
+                             parentname =&gt; INTEGER, # entity textual parent name
+                           }
+              .
+              .
+              entityIDn =&gt; { ... }
+           )
+matches =&gt; INTEGER # number of matches found of given name-parameter</code></pre>
+
+<h2 id="getHostSSHKeys">getHostSSHKeys()</h2>
+
+<p>Gets a hosts public SSH Keys through ssh-keyscan.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>host</b> Hostname or ip of host to get the public ssh keys of. Required. STRING.</p>
+
+</li>
+<li><p><b>port</b> Port number to use when connecting to retrieve the hosts public ssh keys. Optional. INTEGER. If none is specified it will default to 22.</p>
+
+</li>
+</ul>
+
+<p>Upon success returns the following structure:</p>
+
+<pre><code>sshkeys =&gt; (
+   TYPE1 =&gt; PUBLIC KEY,
+   .
+   .
+   TYPEn =&gt; PUBLIC KEY,
+)</code></pre>
+
+<p>TYPE is the key type (ssh-rsa, ssh-dsa etc.). PUBLIC KEY is the actual key itself.</p>
+
+<h2 id="getMetadata">getMetadata()</h2>
+
+<p>Gets the general, open metadata of an entity.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Entity ID from the database of the entity to get the metadata of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon success return the following structure:</p>
+
+<pre><code>(
+   metadata =&gt; (
+      NAMESPACE1 = STRING,
+      .
+      .
+      NAMESPACEn = STRING,
+   )
+)</code></pre>
+
+<p>Where NAMESPACE is the name of a specific metadata value of the entity. It will only return metadata for an entity that is deemed open and public.</p>
+
+<h2 id="getName">getName()</h2>
+
+<p>Gets the name of an entity.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Entity ID from the database of the entity to get the name of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon success return the following value:</p>
+
+<pre><code>name =&gt; STRING # the textual display name of the entity in question.</code></pre>
+
+<h2 id="getPath">getPath()</h2>
+
+<p>Gets the path down to an entity in the entity tree (including the entity itself).</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Entity ID from the database of the entity to get the path to. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon sucess return the following ARRAY:</p>
+
+<pre><code>path =&gt; [ IDa, IDb .. IDz ]</code></pre>
+
+<p>where IDa and so on are the entity IDs from the database of the entity in the path down to the entity in question.</p>
+
+<p>The first element of the array is the topmost element in the entity tree and then the succeeding elements descends down to the entity in question in correct order.</p>
+
+<h2 id="getType">getType()</h2>
+
+<p>Gets the type name of an entity.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Entity ID from the database of the entity to get the entity type of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon sucess returns the textual entity type name:</p>
+
+<pre><code>type = STRING # textual type name of entity</code></pre>
+
+<h2 id="ping">ping()</h2>
+
+<p>Pings the server to see if it floats or not.</p>
+
+<p>No input accepted.</p>
+
+<p>The method just checks that the server respons and is working and upon success returns just the global values of &quot;received&quot;, &quot;delievered&quot;, &quot;err&quot; and &quot;errstr&quot;.</p>
+
+<h2 id="getTree">getTree()</h2>
+
+<p>Get the entity tree.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> The start entity ID from the database in the entity tree. INTEGER. Optional. If not specified will default to the root entity (1). This option makes it possible to just get parts of the tree by specifying a start point somehwere else in the tree than the top root-entity.</p>
+
+</li>
+<li><p><b>include</b> List of entity types to include in the result. ARRAY of STRING. Optional. If not specified will return all entity types that exists in the tree (except if some are excluded with the exclude-parameter). If specified the method will return the entity types that have been designated in this parameter only. Eg. one can choose to return only the datasets by specifying this parameter to [&quot;DATASET&quot;]. Whatever is specified in include is subsequently altered by any exclude-parameter.</p>
+
+</li>
+<li><p><b>exclude</b> List of entity types to exclude from the result. ARRAY of STRING. Optional. If not specified will return all entity types that exists in the tree (except if include parameter has been specified). If specified the method will not return the entity types that have been designated in this parameter. Eg. one can choose not to return the datasets by specifying this parameter to [&quot;DATASET&quot;]. However, if both include- and exclude- parameters have been specified, the include parameter comes first and then the exclude parameter removes potential items from that list.</p>
+
+</li>
+<li><p><b>depth</b> Maximum depth from depth of start entity (id-parameter). INTEGER. Optional. If not specified all start entity children will be returned independant of their depths. A depth of 0 returns only the start entity itself (its a tree, so we only return start-entity and its children moderated by depth), 1 returns the start entity itself and all entities on the level below it and so on.</p>
+
+</li>
+<li><p><b>templatemetadata</b> Include template metadata information on any GROUP entity that are found in the tree. INTEGER. Optional. If not specified at all it will default to 0 or false. Valid values are 0 (false) and 1 (true).</p>
+
+</li>
+</ul>
+
+<p>Upon success will return the following HASH-structure:</p>
+
+<pre><code>tree =&gt; (
+          IDa =&gt; (
+                   id =&gt; INTEGER
+                   parent =&gt; INTEGER,
+                   type =&gt; STRING,
+                   name =&gt; STRING,
+                   metadata =&gt; (
+                      metadataA =&gt; STRING,
+                      .
+                      .
+                      metadataZ =&gt; STRING
+                               )
+                   children =&gt; [ IDb...IDn ]
+                 )
+          IDb =&gt; (
+                   id =&gt; INTEGER,
+                   parent =&gt; INTEGER,
+                   type =&gt; STRING,
+                   name =&gt; STRING,
+                   metadata =&gt; (
+                      metadataA =&gt; STRING,
+                      .
+                      .
+                      metadataZ =&gt; STRING,
+                               )
+                   children =&gt; [],
+                &nbsp;)
+          .
+          .
+          IDz =&gt; ( ... )
+        )</code></pre>
+
+<p>All the information in the tree is flat, so that all entities resides in the first level of the HASH. Each sub-hash then refers to entities on the top level through its children array. All entities in the tree will return its id, parent, type, name and an array of its children (if any) except the top root-node (1), which does not have any parent. The entity type is the textual string version of the type (eg. &quot;DATASET&quot;, &quot;GROUP&quot;, &quot;COMPUTER&quot; and so on and so forth).</p>
+
+<p>In addition to the set group of information like: id, parent, type, name and children, each sub-hash also includes a metadata sub-hash that contains metadata that might be relevant to the the entity. Eg. for GROUP-entities the fileinterface store-name will be included if it has been set at all.</p>
+
+<h1 id="AUTHENTICATION-METHODS">AUTHENTICATION METHODS</h1>
+
+<h2 id="changeAuth">changeAuth()</h2>
+
+<p>Changes the authentication data for a authentication type.</p>
+
+<p>Parameters of this method are (beyond the standard auth-strings):</p>
+
+<ul>
+
+<li><p><b>type</b> Authentication scheme that you want to change the authentication for as textual string. Eg. &quot;AuroraID&quot;.</p>
+
+</li>
+<li><p><b>auth</b> The new authentication string to change to. The content and format of this string is up to the authentication type one is trying to change. It does, however, consist of an email address first identifying the user, followed by a comma as separator and then the new authentication.</p>
+
+</li>
+</ul>
+
+<p>The method returns 1 upon success or 0 upon failure (see documentation of restsrvc.pl for more information on the format of return values in the REST-server)</p>
+
+<h2 id="doAuth">doAuth()</h2>
+
+<p>Performs an authentication test.</p>
+
+<p>No input is needed as they are supplied as part of the authentication-strings to the REST-server.</p>
+
+<p>Always return 1 (as it is impossible to run the method without valid authentication).</p>
+
+<h2 id="doDeAuth">doDeAuth()</h2>
+
+<p>Removes any authentication tokens that may exist.</p>
+
+<p>Requires the following input: authtype and authstr.</p>
+
+<p>Returns 1 upon success, 0 upon failure.</p>
+
+<h2 id="enumAuthTypes">enumAuthTypes()</h2>
+
+<p>Enumerates the authentications types that are defined as acceptable in the REST-servers settings file and are possible to instantiate. In other words it return the authentication schemes that are valid for the REST-server running.</p>
+
+<p>No input is needed.</p>
+
+<p>The return data structure contains the authtypes substructure like thus:</p>
+
+<p>authtypes =&gt; ( &quot;type&quot; =&gt; ( change =&gt; INT # 0 or 1 for possible to change (1) or not(0). format =&gt; STRING # acceptable format of the authentication string maxlength =&gt; INT # maximum length of the authentication string regex =&gt; STRING # regex that checks the authentication string longevity =&gt; INT # the lifespan of a set of authentication details in AURORA. ) &quot;typeN&quot; =&gt; ( ) )</p>
+
+<p>Please check the documentation of the Authenticator.pm-module for more information upon the meaning of the values in the returned structure. Type above means the textual authentication type, such as &quot;AuroraID&quot;.</p>
+
+<h2 id="getAuthData">getAuthData()</h2>
+
+<p>Get public authenticator data for logged in user.</p>
+
+<p>No input is accepted.</p>
+
+<p>The method will attempt to retrieve any public authenticator data that er stored for logged in user.</p>
+
+<p>The result upon success is returned as a HASH named data:</p>
+
+<pre><code>data =&gt; (
+           AUTHDATAKEYa =&gt; STRING # value of given authetnicator data key
+           .
+           .
+           AUTHDATAKEYz =&gt; STRING # value....
+        )</code></pre>
+
+<p>The AUTHDATAKEY reflect the metadata namespace in the database where the value is stored. The metadata itself is stored on a USER-entity. It will also return the shared and general authentication data like so:</p>
+
+<pre><code>id =&gt; INTEGER # entity ID of logged on user
+email =&gt; STRING # the email/unique username of the user
+fullname =&gt; STRING # the full name of the user
+displayname =&gt; STRING # the users display name</code></pre>
+
+<p>Please note that when it comes to the return data-HASH, which keys will appear depends upon which authenticator type the user used to log in with. Please see the documentation for the given Authenticator-class in question to know which namespaces key it stores and tags as public.</p>
+
+<h1 id="COMPUTER-METHODS">COMPUTER METHODS</h1>
+
+<h2 id="createComputer">createComputer()</h2>
+
+<p>Creates a computer entity.</p>
+
+<p>Input parameters are the following:</p>
+
+<ul>
+
+<li><p><b>metadata</b> Metadata to set on computer entity upon creation. This is decided by any templates that are in effect (please see the MethodsTemplate.pm or AuroraDB.pm for more information on templating). One can also set metadata that are not required by any templates if so wished. The textual name of the computer can also be set in this metadata and it will take precedence over the name-parameter. Optional (although dependant upon templates). The structure of the metadata parameter is as follows:</p>
+
+<pre><code>metadata =&gt; (
+              &quot;.system.entity.name&quot; =&gt; STRING,
+              &quot;.whatever.one.wants&quot; =&gt; STRING,
+              .
+              .
+              &quot;.whatever.one.can&quot;   =&gt; STRING,
+            )</code></pre>
+
+<p>It basically consists of a number of key-&gt;value pairs.</p>
+
+</li>
+<li><p><b>name</b> Display name of the new computer entity. Can also be set in the metadata instead. Metadata takes precedence. STRING. Required.</p>
+
+</li>
+<li><p><b>parent</b> Parent where the computer entity is to be created. This value is an INTEGER with the database entity ID of the GROUP that is to be the parent. Only GROUP entities are valid in this parameter. Required.</p>
+
+</li>
+</ul>
+
+<p>The display name entered either as parameter &quot;name&quot; or as metadata (&quot;.system.entity.name&quot;) must be unique for a computer in the entire entity tree. If any other computer entity has the same display name, the method will fail in its attempt to create the entity.</p>
+
+<p>The user calling this method must also have the COMPUTER_CREATE permission on the parent group in question.</p>
+
+<p>The method only accepts non-system namespaced metadata (starting with &quot;.&quot;).</p>
+
+<h2 id="deleteComputer">deleteComputer()</h2>
+
+<p>Deletes a computer entity.</p>
+
+<p>Input parameter is:</p>
+
+<ul>
+
+<li><p><b>id</b> Entity id from database of the computer entity to delete. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Methods requires the user to have the COMPUTER_DELETE permission on the given computer.</p>
+
+<h2 id="deleteComputerMetadata">deleteComputerMetadata()</h2>
+
+<p>Deletes computer metadata.</p>
+
+<p>Accepts the following parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Entity ID of the computer entity to delete metadata from. INTEGER. Required.</p>
+
+</li>
+<li><p><b>metadata</b> Array of metadata values to remove. ARRAY. Optional. If the array is empty or not specified all metadata values of the given computer entity will be removed (in the non-system namespace).</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the COMPUTER_CHANGE permission on the computer entity in question.</p>
+
+<p>The method only accepts non-system namespaced metadata key-values.</p>
+
+<h2 id="enumComputerPermTypes">enumComputerPermTypes()</h2>
+
+<p>Enumerates the computer permission types that exists.</p>
+
+<p>No input is accepted.</p>
+
+<p>It returns a structure with all the valid permissions for a computer entity in the following structure:</p>
+
+<pre><code>types =&gt; (
+           STRING,             
+           STRING,
+           STRING,
+         (</code></pre>
+
+<p>which is an array containing all the computer entity permission types in a textual fashion.</p>
+
+<h2 id="enumComputers">enumComputers()</h2>
+
+<p>Enumerates all computer entities in the database.</p>
+
+<p>No input is accepted.</p>
+
+<p>The return structure is as follows:</p>
+
+<pre><code>computers =&gt; (
+               INT =&gt; STRING,
+               INT =&gt; STRING,
+               .
+               .
+               INT =&gt; STRING
+             (</code></pre>
+
+<p>where INT is the entity id from the database and STRING is the textual display name of the entity.</p>
+
+<h2 id="getComputerAggregatedPerm">getComputerAggregatedPerm()</h2>
+
+<p>Gets the aggregated/inherited permissions of a user on a computer entity.</p>
+
+<p>Input parameters are as follows:</p>
+
+<ul>
+
+<li><p><b>id</b> Entity ID of computer object to get permissions on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> Entity ID of user subject from the database for which we are getting the permissions for (who they are valid for). INTEGER. Optional. Will default to authenticated user if none is specified.</p>
+
+</li>
+</ul>
+
+<p>Returns a structure of aggregated perms upon success:</p>
+
+<pre><code>perm =&gt; (
+          PERMISSION_NAME,
+          PERMISSION_NAME,
+          .
+          .
+          PERMISSION_NAME
+        )</code></pre>
+
+<p>where PERMISSION_NAME is the STRING representation of the permission type that the specified user has on the given entity object.</p>
+
+<h2 id="getComputerPerm">getComputerPerm()</h2>
+
+<p>Get the permissions on the computer object in question.</p>
+
+<p>Input is the following:</p>
+
+<ul>
+
+<li><p><b>id</b> Computer entity id (from the database) to get the permissions on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> User entity id (from the database) that the permissions are valid for. INTEGER. Optional. Will default to logged on user if not specified.</p>
+
+</li>
+</ul>
+
+<p>Returns the following structure upon success:</p>
+
+<pre><code>perm =&gt; ( 
+          grant =&gt; [ PERMISSIONa, PERMISSIONb .. PERMISSIONn ],
+          deny =&gt;  [ PERMISSIONd, PERMISSIONe .. PERMISSIONo ],
+        )</code></pre>
+
+<p>The PERMISSION-values in the grant- or deny- arrays are STRING names of the permissions that have been set in either grant- or deny.</p>
+
+<h2 id="getComputerMetadata">getComputerMetadata()</h2>
+
+<p>Fetches the open metadata of a computer entity (everything that starts with a dot &quot;.&quot;).</p>
+
+<p>Input parameters are as follows:</p>
+
+<ul>
+
+<li><p><b>id</b> Computer ID from the database of object to get the metadata of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon success returns the following structure:</p>
+
+<pre><code>metadata =&gt; (
+              KEYa  =&gt; VALUE,
+              KEYb  =&gt; VALUE,
+              .
+              .
+              KEYn  =&gt; VALUE,
+            )</code></pre>
+
+<p>KEY is the name of the metadata key (STRING) and VALUE is the value (STRING) for that metadata key.</p>
+
+<p>This method only returns metadata in the open non-system namespace (starting with a dot &quot;.&quot;).</p>
+
+<h2 id="getComputerName">getComputerName()</h2>
+
+<p>Gets the display name of the computer.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Computer entity ID from the database of the computer to get the name of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon success returns the name:</p>
+
+<pre><code>name =&gt; STRING</code></pre>
+
+<p>where STRING is the textual name of the computer.</p>
+
+<h2 id="getComputersByPerm">getComputersByPerm()</h2>
+
+<p>Get list of computers based upon a set of permissions.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>perm</b> A set of permissions that has to exist on the computer entities returned. ARRAY. Optional. If no values are specified all computers entitites are returned.</p>
+
+</li>
+<li><p><b>permtype</b> The matching criteria to use with the permissions specified in the &quot;perm&quot;-parameter. Valid values are: ALL (logical and) or ANY (logical or). STRING. Optional. If not specified will default to logical operator &quot;ALL&quot;.</p>
+
+</li>
+<li><p><b>root</b> Entity ID of where to start in the entity tree (matching everything from there and below). INTEGER. Optional. If not specified will default to 1 (ROOT).</p>
+
+</li>
+</ul>
+
+<p>The return structure upon success is:</p>
+
+<pre><code>computers =&gt; (
+               INTEGERa =&gt; STRING,
+               INTEGERb =&gt; STRING,
+               .
+               .
+               INTEGERn =&gt; STRING,
+             )</code></pre>
+
+<p>where INTEGER is the computer id from the database and STRING is the display name of the computer.</p>
+
+<h2 id="getComputerTunnelProtocols">getComputerTunnelProtocols()</h2>
+
+<p>Gets the supported protocols for remote control on the computer specified.</p>
+
+<p>Accepts only one input parameter: id. INTEGER. Required. It defines the entity ID from the AURORA database of the computer that one wishes to get the supported protocols of.</p>
+
+<p>Upon success returns an ARRAY:</p>
+
+<pre><code>protocols = [&quot;PROT1&quot; .. &quot;PROTn&quot;]</code></pre>
+
+<p>where PROT1 and so on is the textual name of the protocol(s) supported.</p>
+
+<h2 id="listComputerFolder">listComputerFolder()</h2>
+
+<p>List the folder contents of a computer.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> The computer entity ID from the database of the computer to list folder contents of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>path</b> The relative path (to the storage area defined for the computer) to list. STRING. Optional. Will default to top of the storage area defined for computer.</p>
+
+</li>
+</ul>
+
+<p>The method will use the Store-method defined in the computers StoreCollection metadata in the first get-store defined. It will attempt to utilize that Store-instance to list the contents of the computer folder.</p>
+
+<p>Any double dots (&quot;..&quot;) will be squashed.</p>
+
+<p>Upon success the method returns the following structure:</p>
+
+<pre><code>class       =&gt; STRING
+path        =&gt; STRING
+useusername =&gt; [0||1] # says if username has been appended to datapath
+username    =&gt; STRING # only present if useusername = 1.
+folder =&gt; (
+            F =&gt; (
+                   FILENAMEa =&gt; (
+                                  type =&gt; STRING # F (file)
+                                  name =&gt; STRING # file name
+                                  size =&gt; INTEGER # size of file in bytes
+                                  datetime =&gt; INTEGER # datetime in UTC of file
+                                )
+                   .
+                   .
+                   FILENAMEn =&gt; (
+                                  ....
+                                )
+                 )
+            D =&gt;
+                 (
+                   FOLDERNAMEa =&gt; (
+                                    type =&gt; STRING # D (folder) 
+                                    name =&gt; STRING # name of folder object 
+                                    size =&gt; INTEGER # size of folder entry (not its contents)
+                                    datetime =&gt; INTEGER # datetime in UTC of folder object.
+                                 )
+                   .
+                   .
+                   FOLDERNAMEn =&gt; ( ... )
+                 )
+            L =&gt; (
+                   LINKNAMEa =&gt; (
+                                  type =&gt; STRING # L (symlink)
+                                  name =&gt; STRING # name of link object
+                                  size =&gt; INTEGER # size of link entry (not its contents)
+                                  datetime =&gt; INTEGER # datetime in UTC of link object
+                                  target =&gt; STRING # name of target or source that symlink points to
+                                )
+                   .
+                   .
+                   LINKNAMEn =&gt; ( ... )
+                 )
+          )</code></pre>
+
+<p>Class is the Store-class used to get the folder-listing in textual format (eg. &quot;Store::RSyncSSH&quot;). Path is the complete path used on the local computer to access the folder being listed.</p>
+
+<p>The folder return value contains a sub-structure that first defines the objects in that folder sorted in its type (either F for File, D for Folder or L for symlink). Under that we have FILENAMEx, FOLDERNAMEx and LINKNAMEx, which are the names of the objects of that given type (either File, Folder or Symlink). Under each named entry the data for each item is listed: type, size, name and datetime. The folder sub-structure can be read more about in the documentation of the Store-classes.</p>
+
+<p>The &quot;userusername&quot; return value says if the computer has a policy that states if the username is to be added to the datapath defined for the computer entity. It is either 1 (true) or 0 (false) if this is enforced by policy. If the useusername value is 1, another value &quot;username&quot; is present that gives the username being added.</p>
+
+<h2 id="moveComputer">moveComputer()</h2>
+
+<p>Moves a computer entity to another part of the entity tree.</p>
+
+<p>Input is:</p>
+
+<ul>
+
+<li><p><b>id</b> Computer entity ID from the database of the computer to move. INTEGER. Required.</p>
+
+</li>
+<li><p><b>parent</b> Parent group entity ID from the database of the group which will be the new parent of the computer. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>The method requires the user to have COMPUTER_MOVE permission on the computer being moved and COMPUTER_CREATE on the parent group it is being moved to.</p>
+
+<h2 id="openComputerTunnel">openComputerTunnel()</h2>
+
+<p>This method attempts to open a tunnel on a gatekeeper-server for a client to a computer in AURORA for remote access and control.</p>
+
+<p>Accepts the following input parameteres:</p>
+
+<ul>
+
+<li><p><b>id</b> Entity ID from the AURORA database of the computer that you want to open a tunnel to. INTEGER. Required.</p>
+
+</li>
+<li><p><b>client</b> DNS or IP of client computer that is to be allowed to tunnel to the computer specified in the id-parameter. STRING. Optional. If not specified will default to IP-address of the caller of the method.</p>
+
+</li>
+<li><p><b>protocol</b> Protocol to use when opening the tunnel. STRING. Required. This is the textual name of the protocol to use when connecting to the computer in the AURORA-system. It decides which port to open and the textual name has to match one of the names in the template definition on the computer in question. The textual name is always in uppercase, but if specified in lower case, it will be converted.</p>
+
+</li>
+<li><p><b>forceipv4</b> Decides if the method is to force IPv4 conversion (A-record) of the DNS- or IP address of the client-address and the gatekeeper-address specified in the computer-template. BOOLEAN. Optional. If not specified it will default to 1 or true. Acceptable values are 0 for false, 1 for true. The gatekeeper address is only converted for use in the returned data of the tunnel-data. If some of these addresses are already IPv4 A-records, they are kept as-is.</p>
+
+</li>
+</ul>
+
+<p>This method required that the user calling the method has the COMPUTER_REMOTE-permission on the computer entity in question (as identified by the id-parameter).</p>
+
+<p>The method also uses template-information for the computer entity that one tries to open a tunnel to.</p>
+
+<p>The template is to have the following structure in AURORA:</p>
+
+<pre><code>.system.gatekeeper.script = &quot;/whatever/path/to/gatekeeper-script&quot;
+.system.gatekeeper.host = &quot;mygatekeeper.server.domain&quot;
+.system.gatekeeper.username = &quot;username&quot;
+.system.gatekeeper.keyfile = &quot;mykeyfile.gk_keyfile&quot;
+.system.gatekeeper.knownhosts = &quot;KNOWNHOSTS_DATA&quot;
+.system.gatekeeper.protocols.RDP = 3389
+.system.gatekeeper.protocols.VNC = 5900</code></pre>
+
+<p>Important to note here is that the keyfile that is used to connect to the gatekeeper-server needs to have an ending called &quot;.gk_keyfile&quot;. The keyfile for the gatekeeper needs to reside in the sandbox-location of the AURORA-server (please see the sandbox-location in the settings-file). The protocols part of the structure can consist of as many protocols as one has available for the computers at the location in the AURORA entity tree that the template takes effect. Please note also that the protocols needs to have uppercase names. When calling the method, the uppercase protocol names specified here are the ones that will be valid for a computer in question.</p>
+
+<p>Returns the following answer upon success:</p>
+
+<pre><code>tunnel =&gt; &quot;GATEKEEPER-SERVER:PORT&quot;</code></pre>
+
+<p>where PORT is the new port that is available for the client in question to use in order to reach the remote admin features of the computer in question. The GATEKEPPER-SERVER is the IPv4-converted A-record of the gatekeeper-server if forceipv4 is enabled.</p>
+
+<h2 id="setComputerMetadata">setComputerMetadata()</h2>
+
+<p>Sets metadata on the computer entity.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> The computer entity ID from the database to set metadata on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>metadata</b> The metadata key-&gt;values to set on the computer. HASH. Required. If none is specified, it will basically set the existing values for the computer metadata again.</p>
+
+</li>
+<li><p><b>mode</b> The mode that the metadata is updated with. STRING. Optional. Defaults to &quot;UPDATE&quot;. Valid values are either &quot;UPDATE&quot; or &quot;REPLACE&quot;. This sets if the metadata that is delivered to the method is to be appended/updated on the computer or if it is to replace all non-system metadata (under &quot;.&quot;-something).</p>
+
+</li>
+</ul>
+
+<p>The metadata input will only accept metadata in the non-system namespace (starting with &quot;.&quot;).</p>
+
+<p>The method requires the user to have the COMPUTER_CHANGE permission on the computer specified in order to succeed.</p>
+
+<h2 id="setComputerName">setComputerName()</h2>
+
+<p>Set the display name of the computer.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Computer entity ID from the database of the computer to change name. INTEGER. Required.</p>
+
+</li>
+<li><p><b>name</b> The new computer name to set. STRING. Required. Does not accept blank string and the new name must not conflict with any existing computer name on the same GROUP-level in the tree (including itself).</p>
+
+</li>
+</ul>
+
+<p>Method requires the user to have the COMPUTER_CHANGE permission on the computer changing its name.</p>
+
+<h1 id="DATASET-METHODS">DATASET METHODS</h1>
+
+<h2 id="changeDatasetExpireDate">changeDatasetExpireDate()</h2>
+
+<p>Change the dataset&#39;s expiration date.</p>
+
+<p>This method takes the following parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Dataset ID from the database of the dataset to change expiration date on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>expiredate</b> The new expire date to set on the dataset in question. INTEGER. Required. This is the unix datetime to set in seconds from epoch (19700101) or relative to old/current expire date. The difference between absolute and relative expiredate is determined by the signing of the expiredate-parameter. If the expiredate is &gt; 0, then it is absolute, if expiredate &lt; 0 it is taken as a relative number of seconds since the current expire date.</p>
+
+</li>
+</ul>
+
+<p>This method required that the user has the DATASET_DELETE-permission on the dataset in question. If the user wished to extend the expiration date of the dataset beyond the limit set in template(s) on the &quot;extendlimit&quot;-setting or beyond the maximum extension time per attempt to extend (extendmax), the user needs the DATASET_EXTEND_UNLIMITED-permission. Please note that in either case the DATASET_DELETE-permission is needed.</p>
+
+<p>Changing expire-dates in AURORA relies on some settings through templates called:</p>
+
+<p>- system.dataset.close.extendmax - system.dataset.close.extendlimit</p>
+
+<p>These two settings are read from AURORA when the user attempts to change the expire date and the ones in effect through templates will be used.</p>
+
+<p>The general rule is that the user with the DATASET_DELETE-permission can choose to extend the expire-date of the dataset with a maximum of &quot;extendmax&quot;-seconds per time he tries to change the expire date. Furthermore, he can only extend the expiration date of the dataset up until the &quot;extendlimit&quot;-settings, which is basically used as the number of seconds after the close-date of the dataset in question. So, the user cannot extend the expire-date of the dataset beyond this limit. In order to do that, the template(s) in effect needs to be changed or he needs to additionally have the DATASET_EXTEND_UNLIMITED- permission on the dataset, which are typically only given to administrators.</p>
+
+<p>The user can however without any hindrances limit the expire-date down to the current time and basically then ask for the dataset to expire immediately. This will, however, not remove the dataset immediately, but start a voting-process on whether this is to be done or not.</p>
+
+<p>Upon success this method returns the new expiredate that has been set:</p>
+
+<pre><code>expiredate =&gt; INTEGER</code></pre>
+
+<h2 id="checkDatasetTemplateCompliance">checkDatasetTemplateCompliance()</h2>
+
+<p>Checks the given metadata&#39;s compliance with the dataset aggregated template.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>computer</b> Computer entity ID from the database that identifies where to fetch dataset templates from computer. INTEGER. Required. When the aggregated template is figured out, it first takes the aggregated dataset template from the computer and merges it with aggregated template valid on the group that is the parent of the dataset.</p>
+
+</li>
+<li><p><b>id</b> Dataset entity ID from the database of the dataset that is the basis for the compliance check. INTEGER. Optional. This must be specified if the dataset that is the basis for the compliance check already exists. If it doesn&#39;t exist, this value can be left undefined and instead specify the &quot;parent&quot; parameter (see below).</p>
+
+</li>
+<li><p><b>metadata</b> This is the metadata to check the compliance of. HASH. Required. This is a set of key-&gt;value pairs.</p>
+
+</li>
+<li><p><b>parent</b> Group entity ID from the database that is to be the parent of a not yet existing dataset. INTEGER. Optional. If the parameter &quot;id&quot; is not specified it is required to fill in the &quot;parent&quot;, so that this method can check compliance for a set of metadata against at dataset created under a certain group entity.</p>
+
+</li>
+</ul>
+
+<p>Returns the following structure:</p>
+
+<pre><code>   compliance =&gt; INTEGER  # Overall compliance. 0 for non-compliant, 1 for compliant.
+   noncompliance =&gt; ARRAY # contains the names (STRING) of the metadata key(s) (or template key(s)) that are non-compliant. The ARRAY will be empty if metadata is compliant.
+   metadata =&gt; (
+                 KEYa =&gt; (
+                           comment =&gt; STRING # textual explanation of what value(s) are required on this key.
+                           compliance =&gt; INTEGER # 0 = non-compliant, 1 = compliant. Refer to this specific key.
+                           default =&gt; STRING or ARRAY # default value(s) if none is specified. Comes from template.
+                           flags =&gt; ARRAY # textual flags that are set, if any.
+                           min =&gt; INTEGER # minimum number of values into this key. 0 = no minimum, N &gt; 0 = minimum number needed
+&nbsp;                          max =&gt; INTEGER # maximum number of values allowed in this key. 0 = no maximum, N &gt; 0 = maximum allowed
+                           reason =&gt; STRING # textual explanation why a key is not in compliance (if it is non-compliant).
+                           regex =&gt; STRING # regex that are used to check the value specified to this key.
+                           value =&gt; STRING or ARRAY # value from metadata into method or from template                                                     
+                         )
+                 .
+                 .
+                 KEYn =&gt; ( ... )
+               )</code></pre>
+
+<p>For more information about the return structure (especially the metadata sub-structure), look at the setTemplate-method of the REST-server.</p>
+
+<h2 id="closeDataset">closeDataset()</h2>
+
+<p>Closes a dataset.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Dataset entity ID from the database that identifies the dataset that one wishes to close. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the DATASET_CLOSE permission on the dataset in question.</p>
+
+<h2 id="createDataset">createDataset()</h2>
+
+<p>Creates a new dataset.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>computer</b> Computer entity ID from the database that is used to create dataset. It is used to note which computer the dataset came from, but also to collect any inherited template settings on that computer for datasets. This aggregated template is then combined with the template aggregated from the group that the dataset is created on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>delete</b> Specifies if the data of the dataset is to be deleted from the computer that it was fetched from after being transferred. INTEGER. 0 = no, 1 = yes. Optional. It is only used by automated datasets.</p>
+
+</li>
+<li><p><b>metadata</b> Metadata entries for the creation of the dataset. HASH. Optional. The metadata specified key-&gt;value pairs for values that are required by the template.</p>
+
+</li>
+<li><p><b>parent</b> Group entity ID from the database that the dataset is to be created on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>path</b> Relative path to where to fetch dataset data from? STRING. Optional. It is only required when creating automated datasets in order to tell AURORA which sub-folder one wants to archive from the computer.</p>
+
+</li>
+<li><p><b>type</b> Specifies the dataset type to create. STRING. Optional. Defaults to AUTOMATED. Valid values are only &quot;AUTOMATED&quot; or &quot;MANUAL&quot;.</p>
+
+</li>
+</ul>
+
+<p>The method requires that the user has the DATASET_CREATE permission on the parent group in question. Furthermore, if the dataset is a automated dataset, the user also needs the COMPUTER_READ permission on the computer in question.</p>
+
+<p>Upon success returns the id of the newly created dataset in the id-field:</p>
+
+<pre><code>id =&gt; INTEGER</code></pre>
+
+<h2 id="createDatasetToken">createDatasetToken()</h2>
+
+<p>Create a dataset token.</p>
+
+<p>Input parameters</p>
+
+<ul>
+
+<li><p><b>id</b> Dataset ID from database of the dataset to create a token for. INTEGER. Required unless token is given.</p>
+
+</li>
+<li><p><b>token</b> Existing dataset token to extract dataset id from. Overrides id. Required unless id is given.</p>
+
+</li>
+<li><p><b>expire</b> The expire time in unixtime. Negative numbers are relative (-3600 is one hour from now). Setting expire to the past results in error.</p>
+
+</li>
+</ul>
+
+<p>Required permission:</p>
+
+<ul>
+
+<li><p>DATASET_CREATE on an open (rw) dataset</p>
+
+</li>
+<li><p>DATASET_READ on a closed (ro) dataset.</p>
+
+</li>
+</ul>
+
+<p>Returns the following structure upon success:</p>
+
+<pre><code>token =&gt; STRING</code></pre>
+
+<h2 id="deleteDatasetMetadata">deleteDatasetMetadata()</h2>
+
+<p>Delete metadata from a dataset.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Dataset entity ID from the database of the dataset to delete metadata on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>metadata</b> The metadata to remove from the dataset specified. HASH. Optional. If not specified will delete all non-system metadata (starting with &quot;.&quot;).</p>
+
+</li>
+</ul>
+
+<p>The dataset cannot have been removed, because then it is not allowed to delete metadata.</p>
+
+<p>The method requires that the user has the DATASET_CHANGE permission on the specified dataset.</p>
+
+<p>It is only permitted with the open namespace keys in the metadata (starting with &quot;.&quot;). Other keys are removed from the input.</p>
+
+<h2 id="enumDatasetPermTypes">enumDatasetPermTypes()</h2>
+
+<p>Enumerates the dataset permission types.</p>
+
+<p>No input is accepted.</p>
+
+<p>Returns the dataset permission types in the following structure:</p>
+
+<pre><code>types =&gt; [ PERMa, PERMb .. PERMn ]</code></pre>
+
+<p>The PERMa and so on are the textual name of the permission type. The types are returned as an ARRAY of STRING.</p>
+
+<h2 id="extendDatasetToken">extendDatasetToken()</h2>
+
+<p>Adjust expire time for a dataset token. An expired or removed token will be reinstated.</p>
+
+<p>Input parameters</p>
+
+<ul>
+
+<li><p><b>token</b> Existing dataset token to extend.</p>
+
+</li>
+<li><p><b>expire</b> The new expire time in unixtime. Negative numbers are relative (-3600 is one hour from now). Setting expire to the past results in error. The new expire time may be before exsisting time to shorten the lifetime.</p>
+
+</li>
+</ul>
+
+<p>Required permission:</p>
+
+<ul>
+
+<li><p>DATASET_CREATE on an open (rw) dataset</p>
+
+</li>
+<li><p>DATASET_READ on a closed (ro) dataset.</p>
+
+</li>
+</ul>
+
+<p>Returns the following structure upon success:</p>
+
+<pre><code>token =&gt; STRING</code></pre>
+
+<h2 id="getDatasetAggregatedPerm">getDatasetAggregatedPerm()</h2>
+
+<p>Gets the inherited or aggretaed permission on a given dataset.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Dataset entity ID from the database of the dataset to get inherited permission on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> User entity ID from the database of the user that the permission is valid for. INTEGER. Optional. Will default to authenticated user on the REST-server if no user id has been specified.</p>
+
+</li>
+</ul>
+
+<p>The result upon success is returned in the following structure:</p>
+
+<pre><code>perm =&gt; [ PERMa, PERMb .. PERMb ]</code></pre>
+
+<p>PERMa and so on is the textual name of the permission type. The perm-key is a ARRAY of STRING. The perm-key can be an empty array if user has no permissions on the given dataset.</p>
+
+<h2 id="getDatasetExpirePolicy">getDatasetExpirePolicy()</h2>
+
+<p>Gets the open- and close expire policies in effect for a given dataset.</p>
+
+<p>Accepted input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Dataset ID of dataset to get expire policy of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>This method returns both the open- and close expire policies in effect for a given dataset.</p>
+
+<p>Upon success the method returns the following structure:</p>
+
+<pre><code>expirepolicy =&gt; (
+                  open =&gt; (
+                            lifespan =&gt; INTEGER
+                            extendmax =&gt; INTEGER
+                            extendlimit =&gt; INTEGER
+                          )
+                  close =&gt; (
+                             lifespan =&gt; INTEGER
+                             extendmax =&gt; INTEGER
+                             extendlimit =&gt; INTEGER
+                           )
+                )</code></pre>
+
+<h2 id="getDatasetLog">getDatasetLog()</h2>
+
+<p>Gets the log for the dataset.</p>
+
+<p>Input parameters</p>
+
+<ul>
+
+<li><p><b>id</b> Dataset entity ID of the dataset to get the log of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>loglevel</b> Start loglevel to get log entries from. STRING. Optional. This parameter specified which loglevel is the lowest that one wants to get. The method will return everything from that level and up in the response. If loglevel is not specified it defaults to &quot;DEBUG&quot;. The method will then return all log messages from loglevel DEBUG and up.</p>
+
+</li>
+</ul>
+
+<p>Upon success the following structure is returned:</p>
+
+<pre><code>loglevel =&gt; STRING # the loglevel start point for the entries returned
+log =&gt; (
+         1 =&gt; (
+                loglevel =&gt; STRING  # the loglevel of this, specific log-entry
+                message  =&gt; STRING  # the textual string of the log entry itself
+                time     =&gt; STRING  # unix datetime in hi-res of the log entry (eg. 12345678.1234). String of float.
+                idx      =&gt; INTEGER # the auto-increment value of this log entry in the database
+                tag      =&gt; STRING  # the textual tag string for the entry. Defaults to &quot;NONE&quot;.
+              )
+         .
+         .
+         N =&gt; ( ... )
+       )</code></pre>
+
+<p>The returned log entries are returned with the key as an INTEGER giving the correct timed order of the entries. The key is just a running number from 1 to N (depending on size of log).</p>
+
+<p>The method requires that the user has the DATASET_LOG_READ permission on the given dataset.</p>
+
+<h2 id="getDatasetMetadata">getDatasetMetadata()</h2>
+
+<p>Gets the metadata of a dataset.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Dataset entity ID from the database to get the metadata of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>The returned information upon success is the following structure:</p>
+
+<pre><code>metadata =&gt; (
+              KEYa =&gt; STRING
+              KEYb =&gt; STRING
+              .
+              .
+              KEYc =&gt; STRING
+            )</code></pre>
+
+<p>KEY in this case is the textual name of the metadata key (STRING). It points to the value of that key, also being a STRING.</p>
+
+<p>The method requires that the user has either the DATASET_READ, DATASET_CHANGE or DATASET_METADATA_READ permissions on the dataset specified.</p>
+
+<p>It only returns metadata in the open namespace (starting with &quot;.&quot;).</p>
+
+<h2 id="getDatasetPerm">getDatasetPerm()</h2>
+
+<p>Gets the permissions on a given dataset entity (not inherited/aggregated).</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Dataset entity ID from the database that one wishes to get the permissons on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> User entity ID from the database which one wishes to get the permissions of. INTEGER. Optional. If no user entity id has been specified it will default to the authenticated user on the REST-server.</p>
+
+</li>
+</ul>
+
+<p>The result upon success is returned in the following structure:</p>
+
+<pre><code>perm =&gt; (
+          grant =&gt; [ PERMa, PERMb .. PERMn ]
+          deny =&gt; [ PERMa, PERMb .. PERMn ]
+        )</code></pre>
+
+<p>PERMa and so on are the textual permission that the given user has on the specified dataset. Permissions on a dataset itself are divided into &quot;grant&quot; and &quot;deny&quot; permissions. Deny is applied before grant.</p>
+
+<h2 id="getDatasetPerms">getDatasetPerms()</h2>
+
+<p>Gets all the permission(s) on a given dataset entity, both inherited and what has been set and the effective perm for each user who has any permission(s).</p>
+
+<p>Input parameter is:</p>
+
+<ul>
+
+<li><p><b>id</b> Dataset entity ID from the database that one wishes to get the permissions on. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon success the resulting structure returned is:</p>
+
+<pre><code>perms =&gt; (
+           USERa =&gt; (
+                      inherit =&gt; [ PERMa, PERMb .. PERMn ] # permissions inherited down on the dataset from above
+                      deny =&gt; [ PERMa, PERMb .. PERMn ] # permissions denied on the given dataset itself.
+                      grant =&gt; [ PERMa, PERMb .. PERMn ] # permissions granted on the given dataset itself. 
+                      perm =&gt; [ PERMa, PERMb .. PERMn ] # effective permissions on the given dataset (result of the above)
+                    )
+           .
+           .
+           USERn =&gt; ( .. )
+         )</code></pre>
+
+<p>USERa and so on are the USER entity ID from the database who have permission(s) on the given dataset. An entry for a user only exists if that user has any permission(s) on the dataset. The sub-key &quot;inherit&quot; is the inherited permissions from above in the entity tree. The &quot;deny&quot; permission(s) are the denied permission(s) set on the dataset itself. The &quot;grant&quot; permission(s) are the granted permission(s) set on the dataset itself. Deny is applied before grant. The sub-key &quot;perm&quot; is the effective or resultant permission(s) after the others have been applied on the given dataset.</p>
+
+<p>The permissions that users has through groups on a given dataset are not expanded. This means that the group will be listed as having permissions on the dataset and in order to find out if the user has any rights, one has to check the membership of the group in question (if the user is listed there).</p>
+
+<p>Permission information is open and requires no permission to be able to read. PERMa and so on are the textual permission type that are set on one of the four categories (inherit, deny, grant and/or perm). These four categories are ARRAYS of STRING. Some of the ARRAYS can be empty, although not all of them (then there would be no entry in the return perms for that user).</p>
+
+<p>The perms-structure can be empty if no user has any permission(s) on the dataset.</p>
+
+<h2 id="getDatasets">getDatasets()</h2>
+
+<p>Search for and return datasets that match search criteria.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>count</b> Number of matches to return. INTEGER. Optional. If not specified it will default to 2^64-1. It is not possible to ask for more than the default number of matches at a time (see offset parameter).</p>
+
+</li>
+<li><p><b>metadata</b> The SQLStruct of search criteria. ARRAY. Optional. If not specified will return all datasets that user has the necessary permission(s) on. See the main REST-server introduction for information on the SQLStruct structure and use.</p>
+
+</li>
+<li><p><b>offset</b> The start offset in the search matches found. INTEGER. Optional. Must be a positive integer &gt;= 1. If none is specified it defaults to 1. This parameter together with the &quot;count&quot; parameter defines the returned search match window. It utilizes the functions of the SQL database to limit the search matches returned thus optimizing speed.</p>
+
+</li>
+<li><p><b>sort</b> Sorts the matches in either ascending or descending order. STRING. Optional. If none is given it will default to ascending. This parameter must either be &quot;ASC&quot; or &quot;DESC&quot;.</p>
+
+</li>
+<li><p><b>sortby</b> Sets the metadata key to sort the matches by. STRING. Optional. If none is given it will default to &quot;system.dataset.time.created&quot; (dataset creation time). As the default key indicates this parameter accepts to be set to a system metadata key (even though it might not be returned in the match).</p>
+
+</li>
+<li><p><b>sorttype</b> Sets the way the result is to be sorted. INTEGER. Optional. Must be a value from 0 to 2. If none is given the default is 0 (case-insensitive alphanumerical sort). The valid values means the following: 0 = case-insensitive alphanumerical sort, 1 = numerical sort, 2 = case-sensitive alphanumerical sort.</p>
+
+</li>
+</ul>
+
+<p>This method will only return datasets that the user has the necessary permission(s) on. In order for a dataset to be returned in the match (besides matching the given search criteria) the user must have one or more of the following permissions: DATASET_DELETE, DATASET_CHANGE, DATASET_MOVE, DATASET_PUBLISH, DATASET_RERUN, DATASET_PERM_SET, DATASET_READ, DATASET_LOG_READ or DATASET_LIST. Please see separate documentation for an explanation of the meaning of the various permissions.</p>
+
+<p>Upon success the method will return the following HASH structure:</p>
+
+<pre><code>returned =&gt; INTEGER # number of returned matches (dependant upon count parameter)
+total =&gt; INTEGER    # number of matches in total (of the search, irrespective of the count parameter)
+metadata =&gt; ()      # HASH structure with the cleaned version of the metadata as used in the search
+datasets =&gt; (
+              1 =&gt; (
+                     computerid =&gt; INTEGER  # computer entity id which is/was the source of the dataset
+                     computername =&gt; STRING # textual name of computer which is/was the source of the dataset
+                     created =&gt; STRING      # timedate in unixtime (UTC) of dataset creation time (hires time with microsecs - 12345678.54321). String of float.
+                     creator =&gt; STRING      # textual name of the creator from metadata
+                     creatorid =&gt; INTEGER   # user entity ID from database of creator at creation time (might not be the same as &quot;creator&quot; from metadata.)
+                     description =&gt; STRING  # Dublin Core description metadata
+                     expire =&gt; STRING       # timedate in unixtime (UTC) of dataset expiration time (hires time with microseconds - 12345678.54321). String of float.
+                     id =&gt; INTEGER          # dataset entity ID from database
+                     perm =&gt; ARRAY          # the permission(s) that the user has on the dataset
+                     status =&gt; STRING       # current status of dataset (open, closed)
+                     removed =&gt; STRING      # timedate when dataset was removed, or 0 if not removed yet.
+                     type =&gt; STRING         # MANUAL or AUTOMATED.
+                     parentid =&gt; INTEGER    # entity id of dataset parent
+                     parentname =&gt; STRING   # textual name of dataset parent
+                     entitytype =&gt; INTEGER  # entity type of dataset (which is dataset)
+                   )
+              .
+              .
+              N =&gt; ( ... )
+            )</code></pre>
+
+<p>Some of the values placed in the datasets sub-hash are system metadata that are deemed necessary to be there and accessible/readable.</p>
+
+<p>Lastly, some of the values in the datasets sub-hash are aggregates from other parts of the database, such as the perm-value (an aggregate of the users permissions on the dataset in question based on the entity tree).</p>
+
+<p>The immediate key in the datasets sub-hash are numbers from 1 to N. These signify the order of the returned matches and are always numbered 1 to N, independant upon how the search window has been defined (see the offset- and count- parameters).</p>
+
+<p>Please note that the &quot;metadata&quot; sub-hash will always be returned, even upon failure. It shows the metadata-structure as it was used after cleaning in the search. It is a good point to check if any of the search criteria keys have been removed because they are not allowed to be used in the search. This might lead to metadata-structures that are not usable by the REST-server and it fails its SQL-search.</p>
+
+<h2 id="getDatasetSystemAndMetadata">getDatasetSystemAndMetadata()</h2>
+
+<p>Get a dataset&#39;s system- (only a subset) and open metadata.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Dataset entity ID from database of the dataset to get metadata of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>The method will only retrieve a sub-set of the system metadata (see the getDatasetSystemMetadata method). All of the open metadata are also returned with the subset of the system metadata.</p>
+
+<p>It is required for the user to have either DATASET_READ, DATASET_CHANGE or DATASET_METADATA_READ permission(s) on the dataset in question.</p>
+
+<h2 id="getDatasetSystemMetadata">getDatasetSystemMetadata()</h2>
+
+<p>Get a sub-set of the dataset&#39;s system metadata (non-open metadata).</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Dataset entity ID from the database of the dataset to get system metadata of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>The method will only get a sub-set of the system metadata that are considered acceptable to deliver. Per today these are: dataset- status, created (datetime of creation), closed (datetime when it was closed), expire (datetime of expire time), deleted (if it has been deleted or not), type (AUTOMATED or MANUAL) and creator (who created the dataset).</p>
+
+<p>It is required for the user to have either the DATASET_READ, DATASET_CHANGE or DATASET_METADATA_READ permission(s) on the dataset in question.</p>
+
+<h2 id="getDatasetTemplate">getDatasetTemplate()</h2>
+
+<p>Get the aggregated dataset template.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>computer</b> Computer entity ID from database of the computer that the dataset comes from. INTEGER. Optional/Required. It is used to fetch any dataset templates that are placed on the computer or its ancestors. This parameter is not needed if the &quot;id&quot;-parameter has been defined.</p>
+
+</li>
+<li><p><b>id</b> Dataset entity ID of the dataset to get aggregated template of. INTEGER. Optional/Required. This parameter is not required if one has set the parent parameter. If no parent-parameter is set this parameter must be specified.</p>
+
+</li>
+<li><p><b>parent</b> Group entity ID from the database of the parent group that a non-existing dataset is to be placed on. This enables to get the metadata template of a dataset that has not been created yet (have a look at the conundrum of the who came first of the hen and the egg).</p>
+
+</li>
+</ul>
+
+<p>Upon success the following structure is returned:</p>
+
+<pre><code>  template = (
+               KEYa =&gt; (
+                         comment =&gt; STRING # textual explanation of what value(s) are required on this key.
+                         default =&gt; STRING or ARRAY # default value(s) if none is specified. Comes from template.
+                         flags =&gt; ARRAY # textual flags that are set, if any.
+                         min =&gt; INTEGER # minimum number of values into this key. 0 = no minimum, N &gt; 0 = minimum number needed
+&nbsp;                        max =&gt; INTEGER # maximum number of values allowed in this key. 0 = no maximum, N &gt; 0 = maximum allowed
+                         regex =&gt; STRING # regex that are used to check the value specified to this key.
+                       )
+                 .
+                 .
+                 KEYn =&gt; ( ... )               
+             )</code></pre>
+
+<p>For more information about the return structure (especially the metadata sub-structure), look at the setTemplate-method of the REST-server.</p>
+
+<h2 id="listDatasetFolder">listDatasetFolder()</h2>
+
+<p>Lists the files- and folders- in the stored dataset.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Dataset entity ID from database of the dataset to list content of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>md5sum</b> Set if all encountered files are to be md5-summed or not? INTEGER. Optional. Default is 0/false. Valid values are 0 for false and 1 for true.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the DATASET_READ permission on the dataset in question.</p>
+
+<p>Upon success the following structure is returned:</p>
+
+<pre><code>folder =&gt; (
+          ITEMNAMEa =&gt; (
+                         &quot;.&quot; =&gt; (
+                                  name =&gt; STRING # name of the item, in this case a folder
+                                  type =&gt; STRING # either D or F, in this case D for folder.
+                                  size =&gt; INTEGER # size of item in bytes.
+                                  atime =&gt; INTEGER # atime of item in unix datetime.
+                                  mtime =&gt; INTEGER # mtime of item in unix datetime.
+                                  md5 =&gt; STRING; # md5-sum of file, if enabled.
+                                )
+                         ITEMNAMEc =&gt; ( ... )
+                         ITEMNAMEd =&gt; ( ... )
+                         .
+                         .
+                         ITEMNAMEx
+                       )
+          ITEMNAMEb =&gt; (
+                         &quot;.&quot; =&gt; (
+                                  name =&gt; STRING # name of item, in this case a file
+                                  type =&gt; STRING # either D or F, in this case F for file.
+                                  size =&gt; INTEGER # size of item in bytes.
+                                  atime =&gt; INTEGER # atime of item in unix datetime.
+                                  mtime =&gt; INTEGER # mtime of item in unix datetime.
+                                )
+                       )
+          .
+          .
+          ITEMNAMEn
+        )</code></pre>
+
+<p>The &quot;folder&quot; hash structure starts with the items in the top folder of the dataset. These items can be either files or folders. The name of this item is put into the sub-hash of the itemname under the &quot;.&quot;-name. This is done for both files and folders (to maintain the similarity of the structure). The reason for folders is obviously because this information cannot be stored directly in the sub-hash as it may conflict with item-names in that folder. &quot;.&quot; on the other hand signifies the folder itself and as such is also used for the file-item entries.</p>
+
+<p>Each item in the returned result has a key called &quot;type&quot; and it is either filled with a &quot;D&quot; for folder or a &quot;F&quot; for file.</p>
+
+<p>Error-messages on the md5 attribute will have the form: &quot;N/A: Some Error Message&quot;.</p>
+
+<h2 id="moveDataset">moveDataset()</h2>
+
+<p>Move a dataset to another group entity.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Dataset entity ID from database of the dataset to move. INTEGER. Required.</p>
+
+</li>
+<li><p><b>parent</b> Group entity ID from database of the group to move the dataset to. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the DATASET_MOVE permission on the dataset being moved and the DATASET_CREATE permission on the new parent group.</p>
+
+<h2 id="removeDataset">removeDataset()</h2>
+
+<p>Attempts to remove a dataset.</p>
+
+<p>This method accepts the following input:</p>
+
+<ul>
+
+<li><p><b>id</b> The Dataset ID from the database to remove. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>This method requires the DATASET_DELETE permission on the dataset in question.</p>
+
+<p>It is not allowed to remove open datasets - they must be closed first. If the dataset is closed, calling this method will start a dataset remove notification-process that can eventually lead to the removal of the dataset by the Maintenance-service.</p>
+
+<h2 id="removeDatasetToken">removeDatasetToken()</h2>
+
+<p>Remove a dataset token.</p>
+
+<p>Input parameters</p>
+
+<ul>
+
+<li><p><b>token</b> Existing dataset token to remove.</p>
+
+</li>
+</ul>
+
+<p>Required permission:</p>
+
+<ul>
+
+<li><p>DATASET_CREATE on an open (rw) dataset</p>
+
+</li>
+<li><p>DATASET_READ on a closed (ro) dataset.</p>
+
+</li>
+</ul>
+
+<p>Returns the following structure upon success:</p>
+
+<pre><code>token =&gt; STRING</code></pre>
+
+<h2 id="setDatasetMetadata">setDatasetMetadata()</h2>
+
+<p>Set the metadata of the dataset.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Dataset entity ID from the database of the dataset to set metadata on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>metadata</b> The metadata hash of the key-&gt;values to set on the specified dataset. HASH. Required.</p>
+
+</li>
+<li><p><b>mode</b> The mode that the metadata is updated with. STRING. Optional. Defaults to &quot;UPDATE&quot;. Valid values are either &quot;UPDATE&quot; or &quot;REPLACE&quot;. This sets if the metadata that is delivered to the method is to be appended/updated on the dataset or if it is to replace all non-system metadata (under &quot;.&quot;-something).</p>
+
+</li>
+</ul>
+
+<p>The method requires that the user has the DATASET_CHANGE permission on the dataset in question. It is also required that the dataset has not been removed prior to trying to set/update any metadata.</p>
+
+<h2 id="setDatasetPerm">setDatasetPerm()</h2>
+
+<p>Set permissions on a dataset.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Dataset entity ID from the database of the dataset to set permissions on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> User entity ID from the database of the user to set permission for. INTEGER. Optional. If not specified will default to set permission for the user authenticated on the REST-server.</p>
+
+</li>
+<li><p><b>operation</b> How to set the permissions on the dataset in question. STRING. Optional. If not specified will default to &quot;APPEND&quot;. Accepted values are: &quot;APPEND&quot;, &quot;REPLACE&quot; or &quot;REMOVE&quot;.</p>
+
+</li>
+<li><p><b>grant</b> The grant permission(s) to set on the group. ARRAY of STRING. Optional.</p>
+
+</li>
+<li><p><b>deny</b> The deny permission(s) to set on the group. ARRAY of STRING. Optional.</p>
+
+</li>
+</ul>
+
+<p>This method requires the user to have the DATASET_PERM_SET permission.</p>
+
+<p>Upon success will return the following structure:</p>
+
+<pre><code>perm =&gt; (
+          grant =&gt; ARRAY    # STRINGs of permissions set
+          deny =&gt; ARRAY     # STRINGs of permissions set
+        )</code></pre>
+
+<p>This will be the grant- and deny- permissions that have ended up being set.</p>
+
+<h1 id="GROUP-METHODS">GROUP METHODS</h1>
+
+<h2 id="addGroupMember">addGroupMember()</h2>
+
+<p>Add a member to a group.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Group entity ID to add a member to. INTEGER. Required.</p>
+
+</li>
+<li><p><b>member</b> Entities to add to the group. ARRAY of INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the GROUP_MEMBER_ADD permission.</p>
+
+<h2 id="assignGroupTemplate">assignGroupTemplate()</h2>
+
+<p>Assign a templates on a group.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Group entity ID from database to assign template on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>templates</b> The list of templates to assign on the group in desired order. ARRAY of INTEGER. Optional. The array contains template entity IDs from the database. If no template ids are specified the method will clear the assignments on the given type.</p>
+
+</li>
+<li><p><b>type</b> The type that the assigned templates are to have on the group. STRING. Required. Denotes the entity type that the assigned template(s) will have effect as. Typically the value is: DATASET, GROUP and so on.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the GROUP_TEMPLATE_ASSIGN permission on the group in question.</p>
+
+<h2 id="createGroup">createGroup()</h2>
+
+<p>Create a new group.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>metadata</b> The metadata to set upon creating the dataset. HASH. Optional. If this is needed is dependant upon any templates that might be in effect. It can also be used to override the name-parameter if the key for an entity&#39;s name is filled in through the metadata (it will then take precedence over the name-parameter).</p>
+
+</li>
+<li><p><b>name</b> The display name of the new group. STRING. Optional/Required. It is optional and will be ignored if specified through the metadata hash. If not specified in the metadata hash, it is required. It is not allowed with blank names or just spaces.</p>
+
+</li>
+<li><p><b>parent</b> Group entity ID from the database of the group that is the parent of the new group being created. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>The method requires that the user has the GROUP_CREATE permission on the parent group of the group being created.</p>
+
+<p>The method will fail to create the group, if any template(s) in effect for the group are not compliant.</p>
+
+<p>Upon success will return the following values:</p>
+
+<pre><code>id =&gt; INTEGER # group entity ID of the newly created group.
+name =&gt; STRING # the resulting (after cleaning) textual name of the newly created group.</code></pre>
+
+<h2 id="deleteGroup">deleteGroup()</h2>
+
+<p>Delete a group.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> The group entity ID from the database of the group to delete. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>This method requires the user to have the GROUP_DELETE permission on the group being deleted.</p>
+
+<p>It also requires that there are no children attached to the group being deleted. If so, these must either be moved somewhere else or deleted before attempting to delete the group in question.</p>
+
+<h2 id="enumGroupPermTypes">enumGroupPermTypes()</h2>
+
+<p>Enumerate the group permissions types.</p>
+
+<p>No input is accepted.</p>
+
+<p>Upon success returns the following HASH-structure:</p>
+
+<pre><code>types =&gt; ARRAY of STRING # name(s) of the group permission types.</code></pre>
+
+<h2 id="enumGroups">enumGroups()</h2>
+
+<p>Enumerate all the groups that exists.</p>
+
+<p>No input parameters are accepted.</p>
+
+<p>Upon success will return the following HASH-structure:</p>
+
+<pre><code>groups =&gt; (
+            GROUPIDa =&gt; STRING # key-&gt;value, where key is the group entity ID and the value is the display name of the group.
+            .
+            .
+            GROUPIDx =&gt; STRING
+          )</code></pre>
+
+<h2 id="getGroupAggregatedPerm">getGroupAggregatedPerm()</h2>
+
+<p>Get inherited/aggregated permission(s) on the group for a user.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Group entity ID from database to get the aggregated permission(s) of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> User entity ID from database that identifies who the permission(s) are valid for. INTEGER. Optional. If not specified it will default to the currently authenticated user on the REST-server.</p>
+
+</li>
+</ul>
+
+<p>Upon success this method will return the following value:</p>
+
+<pre><code>perm =&gt; ARRAY of STRING # textual names of the permimssion(s) the user has on the given group.</code></pre>
+
+<h2 id="getGroupMembers">getGroupMembers()</h2>
+
+<p>Get the member(s) of a given group.</p>
+
+<p>The following input parameters are accepted:</p>
+
+<ul>
+
+<li><p><b>id</b> The group entity ID from the database of the group entity to get members of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the GROUP_MEMBER_ADD permission.</p>
+
+<p>Upon success will return the members of the given group in the following structure:</p>
+
+<pre><code>members =&gt; (
+             MEMBERa =&gt; STRING # textual name of the given member entity.
+             .
+             .
+             MEMBERx =&gt; STRING
+
+           )</code></pre>
+
+<p>MEMBERa and so on is the entity ID (INTEGER) of one of the member(s) in the given group.</p>
+
+<h2 id="getGroupName">getGroupName()</h2>
+
+<p>Get the display name of the group.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Group entity ID of the group to get the name of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon success returns the following value:</p>
+
+<pre><code>name =&gt; STRING # the textual name of the group entity specified.</code></pre>
+
+<h2 id="getGroupNoticeSubscriptions">getGroupNoticeSubscriptions()</h2>
+
+<p>Get users notice subscriptions on a group.</p>
+
+<p>Accepted parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Group ID from database of the group to get notice subscriptions on. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon success this method returns the following structure:</p>
+
+<pre><code>subscriptions =&gt; {
+                    USERa =&gt; {
+                               NOTICEb =&gt; INTEGER # Value must be boolean true/false and will be converted to 0/1.
+                               .
+                               .
+                               NOTICEz =&gt; INTEGER
+                             }
+                    .
+                    .
+                    USERz =&gt; { ... }
+                 }</code></pre>
+
+<p>In this return structure &quot;USERa&quot; and so on is the user id from the database of the user that have subscription(s) to any of the notice classes. The next level in the HASH is the &quot;NOTICEb&quot; and so on, which is the notice id from the database of the notice that the user is subscribing to. Please note that this notice id is allowed to be 0 and will then signify that the user subscribes to all available Notice-classes.</p>
+
+<h2 id="getGroupPerm">getGroupPerm()</h2>
+
+<p>Get group permission(s) for a given user.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Group entity ID from database of the group to get permission on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> User entity ID from database of the user which the permission(s) are valid for. INTEGER. Optional. If none is specified it will default to the authenticated user itself.</p>
+
+</li>
+</ul>
+
+<p>Upon success returns the following structure:</p>
+
+<pre><code>perm =&gt; (
+          grant =&gt; ARRAY of STRING # permission(s) that have been granted on this group.
+          deny =&gt; ARRAY of STRING # permission(s) that have been denied on this group.
+        )</code></pre>
+
+<p>Please note that when these permissions are used by the system, what it finds for deny is applied before the grant-part is applied when it comes to effective permissions.</p>
+
+<h2 id="getGroupPerms">getGroupPerms()</h2>
+
+<p>Gets all the permission(s) on a given group entity, both inherited and what has been set and the effective perm for each user who has any permission(s).</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Group entity ID from database of the group to get the permissions of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon success the resulting structure returned is:</p>
+
+<pre><code>perms =&gt; (
+           USERa =&gt; (
+                      inherit =&gt; [ PERMa, PERMb .. PERMn ] # permissions inherited down on the group from above
+                      deny =&gt; [ PERMa, PERMb .. PERMn ] # permissions denied on the given group itself.
+                      grant =&gt; [ PERMa, PERMb .. PERMn ] # permissions granted on the given group itself. 
+                      perm =&gt; [ PERMa, PERMb .. PERMn ] # effective permissions on the given group (result of the above)
+                    )
+           .
+           .
+           USERn =&gt; ( .. )
+         )</code></pre>
+
+<p>USERa and so on are the USER entity ID from the database who have permission(s) on the given group. An entry for a user only exists if that user has any permission(s) on the group. The sub-key &quot;inherit&quot; is the inherited permissions from above in the entity tree. The &quot;deny&quot; permission(s) are the denied permission(s) set on the group itself. The &quot;grant&quot; permission(s) are the granted permission(s) set on the group itself. Deny is applied before grant. The sub-key &quot;perm&quot; is the effective or resultant permission(s) after the others have been applied on the given group.</p>
+
+<p>The permissions that users has through groups on a given group are not expanded. This means that a group will be listed as having permissions on the group and in order to find out if the user has any rights, one has to check the membership of the group in question (if the user is listed there).</p>
+
+<p>Permission information is open and requires no permission to be able to read. PERMa and so on are the textual permission type that are set on one of the four categories (inherit, deny, grant and/or perm). These four categories are ARRAYS of STRING. Some of the ARRAYS can be empty, although not all of them (then there would be no entry in the return perms for that user).</p>
+
+<p>The perms-structure can be empty if no user has any permission(s) on the group.</p>
+
+<h2 id="getGroupsByPerm">getGroupsByPerm()</h2>
+
+<p>Get list of groups based upon a set of permissions.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>perm</b> A set of permissions that has to exist on the group entities returned. ARRAY. Optional. If no values are specified all group entitites are returned.</p>
+
+</li>
+<li><p><b>permtype</b> The matching criteria to use with the permissions specified in the &quot;perm&quot;-parameter. Valid values are: ALL (logical and) or ANY (logical or). STRING. Optional. If not specified will return all group entities.</p>
+
+</li>
+<li><p><b>root</b> Entity ID of where to start in the entity tree (matching everything from there and below). INTEGER. Optional. If not specified will default to 1 (ROOT).</p>
+
+</li>
+</ul>
+
+<p>The return structure upon success is:</p>
+
+<pre><code>groups =&gt; (
+            INTEGERa =&gt; STRING,
+            INTEGERb =&gt; STRING,
+            .
+            .
+            INTEGERn =&gt; STRING,
+          )</code></pre>
+
+<p>where INTEGER is the group id from the database and STRING is the display name of the computer.</p>
+
+<h2 id="getGroupTaskAssignments">getGroupTaskAssignments()</h2>
+
+<p>Gets a group&#39;s task assignments.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Group ID from database to get the task assignments of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Returns a HASH of task IDs assignments upon success. See the setGroupTaskAssignments()-method for more information upon its structure.</p>
+
+<h2 id="getGroupUsersVotes">getGroupUsersVotes()</h2>
+
+<p>Gets the user(s) votes on a given group (if any).</p>
+
+<p>Accepted input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Group ID from database of group to get the users votes on. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon success this method returns the following HASH-structure:</p>
+
+<pre><code>votes =&gt; {
+            USERa =&gt; INTEGER
+            USERb =&gt; INTEGER
+            .
+            .
+            USERz =&gt; INTEGER
+         }</code></pre>
+
+<p>The &quot;USERa&quot;, &quot;USERb&quot; and so on here is the user id from the database and the INTEGER value is the number of votes that the user has on the given group.</p>
+
+<h2 id="moveGroup">moveGroup()</h2>
+
+<p>Moves a group entity to another part of the enitty tree.</p>
+
+<p>Input is:</p>
+
+<ul>
+
+<li><p><b>id</b> Group entity ID from the database of the group to move. INTEGER. Required.</p>
+
+</li>
+<li><p><b>parent</b> Parent group entity ID from the database of the group which will be the new parent of the group. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>The method requires the user to have the GROUP_MOVE permission on the group being moved and GROUP_CREATE on the parent group it is being moved to.</p>
+
+<h2 id="removeGroupMember">removeGroupMember()</h2>
+
+<p>Remove member(s) of a group.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Group entity ID from the database of group to remove member(s) of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>member</b> Member(s) to remove from given group. ARRAY of INTEGER. Optional. If not specified will remove all members of the given group.</p>
+
+</li>
+</ul>
+
+<p>The method requires that the user has the GROUP_MEMBER_ADD permission on the group in question.</p>
+
+<h2 id="setGroupFileInterfaceStore">setGroupFileInterfaceStore()</h2>
+
+<p>Set the fileinterface(FI) store name on a given group entity.</p>
+
+<p>Input accepts the following parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> ID of the group entity to set the fileinterface store name on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>store</b> Fileinterface store name to set on the entity group in question. STRING. Required.</p>
+
+</li>
+</ul>
+
+<p>This method requires the user to have the GROUP_FILEINTERFACE_STORE_SET permission on the group in question.</p>
+
+<p>It also requires the store-name to abide with the characters limitations set on such a name by the FileInterface(FI) layer. The store must also already exist and have been put in place for it to be used. All of this will be checked against the FI-layer before any setting is saved to the group entity.</p>
+
+<h2 id="setGroupName">setGroupName()</h2>
+
+<p>Set/edit the display name of a group.</p>
+
+<p>Input accepts the following parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Group entity ID from the database of the group to set name of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>name</b> New name of the group entity in question. STRING. Required. It does not accept blanks as a name.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the GROUP_CHANGE permission on the group specified.</p>
+
+<h2 id="setGroupNoticeSubscriptions">setGroupNoticeSubscriptions()</h2>
+
+<p>Sets the users notice subscriptions on a group.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Group ID from database of the group to set the users notice subscriptions on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>subscriptions</b> The notice subscriptions to set on the given group. HASH. Required.</p>
+
+</li>
+</ul>
+
+<p>This methods required that the user has the GROUP_CHANGE-permission on the group in question. Please also note that the subscriptions hash must include all previous subscriptions as well as new ones, since this method is basically a replace-method.</p>
+
+<p>The subscriptions HASH structure is to be as follows:</p>
+
+<pre><code>subscriptions =&gt; {
+                    USERa =&gt; {
+                               NOTICEb =&gt; INTEGER # Value must be boolean true/false and will be converted to 0/1.
+                               .
+                               .
+                               NOTICEz =&gt; INTEGER
+                             }
+                    .
+                    .
+                    USERz =&gt; { ... }
+                 }</code></pre>
+
+<p>In this return structure &quot;USERa&quot; and so on is the user id from the database of the user that have subscription(s) to any of the notice classes. The next level in the HASH is the &quot;NOTICEb&quot; and so on, which is the notice id from the database of the notice that the user is subscribing to. Please note that this notice id is allowed to be 0 and will then signify that the user subscribes to all available Notice-classes. We advise that notice-value is either set to 0 or 1, but it will be boolean-evaluated and then converted to 0/1 in any event.</p>
+
+<p>When giving this method a HASH with the subscriptions settings, it will check that it contains valid user-references, valid notice-references and it will convert, as mentioned above, the notice value. If any value is not valid, it will be omitted from the HASH that is input to the system. This can in the worst case scenario create a situation where all current subscriptions on the given group are removed and none is set.</p>
+
+<p>Upon success the method returns the subscriptions hash that was set in the key &quot;subscriptions&quot;:</p>
+
+<pre><code>subscriptions =&gt; { ... }</code></pre>
+
+<h2 id="setGroupPerm">setGroupPerm()</h2>
+
+<p>Set permission(s) on the given group for a user.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Group entity ID from database of group to set perm on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> User entity ID from the database of the user to set permission for. INTEGER. Optional. If not specified will default to set permission for the user authenticated on the REST-server.</p>
+
+</li>
+<li><p><b>operation</b> How to set the permissions on the group in question. STRING. Optional. If not specified will default to &quot;APPEND&quot;. Accepted values are: &quot;APPEND&quot;, &quot;REPLACE&quot; or &quot;REMOVE&quot;.</p>
+
+</li>
+<li><p><b>grant</b> The grant permission(s) to set on the group. ARRAY of STRING. Optional.</p>
+
+</li>
+<li><p><b>deny</b> The deny permission(s) to set on the group. ARRAY of STRING. Optional.</p>
+
+</li>
+</ul>
+
+<p>This method requires the user to have the GROUP_PERM_SET permission.</p>
+
+<p>Upon success will return the following structure:</p>
+
+<pre><code>perm =&gt; (
+          grant =&gt; ARRAY    # STRINGs of permissions set
+          deny =&gt; ARRAY     # STRINGs of permissions set
+        )</code></pre>
+
+<p>This will be the grant- and deny- permissions that have ended up being set.</p>
+
+<h2 id="unassignGroupTemplate">unassignGroupTemplate()</h2>
+
+<p>Unassign all template(s) of a given type from a group.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Group entity ID from the database of the group to unassign from. INTEGER. Required.</p>
+
+</li>
+<li><p><b>type</b> Entity type to remove all templates for on given group. STRING. Required. Value is eg.: DATASET, GROUP and so on.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the GROUP_TEMPLATE_ASSIGN permission on the group in question.</p>
+
+<h2 id="setGroupTaskAssignments">setGroupTaskAssignments()</h2>
+
+<p>Sets a group&#39;s task assignments.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Group ID from database to set the task assignments of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>assignments</b> HASH of task IDs from database of the assignments to set. HASH. Required. This HASH sets which task ids to assign for every computer id mentioned in the HASH. It is required that the group that is to have the assignments have the TASK_READ permission the task(s) being assigned. Or else they cannot be used. If a task id is listed in the assignments that the group does not have the TASK_READ permission on it is omitted from the assignment.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the GROUP_CHANGE permission on the computer having its assignments set. Furthermore, the method requires that the user has the TASK_EXECUTE-permission on the task(s) being added to computers.</p>
+
+<p>The HASH-structure of the assignments is as follows:</p>
+
+<pre><code>assignments =&gt; (
+                 COMPUTERIDa =&gt; [TASKID1, TASKID2 .. TASKIDn]
+                 .
+                 .
+                 COMPUTERIDz =&gt; ...
+               )</code></pre>
+
+<p>Returns the assignments actually set upon success in the same structure as setting the assignments.</p>
+
+<p>Please note that the assignments given to this method overrides any previous assignments. To achieve append functionality one will need to read the current assignments first and append to that on the input to this method.</p>
+
+<h2 id="setGroupUsersVotes">setGroupUsersVotes()</h2>
+
+<p>Sets the users votes on a group.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Group ID from the database of the group to change the users votes on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>votes</b> The votes for users to set on the given group. HASH. Required. Please note that this HASH is a replace, so if one wants to keep old vote-settings, these needs to be included in addition to new ones.</p>
+
+</li>
+</ul>
+
+<p>This methods requires that the user has the GROUP_CHANGE-permission on the group in question.</p>
+
+<p>The votes-HASH is to have the following structure:</p>
+
+<pre><code>votes =&gt; {
+            USERa =&gt; INTEGER
+            USERb =&gt; INTEGER
+            .
+            .
+            USERz =&gt; INTEGER
+         }</code></pre>
+
+<p>&quot;USERa&quot;, &quot;USERb&quot; and so on is the user id from the database of the user to set votes for. The INTEGER-value is the number of votes to give that user on the given group in question. Please note that the specified user ids as well as the value is checked for sanity and if they are not ok, they will be omitted from the votes-settings actually written to the database.</p>
+
+<p>For more information on how the voting-process is working, consult the overview-documentation on the Notification-service.</p>
+
+<p>Upon success, this method returns the votes-HASH that was set:</p>
+
+<pre><code>votes =&gt; { ... }</code></pre>
+
+<h1 id="INTERFACE-METHODS">INTERFACE METHODS</h1>
+
+<h2 id="deleteInterface">deleteInterface()</h2>
+
+<p>Delete interface entity.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Interface entity ID from database of interface to delete.</p>
+
+</li>
+</ul>
+
+<p>This methods requires that the user has the INTERFACE_DELETE permission on the interface being deleted.</p>
+
+<h2 id="enumInterfaces">enumInterfaces()</h2>
+
+<p>Enumerates all the interfaces.</p>
+
+<p>No input accepted.</p>
+
+<p>Upon success returns the following structure:</p>
+
+<pre><code>interfaces =&gt; (
+                 INTERFACEIDa =&gt; STRING # key-value pair. The key is the name of the field and STRING is the textual value of the key
+                 .
+                 .
+                 INTERFACEIDn =&gt; ( .. )
+              )</code></pre>
+
+<h2 id="getInterface">getInterface()</h2>
+
+<p>Gets an interface.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Interface entity ID from database of interface to retrieve. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Returns the following structure upon success:</p>
+
+<pre><code>interface =&gt; (
+               type =&gt; STRING            # MIME render type
+               distinguisable =&gt; INTEGER # 1 for TRUE, 0 for FALSE.
+               multiple =&gt; INTEGER       # 1 for TRUE, 0 for FALSE. Does it produce more than one mime-result?
+               class =&gt; STRING # textual name of a render class, eg. Interface::CIFS.
+               name =&gt; STRING  # textual display name of this renderer - often the same as the class
+               classparam =&gt; HASH # subkey hash with parameters for the class instantiation. key-&gt;value.
+             )</code></pre>
+
+<h2 id="moveInterface">moveInterface()</h2>
+
+<p>Move an interface to another group.</p>
+
+<p>Input parameters are this:</p>
+
+<ul>
+
+<li><p><b>id</b> Group interface ID from the database of the object being moved. INTEGER. Required.</p>
+
+</li>
+<li><p><b>parent</b> Group parent ID from database where the specified dataset is to be moved. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the INTERFACE_MOVE permission on the interface being moved and the INTERFACE_CREATE permission on the new parent.</p>
+
+<h2 id="renderInterface">renderInterface()</h2>
+
+<p>Renders an interface to a dataset.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Interface entity ID from the database of the interface to use for the rendering. INTEGER. Required.</p>
+
+</li>
+<li><p><b>dataset</b> Dataset entity ID from the database of the dataset that is the source of the render. INTEGER. Required.</p>
+
+</li>
+<li><p><b>paths</b> A set of relative paths in dataset of the folders to include in the render. ARRAY of STRING. Optional. If not specified will render the entire dataset.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the DATASET_READ permission on the dataset being rendered.</p>
+
+<p>This method can render any interface that the AURORA system is using. An interface is a way of getting access to a dataset, it may be as a ZIP- or TAR-file or as a URL and so on.</p>
+
+<p>Upon success this method will return different structure dependant upon the status of the rendering. The rendering process might take time.</p>
+
+<p>If the rendering was started successfully, but did not finish immediately, the structure will look like this:</p>
+
+<pre><code>rendered =&gt; INTEGER # this will be 0 signifying that it is still not rendered (=still rendering).
+type =&gt; STRING # MIME-type of the rendered result
+result =&gt; ARRAY of STRING # this is the rendered MIME-result - it may point to places where the rendered result can be downloaded.</code></pre>
+
+<p>If the rendering has completed successfully, the structure will look like here:</p>
+
+<pre><code>rendered =&gt; INTEGER # this will now be 1, as it is finished rendering.
+type =&gt; STRING # MIME-type of the rendered result.
+result =&gt; ARRAY of STRING # contains the rendered MIME-result - it might point elsewhere...</code></pre>
+
+<p>So, if a rendering of an interface is not finished yet, the user of will have to call this method several times with the same input (especially the paths-parameter). Differing paths-sets can create differing renders, although the order of the paths does not matter (it is sorted ascending). Eventually the method will return the &quot;rendered&quot;-parameter as completed/finished successfully.</p>
+
+<h2 id="setInterfaceName">setInterfaceName()</h2>
+
+<p>Set the display name of the interface.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Interface entity ID from the database of the interface to change name. INTEGER. Required.</p>
+
+</li>
+<li><p><b>name</b> The new interface name to set. STRING. Required. Does not accept blank string and the new name must not conflict with any existing interface name in the entire tree (including itself).</p>
+
+</li>
+</ul>
+
+<p>Method requires the user to have the INTERFACE_CHANGE permission on the computer changing its name.</p>
+
+<h2 id="unrenderInterface">unrenderInterface()</h2>
+
+<p>Unrenders an interface to a dataset.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Interface entity ID from the database of the interface to use for the rendering. INTEGER. Required.</p>
+
+</li>
+<li><p><b>dataset</b> Dataset entity ID from the database of the dataset that is the source of the render. INTEGER. Required.</p>
+
+</li>
+<li><p><b>paths</b> A set of relative paths in dataset of the folders to include in the render. ARRAY of STRING. Optional. If not specified will render the entire dataset.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the DATASET_READ permission on the dataset being rendered.</p>
+
+<p>It is important to get the parameters correct in order to unrender a interface that has already been rendered. Especially the &quot;paths&quot;-parameter needs to have the exact same relative paths, or else it will not work.</p>
+
+<p>Upon success will return the following structure:</p>
+
+<pre><code>unrendered = INTEGER # 0 = not unrendered, 1 = unrendered
+type = STRING # MIME-type of the render</code></pre>
+
+<p>This method can be called multiple times to check if it is finished rendering.</p>
+
+<h1 id="NOTICE-METHODS">NOTICE METHODS</h1>
+
+<h2 id="deleteNotice---Delete-a-notice">deleteNotice() - Delete a notice</h2>
+
+<p>Delete a notice.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Notice entity ID from the database of the notice to delete. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the NOTICE_DELETE permission on the notice in question.</p>
+
+<h2 id="enumNotices---Enumerate-all-notices">enumNotices() - <b>Enumerate all notices</b></h2>
+
+<p>Enumerates all the notice entities in the database.</p>
+
+<p>No input accepted.</p>
+
+<p>Upon success the return structure is as follows:</p>
+
+<pre><code>notices =&gt; (
+             NOTICEIDa =&gt; STRING # key-&gt;value, where key is the notice entity ID and STRING is the display name of the notice-entity.
+             .
+             .
+             NOTICEIDx =&gt; STRING
+           )</code></pre>
+
+<h2 id="moveNotice---Move-notice-to-another-group-parent">moveNotice() - Move notice to another group parent</h2>
+
+<p>Move notice to another group parent.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Notice entity ID from the database of the notice to move. INTEGER. Required.</p>
+
+</li>
+<li><p><b>parent</b> Parent group entity ID from the database of the group which will be the new parent of the notice. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>The method requires the user to have NOTICE_MOVE permission on the notice being moved and NOTICE_CREATE on the parent group it is being moved to.</p>
+
+<h2 id="setNoticeName">setNoticeName()</h2>
+
+<p>Set/change the name of the notice.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Notice entity ID from the database of the notice to change name. INTEGER. Required.</p>
+
+</li>
+<li><p><b>name</b> The new notice name to set. STRING. Required. Does not accept blank string and the new name must not conflict with any existing notice name on the entire entity tree (including itself).</p>
+
+</li>
+</ul>
+
+<p>Method requires the user to have the NOTICE_CHANGE permission on the notice in question.</p>
+
+<h1 id="SCRIPT-METHODS">SCRIPT METHODS</h1>
+
+<h2 id="createScript">createScript()</h2>
+
+<p>Create a new script.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>metadata</b> The metadata to set upon creating the script. HASH. Optional. If this is needed is dependant upon any templates that might be in effect. It can also be used to override the name-parameter if the key for an entity&#39;s name is filled in through the metadata (it will then take precedence over the name-parameter).</p>
+
+</li>
+<li><p><b>name</b> The display name of the new script. STRING. Optional/Required. It is optional and will be ignored if specified through the metadata hash. If not specified in the metadata hash, it is required. It is not allowed with blank names or just spaces.</p>
+
+</li>
+<li><p><b>parent</b> Entity ID from the database of the entity that is the parent of the new script being created. INTEGER. Required. The parent can only be a GROUP entity.</p>
+
+</li>
+</ul>
+
+<p>The method requires that the user has the SCRIPT_CREATE permission on the parent of the script being created.</p>
+
+<p>The method will fail to create the script, if any template(s) in effect for the script are not compliant.</p>
+
+<p>Upon success will return the following values:</p>
+
+<pre><code>id =&gt; INTEGER # script entity ID of the newly created script.
+name =&gt; STRING # the resulting (after cleaning) textual name of the newly created script.</code></pre>
+
+<h2 id="deleteScript">deleteScript()</h2>
+
+<p>Delete a script.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> The script entity ID from the database of the script to delete. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>This method requires the user to have the SCRIPT_DELETE permission on the script being deleted.</p>
+
+<h2 id="enumPermTypes1">enumPermTypes()</h2>
+
+<p>Enumerate the script permissions types.</p>
+
+<p>No input is accepted.</p>
+
+<p>Upon success returns the following HASH-structure:</p>
+
+<pre><code>types =&gt; ARRAY of STRING # name(s) of the script permission types.</code></pre>
+
+<h2 id="enumScripts">enumScripts()</h2>
+
+<p>Enumerate all the scripts that exists.</p>
+
+<p>No input parameters are accepted.</p>
+
+<p>Upon success will return the following HASH-structure:</p>
+
+<pre><code>scripts =&gt; (
+            SCRIPTa =&gt; STRING # key-&gt;value, where key is the script entity ID and the value is the display name of the script.
+            .
+            .
+            SCRIPTx =&gt; STRING
+          )</code></pre>
+
+<h2 id="getScript">getScript()</h2>
+
+<p>Gets a script&#39;s definition.</p>
+
+<p>Input parameter is:</p>
+
+<ul>
+
+<li><p><b>id</b> Script entity ID from database to get the definition of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has either the SCRIPT_READ or SCRIPT_CHANGE permission on the script in question.</p>
+
+<p>Upon success returns the same structure as input to the setScript-method (see setScript()-method for more information).</p>
+
+<h2 id="getScriptName">getScriptName()</h2>
+
+<p>Get the display name of the script.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Script entity ID of the script to get the name of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon success returns the following value:</p>
+
+<pre><code>name =&gt; STRING # the textual name of the script entity specified.</code></pre>
+
+<h2 id="getScriptPerm">getScriptPerm()</h2>
+
+<p>Get script permission(s) for a given user.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Script entity ID from database of the script to get permission on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> User entity ID from database of the user which the permission(s) are valid for. INTEGER. Optional. If none is specified it will default to the authenticated user itself.</p>
+
+</li>
+</ul>
+
+<p>Upon success returns the following structure:</p>
+
+<pre><code>perm =&gt; (
+          grant =&gt; ARRAY of STRING # permission(s) that have been granted on this script.
+          deny =&gt; ARRAY of STRING # permission(s) that have been denied on this script.
+        )</code></pre>
+
+<p>Please note that when these permissions are used by the system, what it finds for deny is applied before the grant is applied when it comes to effective permissions.</p>
+
+<h2 id="getScriptPerms">getScriptPerms()</h2>
+
+<p>Gets all the permission(s) on a given script entity, both inherited and what has been set and the effective perm for each user who has any permission(s).</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Script entity ID from database of the group to get the permissions of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon success the resulting structure returned is:</p>
+
+<pre><code>perms =&gt; (
+           USERa =&gt; (
+                      inherit =&gt; [ PERMa, PERMb .. PERMn ] # permissions inherited down on the script from above
+                      deny =&gt; [ PERMa, PERMb .. PERMn ] # permissions denied on the given script itself.
+                      grant =&gt; [ PERMa, PERMb .. PERMn ] # permissions granted on the given script itself. 
+                      perm =&gt; [ PERMa, PERMb .. PERMn ] # effective permissions on the given script (result of the above)
+                    )
+           .
+           .
+           USERn =&gt; ( .. )
+         )</code></pre>
+
+<p>USERa and so on are the USER entity ID from the database who have permission(s) on the given script. An entry for a user only exists if that user has any permission(s) on the script. The sub-key &quot;inherit&quot; is the inherited permissions from above in the entity tree. The &quot;deny&quot; permission(s) are the denied permission(s) set on the script itself. The &quot;grant&quot; permission(s) are the granted permission(s) set on the script itself. Deny is applied before grant. The sub-key &quot;perm&quot; is the effective or resultant permission(s) after the others have been applied on the given script.</p>
+
+<p>The permissions that users has through groups on a given script are not expanded. This means that a group will be listed as having permissions on the script and in order to find out if the user has any rights, one has to check the membership of the group in question (if the user is listed there).</p>
+
+<p>Permission information is open and requires no permission to be able to read. PERMa and so on are the textual permission type that are set on one of the four categories (inherit, deny, grant and/or perm). These four categories are ARRAYS of STRING. Some of the ARRAYS can be empty, although not all of them (then there would be no entry in the return perms for that user).</p>
+
+<p>The perms-structure can be empty if no user has any permission(s) on the script.</p>
+
+<h2 id="moveScript">moveScript()</h2>
+
+<p>Moves a script entity to another part of the entity tree.</p>
+
+<p>Input is:</p>
+
+<ul>
+
+<li><p><b>id</b> Script entity ID from the database of the script to move. INTEGER. Required.</p>
+
+</li>
+<li><p><b>parent</b> Parent entity ID from the database of the entity which will be the new parent of the script. INTEGER. Required. The parent entity must be a GROUP-entity.</p>
+
+</li>
+</ul>
+
+<p>The method requires the user to have the SCRIPT_MOVE permission on the script being moved and GROUP_CREATE on the parent it is being moved to.</p>
+
+<h2 id="setScript">setScript()</h2>
+
+<p>Sets the script definition.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Script entity ID from database to set the code of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>name</b> Script name. STRING. Optional. If not specified will continue to use existing name. If specified will attempt to update the name. The name does not need to be unique.</p>
+
+</li>
+<li><p><b>script</b> The script definition to set. String. Required. Maximum length og script code is 16K, or 16384 characters. All characters beyond this length will be cut from the input.</p>
+
+</li>
+</ul>
+
+<p>The script code is the raw code of the script itself, with all special characters, new lines etc.</p>
+
+<p>This method required the user to have the SCRIPT_CHANGE permission on the script having its code and/or name set.</p>
+
+<h2 id="setScriptName">setScriptName()</h2>
+
+<p>Set/edit the display name of a script.</p>
+
+<p>Input accepts the following parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Script entity ID from the database of the script to set name of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>name</b> New name of the script entity in question. STRING. Required. It does not accept blanks as a name.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the SCRIPT_CHANGE permission on the script specified.</p>
+
+<h2 id="setScriptPerm">setScriptPerm()</h2>
+
+<p>Set permission(s) on the given script for a user.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Script entity ID from database of script to set permissions on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> User entity ID from the database of the user to set permission for. INTEGER. Optional. If not specified will default to set permission for the user authenticated on the REST-server.</p>
+
+</li>
+<li><p><b>operation</b> How to set the permissions on the script in question. STRING. Optional. If not specified will default to &quot;APPEND&quot;. Accepted values are: &quot;APPEND&quot;, &quot;REPLACE&quot; or &quot;REMOVE&quot;.</p>
+
+</li>
+<li><p><b>grant</b> The grant permission(s) to set on the script. ARRAY of STRING. Optional.</p>
+
+</li>
+<li><p><b>deny</b> The deny permission(s) to set on the script. ARRAY of STRING. Optional.</p>
+
+</li>
+</ul>
+
+<p>This method requires the user to have the SCRIPT_PERM_SET permission.</p>
+
+<p>Upon success will return the following structure:</p>
+
+<pre><code>perm =&gt; (
+          grant =&gt; ARRAY    # STRINGs of permissions set
+          deny =&gt; ARRAY     # STRINGs of permissions set
+        )</code></pre>
+
+<p>This will be the grant- and deny- permissions that have ended up being set.</p>
+
+<h1 id="STORE-METHODS">STORE METHODS</h1>
+
+<h2 id="deleteStore">deleteStore()</h2>
+
+<p>Delete a store entity.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Store entity ID from the database of the store to delete. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the STORE_DELETE permission on the store in question.</p>
+
+<h2 id="enumStoreRequiredParameters">enumStoreRequiredParameters()</h2>
+
+<p>Enumerate all parameters required by a store.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Entity ID from the database of the store to get the required parameters of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>classparam</b> Parameters to the instantiation of the Store-class. HASH. Optional. It can be used to specify parameters that are going to be used when instantiating a class-instance, which again can affect which required parameters are asked for. It only accept 1 depth hashes, so only key-&gt;value pairs.</p>
+
+</li>
+</ul>
+
+<p>Upon success returns the following HASH-structure:</p>
+
+<pre><code>parameters = (
+               PARAMETER1 = (
+                              value = STRING # current value
+                              private = INTEGER # is the parameter private to the class or not (0/1)?
+                              regex = STRING # regex to check the value against
+                              escape = INTEGER # is the value to be escaped (0/1)?
+                              required = INTEGER # is the value required or not (0/1)? Obviously always 1 here.
+                              name = STRING # name of the parameter
+                            )
+               .
+               .
+               PARAMETERn = ( ... )
+             )</code></pre>
+
+<h2 id="enumStores">enumStores()</h2>
+
+<p>Enumerates all the store entities in the database.</p>
+
+<p>No input accepted.</p>
+
+<p>Upon success the return structure is as follows:</p>
+
+<pre><code>stores =&gt; (
+            STOREIDa =&gt; STRING # key-&gt;value, where key is the store entity ID and STRING is the display name of the store-entity.
+            .
+            .
+            STOREIDx =&gt; STRING
+          )</code></pre>
+
+<p>STOREIDa and so on is the store entity ID from the database (INTEGER).</p>
+
+<h2 id="moveStore">moveStore()</h2>
+
+<p>Move store to another group parent.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Store entity ID from the database of the store to move. INTEGER. Required.</p>
+
+</li>
+<li><p><b>parent</b> Parent group entity ID from the database of the group which will be the new parent of the store. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>The method requires the user to have STORE_MOVE permission on the notice being moved and STORE_CREATE on the parent group it is being moved to.</p>
+
+<h2 id="setStoreName">setStoreName()</h2>
+
+<p>Set/change the display name of a store.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Store entity ID from the database of the store to change its name. INTEGER. Required.</p>
+
+</li>
+<li><p><b>name</b> The new store name to set. STRING. Required. Does not accept blank string and the new name must not conflict with any existing store name in the entire tree (including itself).</p>
+
+</li>
+</ul>
+
+<p>Method requires the user to have the STORE_CHANGE permission on the store changing its name.</p>
+
+<h1 id="TASK-METHODS">TASK METHODS</h1>
+
+<h2 id="createTask">createTask()</h2>
+
+<p>Create a new task.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>metadata</b> The metadata to set upon creating the task. HASH. Optional. If this is needed is dependant upon any templates that might be in effect. It can also be used to override the name-parameter if the key for an entity&#39;s name is filled in through the metadata (it will then take precedence over the name-parameter).</p>
+
+</li>
+<li><p><b>name</b> The display name of the new task. STRING. Optional/Required. It is optional and will be ignored if specified through the metadata hash. If not specified in the metadata hash, it is required. It is not allowed with blank names or just spaces.</p>
+
+</li>
+<li><p><b>parent</b> Entity ID from the database of the entity that is the parent of the new task being created. INTEGER. Required. The parent can either be a COMPUTER, GROUP or USER entity.</p>
+
+</li>
+</ul>
+
+<p>The method requires that the user has the TASK_CREATE permission on the parent of the task being created.</p>
+
+<p>The method will fail to create the task, if any template(s) in effect for the task are not compliant.</p>
+
+<p>Upon success will return the following values:</p>
+
+<pre><code>id =&gt; INTEGER # task entity ID of the newly created task.
+name =&gt; STRING # the resulting (after cleaning) textual name of the newly created task.</code></pre>
+
+<h2 id="deleteTask">deleteTask()</h2>
+
+<p>Delete a task.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> The task entity ID from the database of the task to delete. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>This method requires the user to have the TASK_DELETE permission on the task being deleted.</p>
+
+<h2 id="enumTaskPermTypes">enumTaskPermTypes()</h2>
+
+<p>Enumerate the task permissions types.</p>
+
+<p>No input is accepted.</p>
+
+<p>Upon success returns the following HASH-structure:</p>
+
+<pre><code>types =&gt; ARRAY of STRING # name(s) of the task permission types.</code></pre>
+
+<h2 id="enumTasks">enumTasks()</h2>
+
+<p>Enumerate all the tasks that exists.</p>
+
+<p>No input parameters are accepted.</p>
+
+<p>Upon success will return the following HASH-structure:</p>
+
+<pre><code>tasks =&gt; (
+            TASKIDa =&gt; STRING # key-&gt;value, where key is the task entity ID and the value is the display name of the task.
+            .
+            .
+            TASKIDx =&gt; STRING
+          )</code></pre>
+
+<h2 id="getTask">getTask()</h2>
+
+<p>Gets a task definition.</p>
+
+<p>Input parameter is:</p>
+
+<ul>
+
+<li><p><b>id</b> Task entity ID from database to get the definition of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has either the TASK_READ or TASK_CHANGE permission on the task in question.</p>
+
+<p>Upon success returns the same structure as input to the setTask-method (see setTask()-method for more information).</p>
+
+<h2 id="getTaskAggregatedPerm">getTaskAggregatedPerm()</h2>
+
+<p>Get inherited/aggregated permission(s) on the task for a user.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Task entity ID from database to get the aggregated permission(s) of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> User entity ID from database that identifies who the permission(s) are valid for. INTEGER. Optional. If not specified it will default to the currently authenticated user on the REST-server.</p>
+
+</li>
+</ul>
+
+<p>Upon success this method will return the following value:</p>
+
+<pre><code>perm =&gt; ARRAY of STRING # textual names of the permimssion(s) the user has on the given task.</code></pre>
+
+<h2 id="getTaskName">getTaskName()</h2>
+
+<p>Get the display name of the task.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Task entity ID of the task to get the name of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon success returns the following value:</p>
+
+<pre><code>name =&gt; STRING # the textual name of the task entity specified.</code></pre>
+
+<h2 id="getTaskPerm">getTaskPerm()</h2>
+
+<p>Get task permission(s) for a given user.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Task entity ID from database of the task to get permission on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> User entity ID from database of the user which the permission(s) are valid for. INTEGER. Optional. If none is specified it will default to the authenticated user itself.</p>
+
+</li>
+</ul>
+
+<p>Upon success returns the following structure:</p>
+
+<pre><code>perm =&gt; (
+          grant =&gt; ARRAY of STRING # permission(s) that have been granted on this task.
+          deny =&gt; ARRAY of STRING # permission(s) that have been denied on this task.
+        )</code></pre>
+
+<p>Please note that when these permissions are used by the system, what it finds for deny is applied before the grant-part is applied when it comes to effective permissions.</p>
+
+<h2 id="getTaskPerms">getTaskPerms()</h2>
+
+<p>Gets all the permission(s) on a given task entity, both inherited and what has been set and the effective perm for each user who has any permission(s).</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Task entity ID from database of the group to get the permissions of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon success the resulting structure returned is:</p>
+
+<pre><code>perms =&gt; (
+           USERa =&gt; (
+                      inherit =&gt; [ PERMa, PERMb .. PERMn ] # permissions inherited down on the task from above
+                      deny =&gt; [ PERMa, PERMb .. PERMn ] # permissions denied on the given task itself.
+                      grant =&gt; [ PERMa, PERMb .. PERMn ] # permissions granted on the given task itself. 
+                      perm =&gt; [ PERMa, PERMb .. PERMn ] # effective permissions on the given task (result of the above)
+                    )
+           .
+           .
+           USERn =&gt; ( .. )
+         )</code></pre>
+
+<p>USERa and so on are the USER entity ID from the database who have permission(s) on the given task. An entry for a user only exists if that user has any permission(s) on the task. The sub-key &quot;inherit&quot; is the inherited permissions from above in the entity tree. The &quot;deny&quot; permission(s) are the denied permission(s) set on the task itself. The &quot;grant&quot; permission(s) are the granted permission(s) set on the task itself. Deny is applied before grant. The sub-key &quot;perm&quot; is the effective or resultant permission(s) after the others have been applied on the given task.</p>
+
+<p>The permissions that users has through groups on a given task are not expanded. This means that a group will be listed as having permissions on the task and in order to find out if the user has any rights, one has to check the membership of the group in question (if the user is listed there).</p>
+
+<p>Permission information is open and requires no permission to be able to read. PERMa and so on are the textual permission type that are set on one of the four categories (inherit, deny, grant and/or perm). These four categories are ARRAYS of STRING. Some of the ARRAYS can be empty, although not all of them (then there would be no entry in the return perms for that user).</p>
+
+<p>The perms-structure can be empty if no user has any permission(s) on the task.</p>
+
+<h2 id="getTasksByPerm">getTasksByPerm()</h2>
+
+<p>Get list of tasks based upon a set of permissions.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>perm</b> A set of permissions that has to exist on the task entities returned. ARRAY. Optional. If no values are specified all task entitites are returned.</p>
+
+</li>
+<li><p><b>permtype</b> The matching criteria to use with the permissions specified in the &quot;perm&quot;-parameter. Valid values are: ALL (logical and) or ANY (logical or). STRING. Optional. If not specified will return all task entities.</p>
+
+</li>
+<li><p><b>root</b> Entity ID of where to start in the entity tree (matching everything from there and below). INTEGER. Optional. If not specified will default to 1 (ROOT).</p>
+
+</li>
+</ul>
+
+<p>The return structure upon success is:</p>
+
+<pre><code>tasks =&gt; (
+            INTEGERa =&gt; STRING,
+            INTEGERb =&gt; STRING,
+            .
+            .
+            INTEGERn =&gt; STRING,
+          )</code></pre>
+
+<p>where INTEGER is the task id from the database and STRING is the display name of the computer.</p>
+
+<h2 id="moveTask">moveTask()</h2>
+
+<p>Moves a group entity to another part of the enitty tree.</p>
+
+<p>Input is:</p>
+
+<ul>
+
+<li><p><b>id</b> Task entity ID from the database of the task to move. INTEGER. Required.</p>
+
+</li>
+<li><p><b>parent</b> Parent entity ID from the database of the entity which will be the new parent of the task. INTEGER. Required. The parent entity can either be a COMPUTER-, GROUP- or USER-entity.</p>
+
+</li>
+</ul>
+
+<p>The method requires the user to have the TASK_MOVE permission on the task being moved and [COMPUTER|GROUP|USER]_CREATE on the parent it is being moved to.</p>
+
+<h2 id="setTask">setTask()</h2>
+
+<p>Sets the task definition.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Task entity ID from database to set the definition of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>name</b> Task name. STRING. Optional. If not specified will continue to use existing name. If specified will attempt to update the name. The name does not need to be unique.</p>
+
+</li>
+<li><p><b>task</b> The task definition to set. HASH. Required.</p>
+
+</li>
+</ul>
+
+<p>The task HASH structure is as follows:</p>
+
+<pre><code>name =&gt; STRING # name of task itself
+task =&gt; (
+           get  =&gt; (      # all the get-operations to run on computer
+                     1 =&gt; (
+                            name =&gt; STRING
+                            store =&gt; INTEGER
+                            classparam =&gt; (
+                                            someparam =&gt; STRING,
+                                            someotherparam =&gt; STRING,
+                                          )
+                            param =&gt; (
+                                       param1 =&gt; STRING,
+                                       param2 =&gt; STRING,
+                                     )
+                          )
+                     .
+                     .
+                     N = ( ... )
+
+                   )
+           put  =&gt; ( ... )     # all the put-operations to run on computer
+        )</code></pre>
+
+<p>The task definition basically defines the set of get- and put- operations to run on a computer when it archives. Manual datasets only utilizes the &quot;put&quot;-part of the task, since the data in that type of dataset is put in place manually by the user. When it comes to automated datasets, the &quot;get&quot;-part is run first in order to fetch the data. The &quot;get&quot;-part can contain several Store-types to fetch data and various parameters. Both the &quot;get&quot; and &quot;put&quot; part of the task has the same structure and can contain several elements or operations numbered 1 to N.</p>
+
+<p>When the &quot;get&quot;-process is finished successfully, if run at all as with manual datasets, the &quot;put&quot;-processes are run. The put-process is basically triggered by the dataset being closed.</p>
+
+<p>Be aware also that tasks can be run manually by the user.</p>
+
+<p>This method required the user to have the TASK_CHANGE permission on the task having its definition set.</p>
+
+<h2 id="setTaskName">setTaskName()</h2>
+
+<p>Set/edit the display name of a task.</p>
+
+<p>Input accepts the following parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Task entity ID from the database of the task to set name of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>name</b> New name of the task entity in question. STRING. Required. It does not accept blanks as a name.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the TASK_CHANGE permission on the task specified.</p>
+
+<h2 id="setTaskPerm">setTaskPerm()</h2>
+
+<p>Set permission(s) on the given task for a user.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Task entity ID from database of task to set perm on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> User entity ID from the database of the user to set permission for. INTEGER. Optional. If not specified will default to set permission for the user authenticated on the REST-server.</p>
+
+</li>
+<li><p><b>operation</b> How to set the permissions on the task in question. STRING. Optional. If not specified will default to &quot;APPEND&quot;. Accepted values are: &quot;APPEND&quot;, &quot;REPLACE&quot; or &quot;REMOVE&quot;.</p>
+
+</li>
+<li><p><b>grant</b> The grant permission(s) to set on the task. ARRAY of STRING. Optional.</p>
+
+</li>
+<li><p><b>deny</b> The deny permission(s) to set on the task. ARRAY of STRING. Optional.</p>
+
+</li>
+</ul>
+
+<p>This method requires the user to have the TASK_PERM_SET permission.</p>
+
+<p>Upon success will return the following structure:</p>
+
+<pre><code>perm =&gt; (
+          grant =&gt; ARRAY    # STRINGs of permissions set
+          deny =&gt; ARRAY     # STRINGs of permissions set
+        )</code></pre>
+
+<p>This will be the grant- and deny- permissions that have ended up being set.</p>
+
+<h1 id="TEMPLATE-METHODS">TEMPLATE METHODS</h1>
+
+<h2 id="createTemplate">createTemplate()</h2>
+
+<p>Creates a template with a given name.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>parent</b> The group entity ID from the database of the group that is the parent of the new template. INTEGER. Required.</p>
+
+</li>
+<li><p><b>name</b> The name of the new template to create. STRING. Required. Cannot be set to blank. It cannot be the same as any other name in the entire entity tree.</p>
+
+</li>
+<li><p><b>template</b> Sets initial constraints for the template being created. HASH. Optional. If set must comply with the template structure described in the setTemplate()-method.</p>
+
+</li>
+<li><p><b>metadata</b> The metadata for the template, including its name. HASH. Optional. If the name of the template is set through metadata it takes precedence over the &quot;name&quot;-parameter. Any metadata set here will also have to comply with any template in effect (template of template nonetheless).</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the TEMPLATE_CREATE permission on the parent group in question.</p>
+
+<p>Upon success returns the following structure:</p>
+
+<pre><code>id =&gt; INTEGER # template entity ID from the database of the newly created template.
+name =&gt; STRING # the actual name that was set for the newly created template (after cleaning).</code></pre>
+
+<h2 id="checkTemplateCompliance">checkTemplateCompliance()</h2>
+
+<p>Checks the compliance of the template with the metadata input.</p>
+
+<p>Valid parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Entity ID from the database of the entity to check template compliance for. INTEGER. Required.</p>
+
+</li>
+<li><p><b>metadata</b> The metadata to check the compliance of with the entity ID given. HASH. Required.</p>
+
+</li>
+<li><p><b>path</b> The path in the entity tree to use for aggregating template for the compliance check. Optional. If not specified will default to the path down to the entity being specified in the parameter &quot;id&quot; from ROOT(1).</p>
+
+</li>
+<li><p><b>type</b> Specifies the entity type to check template for. STRING. Optional. If not specified will default to the entity type of the entity id specified. Valid values are: DATASET, GROUP, COMPUTER etc.</p>
+
+</li>
+</ul>
+
+<p>The metadata-parameter HASH needs to be structured as follows:</p>
+
+<pre><code>metadata =&gt; (
+              NAMEa =&gt; STRING,
+              NAMEb =&gt; STRING,
+              .
+              .
+              NAMEc =&gt; STRING
+            )</code></pre>
+
+<p>The metadata HASH is basically a key-&gt;value collection of the metadata keys and its values to check against the aggregated template of the entity in question.</p>
+
+<p>Upon success will return the following HASH-structure:</p>
+
+<pre><code>   compliance =&gt; INTEGER # Overall compliance, 0 for non-compliant, 1 for compliant.
+   noncompliance =&gt; ARRAY of STRING # names of the metadata key(s)/template key(s) that are non-compliant, if any.
+   metadata =&gt; (
+                 KEYa =&gt; (
+                           comment =&gt; STRING # textual explanation of what value(s) are required on this key.
+                           compliance =&gt; INTEGER # 0 = non-compliant, 1 = compliant. Refer to this specific key.
+                           default =&gt; STRING or ARRAY # default value(s) if none is specified. Comes from template.
+                           flags =&gt; ARRAY # textual flags that are set, if any.
+                           min =&gt; INTEGER # minimum number of values into this key. 0 = no minimum, N &gt; 0 = minimum number needed
+&nbsp;                          max =&gt; INTEGER # maximum number of values allowed in this key. 0 = no maximum, N &gt; 0 = maximum allowed
+                           reason =&gt; STRING # textual explanation why a key is not in compliance (if it is non-compliant).
+                           regex =&gt; STRING # regex that are used to check the value specified to this key.
+                           value =&gt; STRING or ARRAY # value from metadata into method or from template                                                     
+                         )
+                 .
+                 .
+                 KEYn =&gt; ( ... )
+               )</code></pre>
+
+<p>The compliance flag on each metadata key signals if that particular key is in compliance or not. 0 means non-compliant, 1 means compliant. If a key is not compliant the &quot;reason&quot;-value above will be filled in with the textual reason for why it failed?</p>
+
+<p>For a more exhaustive explanation of the template constraint values, see the setTemplate()-method.</p>
+
+<h2 id="deleteTemplate">deleteTemplate()</h2>
+
+<p>Deletes a template.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p>&lt;id&gt; Template entity ID from the database to delete. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the TEMPLATE_DELETE permission on the template in question.</p>
+
+<h2 id="enumTemplateFlags">enumTemplateFlags()</h2>
+
+<p>Enumerate all template flag types.</p>
+
+<p>No input accepted.</p>
+
+<p>Returns an ARRAY structure as follows upon success:</p>
+
+<pre><code>flags =&gt; [&quot;FLAGNAME1&quot; .. &quot;FLAGNAMEn&quot;]</code></pre>
+
+<h2 id="enumTemplatePermTypes">enumTemplatePermTypes()</h2>
+
+<p>Enumerate the template permission types.</p>
+
+<p>Accepts no input.</p>
+
+<p>Upon success will return the following ARRAY:</p>
+
+<pre><code>types =&gt; (
+            PERMISSIONa
+            PERMISSIONb
+            .
+            .
+            PERMISSIONz
+         )</code></pre>
+
+<p>where PERMISSIONa and so on is the name of the template permission (STRING).</p>
+
+<h2 id="enumTemplates">enumTemplates()</h2>
+
+<p>Enumerates all the templates.</p>
+
+<p>No input is accepted.</p>
+
+<p>Upon success will return the following HAHS-structure:</p>
+
+<pre><code>templates =&gt; (
+               IDa =&gt; STRING
+               IDb =&gt; STRING
+               .
+               .
+               IDz =&gt; STRING
+             )</code></pre>
+
+<p>where IDa and so on is the template entity ID from the database (INTEGER) and the STRING is the name of the template.</p>
+
+<h2 id="getEntityTemplateAssignments">getEntityTemplateAssignments()</h2>
+
+<p>Get the template assignment(s) on an entity.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Entity ID from the database to get template assignments of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>type</b> Textual name of the entity type that the assignments are valid for. STRING. Optional. If not specified it will default to fetching all assignments of all entity types on the entity in question. If specified it will only return the assignments for the given type on the entity.</p>
+
+</li>
+</ul>
+
+<p>Upon success returns the following HASH-structure:</p>
+
+<pre><code>assignments = (
+                TYPEa = [TEMPLATEID1,TEMPLATEID2 .. TEMPLATEIDn]
+                .
+                .
+                TYPEz = [ ..&nbsp;]                         
+              )</code></pre>
+
+<p>TYPEa and so on are the textual name of the type that the templates are assigned as. All template assignments in the AURORA-system are assigned to an entity with the type that it is to have effect as. A template of itself is entity type neutral until it is assigned. If no assignments are found, the structure will be empty. Each type point to an ARRAY of template entity IDs that are assigned to that type. The order of the array denotes the order in which the templates have effect from element 1 to N.</p>
+
+<h2 id="getAggregatedTemplate">getAggregatedTemplate()</h2>
+
+<p>Gets the aggregated template of an entity.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Entity ID from database of the entity to get the aggregated template of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>type</b> Entity type name of the entity type to aggregate template for. STRING. Optional. If not specified it will default to the entity type &quot;DATASET&quot;. Valid values are eg. &quot;DATASET&quot;, &quot;GROUP&quot; and so on.</p>
+
+</li>
+<li><p><b>path</b> Entity tree path to use for aggregating the template. ARRAY of INTEGER. Optional. The INTEGER values are the entity IDs in the entity tree. If not specified it will default to the path from root (1) down to the entity specified by the parameter &quot;id&quot;.</p>
+
+</li>
+</ul>
+
+<p>Upon success returns the following HASH-structure:</p>
+
+<pre><code>id =&gt; INTEGER # id of the entity that the aggregated template was retrieved for
+type =&gt; STRING # the textual entity type that we aggregated a template for (after cleaning)
+template =&gt; (
+              KEYa =&gt; (
+                        default =&gt; STRING or ARRAY of STRING
+                        flags =&gt; ARRAY of STRING
+                        regex =&gt; STRING
+                        min =&gt; INTEGER
+                        max =&gt; INTEGER
+                        comment =&gt; STRING
+                      )
+              KEYb =&gt; ( ... )
+              .
+              .
+              KEYz =&gt; ( ... )
+            )</code></pre>
+
+<p>Please see the setTemplate()-method for more information upon the structure of the constraints.</p>
+
+<p>This method aggregates together templates of a given type down the entity tree and then returns one template definition for each key in question that is the result. It also defaults values that has defaults defined, since an aggregate is what is being used to determine the validitiy of values saved into the metadata of the AURORA- system and as such need them. Regex defaults to &quot;.*&quot;, min defaults to 0, max to 1, flags to empty ARRAY (no flags set), comment to undef.</p>
+
+<h2 id="getTemplate">getTemplate()</h2>
+
+<p>Gets a specific template&#39;s defined constraints.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Template entity ID from database of the template to get the constraints of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>This method gets the non-aggregated and specified template definition from the database. Upon success the method returns the following HASH-structure:</p>
+
+<pre><code>name =&gt; STRING
+template =&gt; (
+              KEYa =&gt; (
+                        default =&gt; STRING or ARRAY of STRING
+                        flags =&gt; ARRAY of STRING
+                        regex =&gt; STRING
+                        min =&gt; INTEGER
+                        max =&gt; INTEGER
+                        comment =&gt; STRING
+                      )
+              KEYb =&gt; ( ... )
+              .
+              .
+              KEYz =&gt; ( ... )
+            )</code></pre>
+
+<p>Please see the setTemplate()-method for more exhaustive explanation of the various parts of this structure.</p>
+
+<p>As opposed to the getAggregatedTemplate()-method, this method only returns the specific template asked for. There is no aggregate here. Because of this the various constraints in the template (default, flags, regex etc.) can be undefined, since that is how it was defined.</p>
+
+<h2 id="getTemplateAssignments">getTemplateAssignments()</h2>
+
+<p>Get a templates assignment(s) on entities (if any).</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Template ID from the database to get assignments of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>type</b> Textual name of the entity type that the assignments are valid for. STRING. Optional. If not specified it will default to fetching all assignments of all entity types on the template in question. If specified it will only return the assignments for the given type on the template. Valid types are DATASET, GROUP, USER etc.</p>
+
+</li>
+<li><p><b>duplicates</b> Remove duplicate entity IDs for a given entity type or not? BOOLEAN. Optional. If not specified will default to being false (do not remove duplicates). Valid values are 1 for true, 0 for false. It is possible to assign the same template several times on the same entity for the same entity type. This option enables one to get only unique entity IDs that the template are assigned to for any given entity type (eg. DATASET, GROUP, COMPUTER etc.).</p>
+
+</li>
+</ul>
+
+<p>Upon success returns the following HASH-structure:</p>
+
+<pre><code>assignments = (
+                all =&gt; [ENTITYID1,ENTITYID2 .. ENTITYIDn]
+                types =&gt; (
+                           TYPEa = [ENTITYID1,ENTITYID2 .. ENTITYIDn]
+                           .
+                           .
+                           TYPEz = [ ..&nbsp;] 
+                         )
+              )</code></pre>
+
+<p>The top keys of the returned values are &quot;all&quot; and &quot;types&quot;. The &quot;all&quot; key contains all unique entity IDs that are assigned to the given template, while &quot;types&quot; shows the distribution of assignments on various entity types. TYPEa and so on are the textual name of the type that the template is assigned as. All template assignments in the AURORA-system are assigned to an entity with the type that it is to have effect as. A template of itself is entity type neutral until it is assigned. If no assignments are found, the structure will be empty. Each type point to an ARRAY of entity IDs that are assigned to that type for the template in question.</p>
+
+<h2 id="getTemplateAggregatedPerm">getTemplateAggregatedPerm()</h2>
+
+<p>Gets the inherited/aggregated permissions on a template for a user.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Template entity ID from the database to get the inherited permission(s) of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> User entity ID from the database of the user that the inherited permissions are valid for. INTEGER. Optional. If not specified will default to the authenticated user on the AURORA REST-server.</p>
+
+</li>
+</ul>
+
+<p>Upon success this method will return the following value:</p>
+
+<pre><code>perm =&gt; ARRAY of STRING # textual names of the permimssion(s) the user has on the given template.</code></pre>
+
+<h2 id="getTemplatePerm">getTemplatePerm()</h2>
+
+<p>Get template permission(s) for a given user.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Template entity ID from database of the template to get permission on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> User entity ID from database of the user which the permission(s) are to be valid for. INTEGER. Optional. If none is specified it will default to the authenticated user itself.</p>
+
+</li>
+</ul>
+
+<p>Upon success returns the following structure:</p>
+
+<pre><code>perm =&gt; (
+          grant =&gt; ARRAY of STRING # permission(s) that have been granted on this template.
+          deny =&gt; ARRAY of STRING # permission(s) that have been denied on this template.
+        )</code></pre>
+
+<p>Please note that when these permissions are used by the system, what it finds for deny is applied before the grant-part is applied when it comes to effective permissions.</p>
+
+<h2 id="getTemplatePerms">getTemplatePerms()</h2>
+
+<p>Gets all the permission(s) on a given template entity, both inherited and what has been set and the effective perm for each user who has any permission(s).</p>
+
+<p>Input parameter is:</p>
+
+<ul>
+
+<li><p><b>id</b> Template entity ID from the database that one wishes to get the permissions on. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon success the resulting structure returned is:</p>
+
+<pre><code>perms =&gt; (
+           USERa =&gt; (
+                      inherit =&gt; [ PERMa, PERMb .. PERMn ] # permissions inherited down on the template from above
+                      deny =&gt; [ PERMa, PERMb .. PERMn ] # permissions denied on the given template itself.
+                      grant =&gt; [ PERMa, PERMb .. PERMn ] # permissions granted on the given template itself. 
+                      perm =&gt; [ PERMa, PERMb .. PERMn ] # effective permissions on the given template (result of the above)
+                    )
+           .
+           .
+           USERn =&gt; ( .. )
+         )</code></pre>
+
+<p>USERa and so on are the USER entity ID from the database who have permission(s) on the given template. An entry for a user only exists if that user has any permission(s) on the template. The sub-key &quot;inherit&quot; is the inherited permissions from above in the entity tree. The &quot;deny&quot; permission(s) are the denied permission(s) set on the template itself. The &quot;grant&quot; permission(s) are the granted permission(s) set on the template itself. Deny is applied before grant. The sub-key &quot;perm&quot; is the effective or resultant permission(s) after the others have been applied on the given template.</p>
+
+<p>The permissions that users has through groups on a given template are not expanded. This means that the group will be listed as having permissions on the template and in order to find out if the user has any rights, one has to check the membership of the group in question (if the user is listed there).</p>
+
+<p>Permission information is open and requires no permission to be able to read. PERMa and so on are the textual permission type that are set on one of the four categories (inherit, deny, grant and/or perm). These four categories are ARRAYS of STRING. Some of the ARRAYS can be empty, although not all of them (then there would be no entry in the return perms for that user).</p>
+
+<p>The perms-structure can be empty if no user has any permission(s) on the template.</p>
+
+<h2 id="moveTemplate">moveTemplate()</h2>
+
+<p>Moves a template entity to another part of the entity tree.</p>
+
+<p>Input is:</p>
+
+<ul>
+
+<li><p><b>id</b> Template entity ID from the database of the template to move. INTEGER. Required.</p>
+
+</li>
+<li><p><b>parent</b> Parent group entity ID from the database of the group which will be the new parent. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>The method requires the user to have TEMPLATE_MOVE permission on the template being moved and TEMPLATE_CREATE on the parent group it is being moved to.</p>
+
+<h2 id="setTemplate">setTemplate()</h2>
+
+<p>Set template constraints.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Template entity ID from database of template to set. INTEGER. Required.</p>
+
+</li>
+<li><p><b>name</b> Display name of template. STRING. Optional. If specified will override existing name. If not specified, the old name will be retained. It is not allowed to specify a blank name.</p>
+
+</li>
+<li><p><b>template</b> Template constraints to set. HASH. Required.</p>
+
+</li>
+<li><p><b>reset</b> Reset the template&#39;s constraints or not before changing any. BOOLEAN. Optional. This decides if all the existing constraints are to be removed before new ones are added. It can even be used alone without any template definitions in order to reset all definitions without setting new ones. It is enough that the value in this option evaluates to true or false.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the TEMPLATE_CHANGE permission on the template in question.</p>
+
+<p>The input template HASH structure must have the following layout:</p>
+
+<pre><code>template =&gt; (
+              KEYNAMEa =&gt; (
+                            default =&gt; STRING or ARRAY of STRING # defines the default values for this key.
+                            regex =&gt; STRING # defines the regex that is going to check the value(s) of this key
+                            flags =&gt; ARRAY of STRING # the template flags set on this key
+                            min =&gt; INTEGER # the minimum number of values that has to be set.
+                            max =&gt; INTEGER # the maximum number of values that can be set.
+                            comment =&gt; STRING # textual explanation of what is needed to satisfy the regex
+                          )
+              .
+              .
+              KEYNAMEx =&gt; ( ... )
+            )</code></pre>
+
+<p>KEYNAMEa and so on is the textual name of the metadata key in the namespace to set a template constraint for (eg. &quot;.system.entity.name&quot;).</p>
+
+<p><b>Default</b> sub-key defines the default value(s) that will be chosen if no value has been specified. The default value(s) can also be used to specify a list of choices if using the flags SINGULAR or MULTIPLE (see further down for explanation of flags). The default value can be either a STRING (if its just one value) or an ARRAY of STRING (multiple values).</p>
+
+<p><b>Regex</b> is the regex that is used to check the value(s) entered when applying the template. If there are multiple values entered, the same regex will be used on all values. Please also note that a beginning (^) and end sign ($) will be applied around the regex entered, so that it represents something that needs to be matched within the beginning and end of the string being checked.</p>
+
+<p><b>Flags</b> are various markers for how the template key is to be used or applied. The flags are set as an ARRAY of STRING. Valid flag values are:</p>
+
+<ul>
+
+<li><p><b>MANDATORY</b> The key in question has to be answered with a value. If no value was entered and a default exists, the default will be chosen.</p>
+
+</li>
+<li><p><b>NONOVERRIDE</b> The template definition for the key in question cannot be overridden. It is enforced down the entity tree.</p>
+
+</li>
+<li><p><b>SINGULAR</b> The key in question must be answered with a single value from the default(s)-definition of the template. This basically enables dropdown menu choices with a selection set from the default(s). The value entered will be checked against the default(s). SINGULAR cannot be used as the same time as the MULTIPLE-flag. SINGULAR takes precedence if both have been set.</p>
+
+</li>
+<li><p><b>MULTIPLE</b> The key in question must be answered with one or more values from the defaults-definition of the template. This is like eg. tick boxes, where multiple values can be selected. All values entered will be checked against the default(s). MULTIPLE cannot be used at the same time as the SINGULAR-flag. MULTIPLE takes antecedence if both have been set.</p>
+
+</li>
+<li><p><b>OMIT</b> The template definition for the key in question are not to be included in the aggregated templates. In other words it is omitted or removed. This is a way of hiding definitions that can be set, but are chosen not to be used yet.</p>
+
+</li>
+<li><p><b>PERSISTENT</b> The value in the key defined by this template definition cannot be overwritten once it has been set.</p>
+
+</li>
+</ul>
+
+<p><b>Min</b> sets the minimum number of value(s) to be entered for the key in question. 0 means no minimum and everything above 0 means that that number is the minimum, so that the user needs to enter that number of value(s) or more. Default value if none is set here is 0 for aggregated templates.</p>
+
+<p><b>Max</b> sets the maximum number of value(s) that can be entered for the key in question. 0 means no maximum and everything above 0 means that that number is the maximum. Default values if none is set here is 1 for aggregated templates.</p>
+
+<p><b>Comment</b> sets the textual explanation of the regex and what this key expects to be filled in.</p>
+
+<h2 id="setTemplateName">setTemplateName()</h2>
+
+<p>Set/change the name of the template.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> Template entity ID from the database of the template to change name. INTEGER. Required.</p>
+
+</li>
+<li><p><b>name</b> The new template name to set. STRING. Required. Does not accept blank string and the new name must not conflict with any existing template name on the entire entity tree (including itself).</p>
+
+</li>
+</ul>
+
+<p>Method requires the user to have the TEMPLATE_CHANGE permission on the entities in question.</p>
+
+<h2 id="setTemplatePerm">setTemplatePerm()</h2>
+
+<p>Set permissions on a template.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> Template entity ID from the database of the template to set permissions on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> User entity ID from the database of the user to set permission for. INTEGER. Optional. If not specified will default to set permission for the user authenticated on the REST-server.</p>
+
+</li>
+<li><p><b>operation</b> How to set the permissions on the dataset in question. STRING. Optional. If not specified will default to &quot;APPEND&quot;. Accepted values are: &quot;APPEND&quot;, &quot;REPLACE&quot; or &quot;REMOVE&quot;.</p>
+
+</li>
+<li><p><b>grant</b> The grant permission(s) to set on the template. ARRAY of STRING. Optional.</p>
+
+</li>
+<li><p><b>deny</b> The deny permission(s) to set on the template. ARRAY of STRING. Optional.</p>
+
+</li>
+</ul>
+
+<p>This method requires the user to have the TEMPLATE_PERM_SET permission.</p>
+
+<p>Upon success will return the following structure:</p>
+
+<pre><code>perm =&gt; (
+          grant =&gt; ARRAY    # STRINGs of permissions set
+          deny =&gt; ARRAY     # STRINGs of permissions set
+        )</code></pre>
+
+<p>This will be the grant- and deny- permissions that have ended up being set.</p>
+
+<h1 id="USER-METHODS">USER METHODS</h1>
+
+<h2 id="createUser">createUser()</h2>
+
+<p>Create a user.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>balanced</b> Enable if the creation of the user is to be balanced on the tree. BOOLEAN. Optional. Defaults to 0. Valid values are 0 (false) and 1 (true). If enabled the method will attempt to create sub-groups to put the new user in to avoid having too many user in the parent-group itself.</p>
+
+</li>
+<li><p><b>parent</b> Group entity ID from database that the user is to be created on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>username</b> Username of the user to create. STRING. Optional/Required. The username of the user is his email address. It is required if username (system.user.username) has not been set in the metadata. If set in metadata it is optional and metadata will take precedence.</p>
+
+</li>
+<li><p><b>fullname</b> Full textual name of the user being created. STRING. Optional/Required. The fullname of the user is his first name and last name. Fullname cannot be a blank string/empty. It is required if the fullname (system.user.fullname) has not been set in the metadata. If set in the metadata it is optional and metadata will take precedence.</p>
+
+</li>
+<li><p><b>metadata</b> Metadata to set on the user when he is created. HASH. Optional. When specified can also set the username and fullname of the user instead of using the separate parameters to the method. All metadata entered here must be within the open namespace of the metadata (starting with &quot;.&quot;). The only exception are the username and fullname. The structure of the metadata is as follows:</p>
+
+<pre><code>metadata =&gt; (
+              KEYa =&gt; STRING
+              KEYb =&gt; STRING
+              .
+              .
+              KEYz =&gt; STRING
+            )</code></pre>
+
+<p>Where the all entries are key-&gt;value pairs for the metadata to set.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the USER_CREATE permission on the group that is the parent. Please note that it is assumed that if the user has this permission on the parent, he is also allowed to create sub-groups in the event of the balanced-parameter being true.</p>
+
+<p>The balancing scheme works as follows: the first letter of a users first name is used to determine what sub-group the user should be put in. If the group does not exist, it will be created. Furthermore, if the first letter contains a character outside the ASCII-table, it is changed to a letter within A-Z (lower cases are uppercased). This is done by first converting any character that is a variant upon A-Za-z, such as &Auml;, &euml;, &ocirc; etc and they are changed to their base character (A, e and o in this case). If this does not change the first letter within A-Z, it is changed algorithmatically by placing it somewhere within A-Z. The last enforcement might not be logical based upon the original character, but is done to ensure that only the sub-groups A-Z are created and used.</p>
+
+<p>It is not allowed for more than one user having one, specific email-address in the entire entity tree. Also note that attempting to create a user with the email: zombie_[N]@localhost, where N is a number, is not allowed. These email addresses are reserved for accounts that are deleted/GDPRed.</p>
+
+<p>Upon success returns the following HASH structure:</p>
+
+<pre><code>id =&gt; INTEGER # database entity ID of the newly created user.
+username =&gt; STRING # the username used (email) of the created user after cleaning.</code></pre>
+
+<p>When this method is successful it is also sent a message to the new user with a temporary password and information about the account creation in AURORA.</p>
+
+<h2 id="deleteUser">deleteUser()</h2>
+
+<p>Anonymize (GDPR) a USER account.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> User entity ID from the database of the user to anonymize. INTEGER. Required.</p>
+
+</li>
+<li><p><b>retire</b> Sets if the USER is to be move to retirement-group for cleanup purposes. BOOLEAN. Optional. Valid values are 0 (false) and 1 (true). Defaults to 0. If no value is set the user is not moved to another group.</p>
+
+</li>
+</ul>
+
+<p>This method requires the user to either have the USER_DELETE permission on the USER entity in question or be the user that is to be anonymized.</p>
+
+<p>Where the user is moved in the event of setting the retire-parameter to true is defined in the system settings file. This enables all users to say that they wished to be moved after being GDPR&#39;ed/deleted.</p>
+
+<p>If the user himself or herself it calling this method, please remember that there is something about sawing off the branch of the tree one is sitting on and might lead to unplanned and unwanted encounters with gravity and pesky login-pages.</p>
+
+<h2 id="enumUsers">enumUsers()</h2>
+
+<p>Enumerates all user entities in the database.</p>
+
+<p>No input is accepted.</p>
+
+<p>The return structure is as follows:</p>
+
+<pre><code>users =&gt; (
+           IDa =&gt; STRING,
+           IDb =&gt; STRING,
+           .
+           .
+           IDz =&gt; STRING
+         (</code></pre>
+
+<p>where IDa and so on is the entity id from the database and STRING is the textual display name of the user.</p>
+
+<h2 id="getUserAggregatedPerm">getUserAggregatedPerm()</h2>
+
+<p>Get inherited/aggregated permission(s) on the user for a user.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> User entity ID from database to get the aggregated permission(s) of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> User entity ID from database that identifies who the permission(s) are valid for. INTEGER. Optional. If not specified it will default to the currently authenticated user on the REST-server.</p>
+
+</li>
+</ul>
+
+<p>Upon success this method will return the following value:</p>
+
+<pre><code>perm =&gt; ARRAY of STRING # textual names of the permimssion(s) the user has on the given user</code></pre>
+
+<h2 id="getUserTaskAssignments">getUserTaskAssignments()</h2>
+
+<p>Gets a user&#39;s task assignments.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> User ID from database to get the task assignments of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Returns a HASH of task IDs assignments upon success. See the setUserTaskAssignments()-method for more information upon its structure.</p>
+
+<h2 id="getUserEmail">getUserEmail()</h2>
+
+<p>Gets a users email address</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> User entity ID from the database of the user to get the email of. INTEGER. Optional. If not given will it default to the user entity ID of the user logged into the REST-server.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the USER_READ or USER_CHANGE permissions.</p>
+
+<p>Upon success the following structure is returned:</p>
+
+<pre><code>email =&gt; STRING # the email of the user</code></pre>
+
+<h2 id="getUserFullname">getUserFullname()</h2>
+
+<p>Get a users full name (first name and last name)</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> User entity ID from the database of the user one wish to know the full name of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon success returns the following structure:</p>
+
+<pre><code>fullname =&gt; STRING # the full name of the user entity ID specified on input </code></pre>
+
+<h2 id="getUserId">getUserId()</h2>
+
+<p>Get a users entity ID based on email/username.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>email</b> Email address of the user to get the user entity ID of. STRING. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon success and the email address is valid will return the following structure:</p>
+
+<pre><code>id =&gt; INTEGER # the user entity ID of the email specified in the input.</code></pre>
+
+<h2 id="getUserPerm">getUserPerm()</h2>
+
+<p>Get user permission(s) for a given user.</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> User entity ID from database of the user to get permission on. INTEGER. Required.</p>
+
+</li>
+<li><p><b>user</b> User entity ID from database of the user which the permission(s) are valid for. INTEGER. Optional. If none is specified it will default to the authenticated user itself.</p>
+
+</li>
+</ul>
+
+<p>Upon success returns the following structure:</p>
+
+<pre><code>perm =&gt; (
+          grant =&gt; ARRAY of STRING # permission(s) that have been granted on this user.
+          deny =&gt; ARRAY of STRING # permission(s) that have been denied on this user.
+        )</code></pre>
+
+<p>Please note that when these permissions are used by the system, what it finds for deny is applied before the grant-part is applied when it comes to effective permissions.</p>
+
+<h2 id="getUserPerms">getUserPerms()</h2>
+
+<p>Gets all the permission(s) on a given user entity, both inherited and what has been set and the effective perm for each user who has any permission(s).</p>
+
+<p>Input parameters:</p>
+
+<ul>
+
+<li><p><b>id</b> User entity ID from database of the user to get the permissions of. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>Upon success the resulting structure returned is:</p>
+
+<pre><code>perms =&gt; (
+           USERa =&gt; (
+                      inherit =&gt; [ PERMa, PERMb .. PERMn ] # permissions inherited down on the user from above
+                      deny =&gt; [ PERMa, PERMb .. PERMn ] # permissions denied on the given user itself.
+                      grant =&gt; [ PERMa, PERMb .. PERMn ] # permissions granted on the given user itself. 
+                      perm =&gt; [ PERMa, PERMb .. PERMn ] # effective permissions on the given user (result of the above)
+                    )
+           .
+           .
+           USERn =&gt; ( .. )
+         )</code></pre>
+
+<p>USERa and so on are the USER entity ID from the database who have permission(s) on the given user. An entry for a user only exists if that user has any permission(s) on the user. The sub-key &quot;inherit&quot; is the inherited permissions from above in the entity tree. The &quot;deny&quot; permission(s) are the denied permission(s) set on the user itself. The &quot;grant&quot; permission(s) are the granted permission(s) set on the user itself. Deny is applied before grant. The sub-key &quot;perm&quot; is the effective or resultant permission(s) after the others have been applied on the given user.</p>
+
+<p>The permissions that users has through groups on a given user are not expanded. This means that a group will be listed as having permissions on the user and in order to find out if the user has any rights, one has to check the membership of the group in question (if the user is listed there).</p>
+
+<p>Permission information is open and requires no permission to be able to read. PERMa and so on are the textual permission type that are set on one of the four categories (inherit, deny, grant and/or perm). These four categories are ARRAYS of STRING. Some of the ARRAYS can be empty, although not all of them (then there would be no entry in the return perms for that user).</p>
+
+<p>The perms-structure can be empty if no user has any permission(s) on the user.</p>
+
+<h2 id="moveUser">moveUser()</h2>
+
+<p>Moves a user entity to another part of the entity tree.</p>
+
+<p>Input is:</p>
+
+<ul>
+
+<li><p><b>id</b> User entity ID from the database of the user to move. INTEGER. Required.</p>
+
+</li>
+<li><p><b>parent</b> Parent group entity ID from the database of the group which will be the new parent of the user. INTEGER. Required.</p>
+
+</li>
+</ul>
+
+<p>The method requires the user to have USER_MOVE permission on the user being moved and USER_CREATE on the parent group it is being moved to.</p>
+
+<h2 id="setUserTaskAssignments">setUserTaskAssignments()</h2>
+
+<p>Sets a user&#39;s task assignments.</p>
+
+<p>Input parameters are:</p>
+
+<ul>
+
+<li><p><b>id</b> User ID from database to set the task assignments of. INTEGER. Required.</p>
+
+</li>
+<li><p><b>assignments</b> HASH of task IDs from database of the assignments to set. HASH. Required. This HASH sets which task ids to assign for every computer id mentioned in the HASH. It is required that the user that is to have the assignments have the TASK_READ permission the task(s) being assigned. Or else they cannot be used. If a task id is listed in the assignments that the user does not have the TASK_READ permission on it is omitted from the assignment.</p>
+
+</li>
+</ul>
+
+<p>This method requires that the user has the USER_CHANGE permission on the user having its assignments set (typically every user has this permission on themselves). Furthermore it requires that the user has the TASK_EXECUTE-permission on the task(s) being assigned to computers.</p>
+
+<p>The HASH-structure of the assignments is as follows:</p>
+
+<pre><code>assignments =&gt; (
+                 COMPUTERIDa =&gt; [TASKID1, TASKID2 .. TASKIDn]
+                 .
+                 .
+                 COMPUTERIDz =&gt; ...
+               )</code></pre>
+
+<p>Returns the assignments actually set upon success in the same structure as setting the assignments.</p>
+
+<p>Please note that the assignments given to this method overrides any previous assignments. To achieve append functionality one will need to read the current assignments first and append to that on the input to this method.</p>
+
+
+</body>
+
+</html>
+
+

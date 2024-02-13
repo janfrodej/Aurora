@@ -1,0 +1,160 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#getGroupID">getGroupID()</a></li>
+      <li><a href="#getGroupName">getGroupName()</a></li>
+      <li><a href="#getGroupPath">getGroupPath()</a></li>
+      <li><a href="#getGroups">getGroups()</a></li>
+      <li><a href="#namespace">namespace()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>GroupInfo</code> - Placeholder class that represents ways of retrieving group-memberships on an AURORA-user</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use GroupInfo;
+ 
+# instantiate
+my $gi=GroupInfo-&gt;new();
+
+# get users groups
+my $groups=$gi-&gt;getGroups(&quot;john.doe@domain.topdomain&quot;);
+
+# get a groups unique ID (whatever works for the sub-class in question)
+my $id=$gi-&gt;getGroupID(&quot;mygroup&quot;);
+
+# get a groups name from ID
+my $name=$gi-&gt;getGroupName ($id);
+
+# get a groups path (up to inheriting sub-class to define) 
+my $path=$gi-&gt;getGroupPath(&quot;mygroup&quot;);
+
+# get AURORA metadata namespace location for the group ID
+my $location=$gi-&gt;namespace();</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Placeholder class that represents ways of retrieving group-memberships on an AURORA-user.</p>
+
+<p>This class is meant to be overridden by a sub-class that implements a specific way to retrieve or source of group-information for a specific user. The uniting identifier is the users email-address. How this is solved in the sub-class is up to the creator of it, but there must be some way to connect email to its belonging groups.</p>
+
+<p>After one has collected the groups with the getGroups()-method, one can retrieve information about the groups in various ways, including its unique ID and the path to the group.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Instantiates the class.</p>
+
+<p>Accepts no input.</p>
+
+<p>Returns the class instance.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="getGroupID">getGroupID()</h2>
+
+<p>Get the unique ID of the group in question.</p>
+
+<p>The method accepts one input: email-address (SCALAR). This is the email address of the user that one wishes to get the groups of.</p>
+
+<p>Upon success the method returns the textual names of the groups in an ARRAY-ref. Undef upon failure. Please check the error()-method for more information.</p>
+
+<p>Also when this method is run it fills the internal information of the GroupInfo-class with the group-information for the user, including their unique IDs. This method should be run immediately after instantiating the class to ensure that group-information for the user is in the instance when calling the other methods. The internal location of the group-information is the $self-&gt;{groups}-variable.</p>
+
+<p>This method is to be overridden by the inheriting sub-class. How the group information is retrieved is then up to the sub-class in question. Also what constitutes a unique ID for the group is up to the sub-class in question. The unique ID is only valid within the context of the method/source of the inheriting class.</p>
+
+<p>If the retrieved ID is to be stored in AURORA metadata, we admonish that the namespace location retrieved with the namespace()-method is used.</p>
+
+<h2 id="getGroupName">getGroupName()</h2>
+
+<p>Get the textual name of a unique group ID.</p>
+
+<p>This method takes one input: group ID (SCALAR). Group ID must be in the format of the inheriting sub-class and fulfills its requirements for it.</p>
+
+<p>It returns the textual name from the group ID.</p>
+
+<h2 id="getGroupPath">getGroupPath()</h2>
+
+<p>Get the path of a group name.</p>
+
+<p>This method takes one input: group name (SCALAR).</p>
+
+<p>Based upon the group name the method must be able to return the path down to the group, if any, and this path can then be used to create group-entity structures in AURORA. How this is solved is up to the inheriting class as long as it returns a consistent answer.</p>
+
+<p>Upon success returns the path of the group as a ARRAY-ref. The ARRAY may be empty if the group in question does not have any path, but when it has a path the order of the ARRAY should be top-down in the tree-structure. It must not include the group itself, only the path down to it.</p>
+
+<h2 id="getGroups">getGroups()</h2>
+
+<p>Get the groups that the user is a member of.</p>
+
+<p>Accepted input is: email-address (SCALAR).</p>
+
+<p>This method is to be overridden by the inheriting class. It is meant to retrieve all the groups that the given user (in the form of his email-address) is a member of. How this is solved is up to the sub-class, but it must be able to receive an email address and convert that into groups that the user is a member of. It must also update the $self-&gt;{groups}-hash variable with the groups and their corresponding unqiue ID. The structure is as follows:</p>
+
+<pre><code>(  GROUPNAME =&gt; { 
+                  name =&gt; SCALAR,  # GROUP NAME (redundant)
+                  id   =&gt; SCALAR,  # UNIQUE_ID
+                }
+)</code></pre>
+
+<p>Upon success this method is to return the ARRAY-reference of all the groups that the user is a member of in a textual form. The ARRAY-ref may be empty if the user has no group-memberships. Upon failure the return is undef. Then check the error()-method for more information.</p>
+
+<h2 id="namespace">namespace()</h2>
+
+<p>Retrieves the group ID namespace location in AURORA.</p>
+
+<p>This defines where in the AURORA namespace the unique ID of the group can be stored (if used). This method is to be overridden by the inheriting class.</p>
+
+<p>returns the textual namespace location (SCALAR).</p>
+
+
+</body>
+
+</html>
+
+

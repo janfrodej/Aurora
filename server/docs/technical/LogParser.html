@@ -1,0 +1,132 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#parse">parse()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>LogParser</code> - Class to parse an AuroraDB log-entries hash returned from method getLogEntries().</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code> use AuroraDB;
+ use LogParser;
+
+ my $db = AuroraDB-&gt;new(...);
+ 
+ my $id=1234;
+ my $log=$db-&gt;getLogEntries($id);
+
+ my $parser = LogParser-&gt;new(log=&gt;$log);
+ my $result = $parser-&gt;parse();</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Class to parse a Log-hash and its content and pick out relevant information from it, including dataset type, status, remote size, transfer log and more.</p>
+
+<p>It will parse the log-entries from the beginning to the end and pick out relevant information.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Instantiates the class.</p>
+
+<p>It takes the following parameters:</p>
+
+<ul>
+
+<li><p><b>log</b> HASH-reference to the AuroraDB log-hash. HASH-reference. Required. See the parse()-method below for the structure.</p>
+
+</li>
+</ul>
+
+<p>Returns a class instance upon success.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="parse">parse()</h2>
+
+<p>Parses an AuroraDB log-hash and returns relevant aggregated information about the life of the dataset in question.</p>
+
+<p>The method does not accept any parameters and returns a hash-reference upon success that are structured accordingly:</p>
+
+<pre><code>logdata =&gt; (
+   dataset_type =&gt; SCALAR # MANUAL/AUTOMATIC
+   removed_time =&gt; SCALAR # Unix datetime
+   acquire_phase_store_class =&gt; SCALAR # Store-class used to perform acquire operation 1
+   transfer_log =&gt; (
+      1 =&gt; SCALAR # transfer log entry no 1
+      2 =&gt; SCALAR # transfer log entry no 2
+      .
+      .
+      n =&gt; SCALAR # transfer log entry no n
+   )
+   status =&gt; SCALAR    # OPEN/CLOSED
+   closed_by =&gt; SCALAR # service id or user id if &gt; 0
+   task_id =&gt; SCALAR   # Store-service task id used during acquire-phase
+   distlog =&gt; (
+     1 =&gt; SCALAR # distlog-entry no 1
+     .
+     .
+     n =&gt; SCALAR # distlog-entry no n
+   )
+   remote_size                 =&gt; SCALAR # size of remote data
+   transfer_all_completed      =&gt; SCALAR # all transfer completed successfully (0/1)
+   acquire_phase_completed     =&gt; SCALAR # acquire-phase completed successfully (0/1)
+   acquire_phase_failure_count =&gt; SCALAR # no times the acquire-phase failed
+   acquire_phase_run_count     =&gt; SCALAR # no of times the acquire-phase ran
+   acquire_phase_simultaneous  =&gt; SCALAR # did several acquire-phase processes run simultaneously? (0/1)     
+)</code></pre>
+
+<p>Not all values will necessarily be present in the return logdata. That depends on the history of the dataset and what is in its log. Eg. &quot;removed_time&quot; will not be there if the dataset was not removed yet. In a similar manner the &quot;closed_by&quot; will not exist if the dataset has not been closed yet. Also some values will not be there if the dataset is of MANUAL type. This includes the values remote_size, transfer_all_completed and all the acquire_phase ones (they will have 0/false values).</p>
+
+
+</body>
+
+</html>
+
+

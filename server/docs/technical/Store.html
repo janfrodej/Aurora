@@ -1,0 +1,609 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#probe">probe()</a></li>
+      <li><a href="#name">name()</a></li>
+      <li><a href="#open">open()</a></li>
+      <li><a href="#open_define">open_define()</a></li>
+      <li><a href="#open_create">open_create()</a></li>
+      <li><a href="#close">close()</a></li>
+      <li><a href="#paramValueGet">paramValueGet()</a></li>
+      <li><a href="#paramValuePut">paramValuePut()</a></li>
+      <li><a href="#paramValueDel">paramValueDel()</a></li>
+      <li><a href="#setParam">setParam()</a></li>
+      <li><a href="#paramsRequired">paramsRequired()</a></li>
+      <li><a href="#put">put()</a></li>
+      <li><a href="#get">get()</a></li>
+      <li><a href="#del">del()</a></li>
+      <li><a href="#remoteSize">remoteSize()</a></li>
+      <li><a href="#localSize">localSize()</a></li>
+      <li><a href="#listRemote">listRemote()</a></li>
+      <li><a href="#listLocal">listLocal()</a></li>
+      <li><a href="#verify">verify()</a></li>
+      <li><a href="#getLog">getLog()</a></li>
+      <li><a href="#getParams">getParams()</a></li>
+      <li><a href="#putParams">putParams()</a></li>
+      <li><a href="#delParams">delParams()</a></li>
+      <li><a href="#exitcode">exitcode()</a></li>
+      <li><a href="#timeout">timeout()</a></li>
+      <li><a href="#metadata">metadata()</a></li>
+      <li><a href="#wait">wait()</a></li>
+      <li><a href="#isRunning">isRunning()</a></li>
+      <li><a href="#isOpen">isOpen()</a></li>
+      <li><a href="#mode">mode()</a></li>
+      <li><a href="#alive">alive()</a></li>
+      <li><a href="#success">success()</a></li>
+      <li><a href="#ceaseOperations">ceaseOperations()</a></li>
+      <li><a href="#error">error()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>Store</code> - Placeholder class that represents a way of storing data and getting and putting that data, verifying it and so on.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code> use Store;
+
+ # instantiate the store
+ my $s=Store-&gt;new(authmode=&gt;Store::AUTH_PW);
+
+ # get storename
+ $s-&gt;name();
+
+ # set storename
+ $s-&gt;name(&quot;WHATEVER&quot;);
+
+ # open store to start using it
+ $s-&gt;open();
+
+ # get param value for a get parameter
+ my $val=$s-&gt;paramValueGet(&quot;PARAMNAME&quot;);
+
+ # set param value for a get parameter
+ $s-&gt;paramValueGet(&quot;PARAMNAME&quot;,&quot;VALUE&quot;);
+
+ # get param value for a put parameter
+ my $val=$s-&gt;paramValuePut(&quot;PARAMNAME&quot;);
+
+ # get param value for a del parameter
+ my $val=$s-&gt;paramValueDel(&quot;PARAMNAME&quot;);
+ 
+ # set param value for a put parameter
+ $s-&gt;paramValuePut(&quot;PARAMNAME&quot;,&quot;VALUE&quot;);
+ 
+ # set a param in put-, get- and del parameters
+ $s-&gt;setParam (&quot;PARAMNAME&quot;,&quot;VALUE);
+
+ # get required put-, get and extra-parameters and
+ # their current value
+ my %r=$s-&gt;paramsRequired();
+
+ # put data into store
+ $s-&gt;put();
+
+ # get data from store
+ $s-&gt;get();
+
+ # delete data from remote store
+ $s-&gt;del();
+
+ # get size of remote location
+ my $size=$s-&gt;remoteSize();
+
+ # get size of local location
+ my $size=$s-&gt;localSize();
+
+ # list local folder/data area
+ my $list=$s-&gt;listLocal(&quot;/whatever/path&quot;);
+
+ # list remote folder/data area
+ my $list=$s-&gt;listRemote(&quot;/whatever/path&quot;);
+
+ # verify the operation on the Store
+ $s-&gt;verify();
+
+ # get log of either get- or put-operation
+ my $log=$s-&gt;getLog();
+
+ # get put or get exitcode
+ my $ecode=$s-&gt;exitcode();
+
+ # get timout value
+ my $timeout=$s-&gt;timeout();
+
+ # set timeout value
+ $s-&gt;timeout(10000);
+
+ # get wait value
+ my $wait=$s-&gt;wait();
+
+ # set wait value
+ $s-&gt;wait(6000);
+
+ # check if put, get or del is running
+ my $running=$s-&gt;isRunning();
+
+ # check if store is open
+ my $open=$s-&gt;isOpen();
+
+ # get success of last get-, put- or del operation
+ my $succ=$s-&gt;success();
+
+ # cease get or put operation on a store 
+ $s-&gt;ceaseOperations();
+
+ # get last error message
+ my $error=$s-&gt;error();
+
+ # close the store - clean up. Should be called, even upon error when stopping to use the store.
+ $s-&gt;close();</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Placeholder class to represent a way of storing data and how to get-, put- and delete data on it, verifying the data, the size, logging and log output of get-, put- and delete operations.</p>
+
+<p>This placeholder class is to be inherited by classes that represent actual ways of storing data.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Constructor. Instantiate a Store-class.</p>
+
+<p>Input accepts the following parameters:</p>
+
+<ul>
+
+<li><p><b>authmode</b> Sets the authentication mode of the Store. It can either be AUTH_PW (password is specifed as input parameters password), AUTH_PWFILE (password is read from file set in parameter passwordfile), AUTH_KEY (uses privatekey specified as input parameter privatekey) or AUTH_KEYFILE (uses privatekey read from file name and location specified as input parameter privatekeyfile). All these parameters (password, passwordfile, privatekey and privatekeyfile) are parameters to the open()-method and are reserved for this (not to be used for other purposes). They might not have meaning for all classes, such as eg. FTP, which do not use a privatekey-scheme for authentication.</p>
+
+</li>
+<li><p><b>metadata</b> Sets the metadata of the dataset that is being put/get/deleted. HASH-reference. Optional. If not set or set to non-HASH reference, will default to an empty HASH. It is up to the inheriting Store-class to use this metadata or not.</p>
+
+</li>
+<li><p><b>storename</b> Sets the unique store name. If none is specified it defaults to a 64 character random string.</p>
+
+</li>
+<li><p><b>timeout</b> Sets the timeout of a get- or put operation in seconds. Defaults to 0 which means no timeout. This setting sets the time the get- or put-operation waits even if there is no activity generated by the underlying operation.</p>
+
+</li>
+<li><p><b>wait</b> Sets the wait time on a get- or put operation in seconds. Defaults to 0 which means to wait forever. This settings sets the time the get- or put operation waits on a completetion of the underlying operation independant upon if it generates activity or not. It is only recommended to use this option if you have special needs for the operation to end if not completed within a certain time. To end operation if nothing happens, please use the timeout setting instead.</p>
+
+</li>
+</ul>
+
+<p>The methods returns an instantiated class.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="probe">probe()</h2>
+
+<p>Probe remote location of its capabiliites.</p>
+
+<p>Input parameteres: none. All is taken from already setup paramteres.</p>
+
+<p>Returns 1 if successful in probing. 0 if it failed. Please check the error()-method for more information upon failure.</p>
+
+<p>If successful the probe()-method will update the parameter set of the class based upon what it learned.</p>
+
+<p>We recommend all users call this method prior to other methods.</p>
+
+<h2 id="name">name()</h2>
+
+<p>Sets or gets the name of the Store.</p>
+
+<p>If not input is set, it returns the name of the store. If one add a SCALAR input, that input is set as the name of the store.</p>
+
+<p>Returns 1 when setting the store name or it returns the name the store already has.</p>
+
+<h2 id="open">open()</h2>
+
+<p>Opens a store to execute operations on it.</p>
+
+<p>Needed input depends on the Store-class in question and this method is to be overridden by the inheriting class.</p>
+
+<p>Please call the paramsRequired()-method to find which parameters are needed for a specific Store-class.</p>
+
+<p>The method checks that all required parameters are present and that they meet their regex pattern as defined in the Parameter-class (see Parameter-class for more information).</p>
+
+<p>When all criterias have been met for the required parameters, it will attempt to set the value passed on to open as parameters into the Store-class in question, both required and non-required. It will also check the regex-compliance of non-required parameters. In addition, if the parameter in question has been tagget as a sandbox-parameter, this method will strip away all &quot;..&quot;, all slashes and all relevant shell metacharacters to force the parameter to relate only to a filename. The filename will be prepended with the location path of the sandbox-folder from the sandbox-option to the class. This makes it possible to refer to local files, while retaining security for files outside of the sandboxed folder.</p>
+
+<p>The method returns 1 upon successful opening of the store or 0 upon failure. Please check the error()-method upon failure.</p>
+
+<h2 id="open_define">open_define()</h2>
+
+<p>Defines a store&#39;s get-, put-, del- and extra-parameters that are needed for the store-class in question. The extra-parameters are not part of any command that is run and their defined order does not matter. They are only used to modify the behaviour of the get- og put-parameters. But, all parameters names between the get-,put-, del-command and the extra-parameters are unique. That means that no parameters should be used in two places (get-,put-,del- and/or extra) without having the same meaning.</p>
+
+<p>It is important that all non-private parameters (see the flags in the Parameter-class) are properly escaped or checked for security issues. If a parameter is marked as &quot;private&quot; the Store-class will use quotemeta to escape meta characters. This will in most cases suffice, but there are some command line utilities that are not always happy to get parameters quotes (such as remote- and local paramters). Examples of utilities that are not always happy in some scenarios are sftp and ftp. It is generally considered safe to not quote the local parameter since that in the AURORA-system is supplied by the system and not by the user. However, all non-private parameters should be escaped to be sure there are no issues if possible.</p>
+
+<p>Only non-private parameters can be overwritten by supplying parameters to the open()-method. Others cannot be overwritten by the user of Store-classes.</p>
+
+<p>This method is to be overridden by the inheriting class and are not to be called by user himself.</p>
+
+<p>Several parameters are reserved and has special meaning to the Store-class(es):</p>
+
+<ul>
+
+<li><p><b>local</b> Defines the local data location (for get- and put-operations).</p>
+
+</li>
+<li><p><b>remote</b> Defines the remote data location (for get- and put-operations).</p>
+
+</li>
+<li><p><b>privatekey</b> Defines the privatekey to be used for classes that uses key-authentication (authmode must be set to AUTH_KEY).</p>
+
+</li>
+<li><p><b>privatekeyfile</b> Defines the location of the privatekey file and is to be used for classes that uses key-authentication (authmode must be set to AUTH_KEYFILE).</p>
+
+</li>
+<li><p><b>pw</b> Defines the password to be used for classes that uses password-authentication (authmode must be set to AUTH_PW).</p>
+
+</li>
+<li><p><b>pwfile</b> Defines the location and name of the password file to be used for classes that uses password-authentication (authmode must be set to AUTH_PWFILE).</p>
+
+</li>
+</ul>
+
+<p>Returns 1 if successful, 0 if not.</p>
+
+<h2 id="open_create">open_create()</h2>
+
+<p>Creates the put-, get- and del-instances of the StoreProcess-class or subclasses. Placeholder to be overridden by inheriting class.</p>
+
+<p>Returns 1 if successful, 0 if not.</p>
+
+<p>This method is not to be called directly by user.</p>
+
+<h2 id="close">close()</h2>
+
+<p>Closes the store and cleans up.</p>
+
+<p>This method closes the store and sets the result of isOpen()-method to 0. It cleans up whatever needs to be cleaned up. This method is to be overridden by the inheriting class if one needs to do some kind of cleanup.</p>
+
+<p>The method is to be called by the user of the class when he is finished using the instance in question to ensure cleanup of temporary resources. It should even be called in event of a failure to perform methods when the user is fininshed with the instance.</p>
+
+<p>Returns 1 upon success, 0 upon failure. Pleace check the error()-method for more information upon failure.</p>
+
+<h2 id="paramValueGet">paramValueGet()</h2>
+
+<p>Get or set a GET parameter value.</p>
+
+<p>Input is the name of the parameters to get. Additionally one can add a value as the next parameter if one wishes to set the value of the parameter name given as the first parameter.</p>
+
+<p>Returns the value of the parameter upon get, or upon a set returns the result of setting that parameter on the Parameter-class (see Parameter-class for more information).</p>
+
+<h2 id="paramValuePut">paramValuePut()</h2>
+
+<p>Get or set a PUT parameter value.</p>
+
+<p>Input is the name of the parameters to get. Additionally one can add a value as the next parameter if one wishes to set the value of the parameter name given as the first parameter.</p>
+
+<p>Returns the value of the parameter upon get, or upon a set returns the result of setting that parameter on the Parameter-class (see Parameter-class for more information).</p>
+
+<h2 id="paramValueDel">paramValueDel()</h2>
+
+<p>Get or set a DEL parameter value.</p>
+
+<p>Input is the name of the parameters to get. Additionally one can add a value as the next parameter if one wishes to set the value of the parameter name given as the first parameter.</p>
+
+<p>Returns the value of the parameter upon get, or upon a set returns the result of setting that parameter on the Parameter-class (see Parameter-class for more information).</p>
+
+<h2 id="setParam">setParam()</h2>
+
+<p>Sets a given parameter in all of the GET-, PUT- and DEL-parameters of the Store-class.</p>
+
+<p>Input is the name and the value of the parameter to set.</p>
+
+<p>Returns 1 upon successful set in one or more of the GET-, PUT- or DEL-parameters or 0 upon failure.</p>
+
+<h2 id="paramsRequired">paramsRequired()</h2>
+
+<p>Returns the required parameters of the Store-class.</p>
+
+<p>This method get the required parameters of GET-, PUT- and DEL-methods and the extra-parameters of the Store-class.</p>
+
+<p>No input is accepted and it returns a HASH upon success or 0 upon failure. Check the error()-method for more information upon failure.</p>
+
+<p>The return HASH of the required parameters has the following format:</p>
+
+<pre><code>(
+   paramA =&gt; { name =&gt; SCALAR (this is a repeat of paramA),
+               value =&gt; SCALAR,
+               check =&gt; REGEX
+               required =&gt; BOOLEAN,
+               escape =&gt; BOOLEAN,
+             }
+   paramB =&gt; { name =&gt; SCALAR (this is a repeat of paramB),
+               etc...       
+
+)</code></pre>
+
+<p>For more information on the data returned in the HASH see the Parameter-class documentation.</p>
+
+<h2 id="put">put()</h2>
+
+<p>Starts the method of putting data into store.</p>
+
+<p>The store must first have been opened for this to start successfully. The store cannot already be in a get-, put- or del-mode.</p>
+
+<p>No input is accepted.</p>
+
+<p>It returns 1 upon successful start of the put-operation, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="get">get()</h2>
+
+<p>Starts the method of getting data from the store.</p>
+
+<p>The store must first have been opened for this to start successfully. The store cannot already be in a get-, put- or del-mode.</p>
+
+<p>It returns 1 upon successful start of the get-operation, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="del">del()</h2>
+
+<p>Starts the method of deleting data from the remote store.</p>
+
+<p>This method is meant to be overridden by inheriting class.</p>
+
+<p>The store must first have been opened for this to start successfully. The store cannot already be in a get-, put- or del-mode.</p>
+
+<p>It returns 1 upon successful start of the del-operation, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+<p>It only deletes remotely.</p>
+
+<h2 id="remoteSize">remoteSize()</h2>
+
+<p>Get the size of the data in the remote location.</p>
+
+<p>This method is to be overridden by the inheriting class.</p>
+
+<p>This method is not to be called by user, but by internal methods.</p>
+
+<p>Returns the size in bytes or undef upon error. Please check the error()-method for more information in the event of an error.</p>
+
+<h2 id="localSize">localSize()</h2>
+
+<p>Get the size of the data in the local location.</p>
+
+<p>This method is always calculating on a local filesystem. It is therefore written a general localSize-method that uses the rsync utility. However, this method can be overridden by the inheriting class.</p>
+
+<p>It is recommended that the localSize()-method be careful with how to calculate its own local size, since the local location might have data from several locations/stores. This is not required, however, and the default localSize()-method does not implement this.</p>
+
+<p>Returns the local size in bytes or undef upon error. Please check the error()-method for more information in the event of an error.</p>
+
+<h2 id="listRemote">listRemote()</h2>
+
+<p>Lists the folder/store contents on the remote end.</p>
+
+<p>Input is the path to list. This is optional and default to a blank string.</p>
+
+<p>The function is not recursive and only lists the Store-structure in the path specified. This method is to be overridden by the inheriting class.</p>
+
+<p>Returns a HASH-reference to a structure which must be of the following format upon success:</p>
+
+<pre><code>(
+  TYPEa =&gt; { NAMEa =&gt; { NAME =&gt; SCALAR, # name of item
+                        TYPE =&gt; SCALAR, # either F (File) or D (Folder)
+                        SIZE =&gt; SCALAR,  # in Bytes
+                        DATETIME =&gt; SCALAR, # in unixtime
+                     },
+             NAMEb =&gt; { NAME =&gt; SCALAR,
+                        TYPE =&gt; SCALAR,
+                        SIZE =&gt; SCALAR,
+                        DATETIME =&gt; SCALAR,
+                       },
+           },
+ TYPEb =&gt; { etc...
+          },
+)</code></pre>
+
+<p>Type in the initial key also means either F (file), D (folder) or L (link/symbolic). Some information is also repeated in the item itself for ease of use.</p>
+
+<p>Upon failure returns undef. Please check the error()-method for more information upon an error.</p>
+
+<h2 id="listLocal">listLocal()</h2>
+
+<p>Lists the folder/store contents locally (local parameter).</p>
+
+<p>Input is the path to list. The local parameter is added to this path-string. This is optional and default to a blank string.</p>
+
+<p>The function is not recursive and only lists the Store-structure in the path specified. This method is already implemented here ofr local filesystems stores and does not need to be overridden.</p>
+
+<p>Returns a HASH-reference to a structure which must be of the following format upon success:</p>
+
+<pre><code>(
+  TYPEa =&gt; { NAMEa =&gt; { NAME =&gt; SCALAR, # name of item
+                        TYPE =&gt; SCALAR, # either F (File) or D (Folder)
+                        SIZE =&gt; SCALAR,  # in Bytes
+                        DATETIME =&gt; SCALAR, # in unixtime
+                     },
+             NAMEb =&gt; { NAME =&gt; SCALAR,
+                        TYPE =&gt; SCALAR,
+                        SIZE =&gt; SCALAR,
+                        DATETIME =&gt; SCALAR,
+                       },
+           },
+  TYPEb =&gt; { etc...
+           },
+)</code></pre>
+
+<p>Type in the initial key also means either F (file), D (folder) or L (link/symbolic). Some information is also repeated in the item itself for ease of use.</p>
+
+<p>Upon failure returns undef. Please check the error()-method for more information upon an error.</p>
+
+<h2 id="verify">verify()</h2>
+
+<p>Verifies the operation on the store.</p>
+
+<p>This method is to be overridden by the inheriting class, but it needs to verify that the put- or get- operation has been successfully performed and that the data is intact. If not verify method can be implemented it is to return 1 (success).</p>
+
+<p>Returns 1 upon success, 0 upon failure. Check the error()-method for more information upon failure.</p>
+
+<h2 id="getLog">getLog()</h2>
+
+<p>Gets the log of either the get-, put- or del-operation depending upon the mode of the Store.</p>
+
+<p>It returns the log-instance of a SmartLog-class that belongs to either the get-, put- or del-StoreProcess operation.</p>
+
+<h2 id="getParams">getParams()</h2>
+
+<p>Return the parameter group instance of the get-command for the store.</p>
+
+<p>Returns a reference to a Parameter-class og subclass instance.</p>
+
+<h2 id="putParams">putParams()</h2>
+
+<p>Return the parameter group instance of the put-command for the store.</p>
+
+<p>Returns a reference to a Parameter-class og subclass instance.</p>
+
+<h2 id="delParams">delParams()</h2>
+
+<p>Return the parameter group instance of the delete-command for the store.</p>
+
+<p>Returns a reference to a Parameter-class og subclass instance.</p>
+
+<h2 id="exitcode">exitcode()</h2>
+
+<p>Returns the exitcode of either the GET-, PUT- or DEL-StoreProcess instance (depends on store-mode). The exitcode is harvested from the executed command in the StoreProcess-class when it returns. See the StoreProcess-class for more information.</p>
+
+<p>Returns the exitcode upon success, undef upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="timeout">timeout()</h2>
+
+<p>Gets or sets the timeout of the GET-, PUT- or DEL-StoreProcess instances (it is the same for all in every case).</p>
+
+<p>Input is the timeout value upon a set. No input accepted upon get.</p>
+
+<p>It returns 1 upon successful set, the timeout value upon successful get.</p>
+
+<p>See the StoreProcess-class for more information on the timeout-option.</p>
+
+<h2 id="metadata">metadata()</h2>
+
+<p>Set or get the Store&#39;s metadata.</p>
+
+<p>One input accepted: metadata. HASH-reference. Optional (get) and Required (set). If set to undef or not a HASH-reference when set, it will fail with undef in return.</p>
+
+<p>Will return the metadata if no input is specified, it will set the metadata if the metadata-parameter is set and it is a HASH-reference (and then return the set HASH-reference). It will return undef upon failure. Check the error()-method for more information upon a failure.</p>
+
+<h2 id="wait">wait()</h2>
+
+<p>Gets or sets the wait time of the GET-, PUT- or DEL-StoreProcess instances (it is the same for all in every case).</p>
+
+<p>Input is the wait time value upon a set. No input accepted on get.</p>
+
+<p>It returns 1 upon successful set, the wait value upon successful get.</p>
+
+<p>See the StoreProcess-class for more information on the wait-option.</p>
+
+<h2 id="isRunning">isRunning()</h2>
+
+<p>Returns if the Store-instance is running either a GET-, PUT- or DEL-operation (depends on the mode of the store).</p>
+
+<p>No input accepted.</p>
+
+<p>Returns 1 if a store operation is running, 0 if no operation running or that no operation has started yet.</p>
+
+<h2 id="isOpen">isOpen()</h2>
+
+<p>Returns if the store has been opened or not?</p>
+
+<p>Returns 1 if it has been opened, 0 if not.</p>
+
+<h2 id="mode">mode()</h2>
+
+<p>Returns the current mode that the store is in.</p>
+
+<p>The possible modes are:</p>
+
+<pre><code>NOP = 0
+GET = 1
+PUT = 2
+DEL = 3</code></pre>
+
+<p>These modes can also be referenced by the variables STORE_MODE_NOP, STORE_MODE_GET, STORE_MODE_PUT and STORE_MODE_DEL.</p>
+
+<h2 id="alive">alive()</h2>
+
+<p>Returns the latest timestamp from any activity of the store-process (either get-, put- or del dependent upon mode).</p>
+
+<p>No input is accepted.</p>
+
+<p>Upon success returns the time in unixtime without locale. Upon failure returns undef. Please check the error()-method for more information upon failure. Typical reason for failure is that neither get-, put- or del- process has been started or are running anymore.</p>
+
+<h2 id="success">success()</h2>
+
+<p>Returns the success of the last GET-, PUT- or DEL-operation.</p>
+
+<p>No input is accepted.</p>
+
+<p>Returns 1 if the last operation was successful, 0 if not or if the store was not opened or no operation run yet.</p>
+
+<p>Upon a 0, one can check the error()-method for more information (if any).</p>
+
+<h2 id="ceaseOperations">ceaseOperations()</h2>
+
+<p>Stops either a GET-, PUT- or DEL-operation on a store (depends on mode).</p>
+
+<p>No input is accepted.</p>
+
+<p>Returns 1 upon successfully ceasing operation of a GET-, PUT- or DEL-operation, 0 if not.</p>
+
+<p>It will also return 0 if store is not opened yet or no GET-, PUT- or DEL-operation is running. In such cases one can check the error()-method for more information.</p>
+
+<h2 id="error">error()</h2>
+
+<p>Returns the last error of the store (if any).</p>
+
+<p>No input is accepted.</p>
+
+<p>Return value is a SCALAR.</p>
+
+
+</body>
+
+</html>
+
+

@@ -1,0 +1,107 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#getGroupPath">getGroupPath()</a></li>
+      <li><a href="#getGroups">getGroups()</a></li>
+      <li><a href="#namespace">namespace()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>GroupInfo::NTNU</code> - Class to retrieve research group-memberships of a user in NTNUs LDAP-catalogue</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use GroupInfo::NTNU;
+
+# instantiate
+my $gi=GroupInfo::NTNU-&gt;new();
+
+# get users groups
+my $groups=$gi-&gt;getGroups(&quot;john.doe@ntnu.no&quot;);
+
+# get a groups unique ID (whatever works for the sub-class in question)
+my $id=$gi-&gt;getGroupID(&quot;mygroup&quot;);
+
+# get a groups name from ID
+my $name=$gi-&gt;getGroupName ($id);
+
+# get a groups path (up to inheriting sub-class to define) 
+my $path=$gi-&gt;getGroupPath(&quot;mygroup&quot;);
+
+# get AURORA metadata namespace location for the group ID
+my $location=$gi-&gt;namespace();</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Class to retrieve research group-memberships of a user in NTNUs LDAP-catalogue.</p>
+
+<p>This class is inherited from the GroupInfo-class. Please see the class-documentation of the GroupInfo-class for more in-depth information.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="getGroupPath">getGroupPath()</h2>
+
+<p>This function returns the path to the group in question in AURORA.</p>
+
+<p>This method is specific to group-admin at NTNU. It parses the group-name to retrieve the path where the group is to be placed.</p>
+
+<p>See the GroupInfo-class for more information on this method.</p>
+
+<h2 id="getGroups">getGroups()</h2>
+
+<p>Get the groups at NTNU that a specific user are a member of at NTNU.</p>
+
+<p>Uses LDAP to get the relevant group-memberships.</p>
+
+<p>See the GroupInfo-class for more information on this method.</p>
+
+<h2 id="namespace">namespace()</h2>
+
+<p>Returns the AURORA namespace location for the ID of this sub-class.</p>
+
+<p>See the GroupInfo-class for more information on this method.</p>
+
+
+</body>
+
+</html>
+
+

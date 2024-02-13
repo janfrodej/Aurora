@@ -1,0 +1,101 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#open">open()</a></li>
+      <li><a href="#close">close()</a></li>
+      <li><a href="#load">load()</a></li>
+      <li><a href="#save">save()</a></li>
+      <li><a href="#delete">delete</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><b>DataContainer::File</b> Class to interface a DataContainer with a file. Placeholder and is to be overridden.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="open">open()</h2>
+
+<p>Open connection to DataContainer-file.</p>
+
+<p>Accepts one parameter, &quot;name&quot; to specify the name of the file to open.</p>
+
+<p>The method checks the mode()-method to find out which mode the DataContainer might be in.</p>
+
+<p>Returns 1 upon success, 0 upon failure.</p>
+
+<p>See documentation of the DataContainer-class for more information on this method.</p>
+
+<h2 id="close">close()</h2>
+
+<p>Attempts to close the DataContainer if possible.</p>
+
+<p>Accepts no input.</p>
+
+<p>Returns 1 upon success, 0 upon failure.</p>
+
+<h2 id="load">load()</h2>
+
+<p>Loads data into the DataContainer.</p>
+
+<p>Optional parameter of &quot;name&quot; might be given. SCALAR. Optional. If specified overrides the parameter set by the constructor.</p>
+
+<p>Returns 1 upon success, 0 upon failure. Please check the error()-method upon failure.</p>
+
+<h2 id="save">save()</h2>
+
+<p>Attempt to save data into the DataContainer.</p>
+
+<p>Optional parameter &quot;name&quot; which specified where to store the file? If not specified, defaults to what was specified to the new()-constructor.</p>
+
+<p>Returns 1 upon success, 0 upon failfure. Please check the error()-method upon any failure for more information.</p>
+
+<h2 id="delete">delete</h2>
+
+<p>Removing data from the DataContainer.</p>
+
+<p>Optional parameter &quot;name&quot; might be specified. SCALAR. Sets the name of the DataContainer. Only has meaning to the inheriting class, and in this case it refers to the file-name.</p>
+
+<p>Returns 1 upon success, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+
+</body>
+
+</html>
+
+

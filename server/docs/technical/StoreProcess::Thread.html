@@ -1,0 +1,126 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#execute_startprocess">execute_startprocess()</a></li>
+      <li><a href="#execute_cleanup">execute_cleanup()</a></li>
+      <li><a href="#execute_cease">execute_cease()</a></li>
+      <li><a href="#mydonothing">mydonothing()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>StoreProcess::Thread</code> - Class for a StoreProcess that is run in a thread.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<p>This class is used in the same way as the StoreProcess-class. Please see the StoreProcess-class for more info.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Class for a StoreProcess that is run in a thread.</p>
+
+<p>The class is used in the same way as the StoreProcess-class. Please seee the StoreProcess-class for more information.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Instantiates the constructor of the class.</p>
+
+<p>It is inherited from the StoreProcess-class and takes the same parameteres (see the StoreProcess-class for more information).</p>
+
+<p>In addition it takes the parameter:</p>
+
+<ul>
+
+<li><p><b>funcptr</b> Reference to a function to run in the thread being executed. The parameters is required. If not specified it will run a no-do dummy process (see the mydonothing()-method).</p>
+
+</li>
+</ul>
+
+<p>Returns the StoreProcess-instance.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="execute_startprocess">execute_startprocess()</h2>
+
+<p>Starts the thread&#39;ed process and runs the function specified as the funcptr-parameter to the new()-method.</p>
+
+<p>This method is inherited from the StoreProcess-class. Please see the StoreProcess-class for more information.</p>
+
+<p>The method is not to be called by the user and is for internal use.</p>
+
+<h2 id="execute_cleanup">execute_cleanup()</h2>
+
+<p>Cleans up after the thread&#39;ed process when it ends.</p>
+
+<p>This method is inherited from the StoreProcess-class. Please see the StoreProcess-class for more information.</p>
+
+<p>The method is for internal use and is not to be called by the user.</p>
+
+<h2 id="execute_cease">execute_cease()</h2>
+
+<p>Stops the thread&#39;ed function-process running.</p>
+
+<p>This method is inherited from the StoreProcess-class. Please see the StoreProcess-class for more information.</p>
+
+<p>The method is for internal use and is not to be called by the user.</p>
+
+<h2 id="mydonothing">mydonothing()</h2>
+
+<p>Does nothing. Placeholder for a function-reference.</p>
+
+<p>Does nothing and directly writes the exitcode of the function before exiting itself. It is mean as a replacement for a missing funcptr-option in the new()-method (see the new()-method for more information).</p>
+
+<p>Always returns 1.</p>
+
+<p>The method is for internal use and is not to be called by the user.</p>
+
+
+</body>
+
+</html>
+
+

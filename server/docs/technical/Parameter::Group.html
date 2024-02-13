@@ -1,0 +1,531 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#add">add()</a></li>
+      <li><a href="#remove">remove()</a></li>
+      <li><a href="#addGroup">addGroup()</a></li>
+      <li><a href="#addGroupAfter">addGroupAfter()</a></li>
+      <li><a href="#addGroupBefore">addGroupBefore()</a></li>
+      <li><a href="#addVariable">addVariable()</a></li>
+      <li><a href="#addVariableAfter">addVariableAfter()</a></li>
+      <li><a href="#addVariableBefore">addVariableBefore()</a></li>
+      <li><a href="#count">count()</a></li>
+      <li><a href="#enum">enum()</a></li>
+      <li><a href="#enumObjects">enumObjects()</a></li>
+      <li><a href="#enumPrivateObjects">enumPrivateObjects()</a></li>
+      <li><a href="#enumRequiredObjects">enumRequiredObjects()</a></li>
+      <li><a href="#enumUniqueObject">enumUniqueObject()</a></li>
+      <li><a href="#exists">exists()</a></li>
+      <li><a href="#get">get()</a></li>
+      <li><a href="#getFirst">getFirst()</a></li>
+      <li><a href="#getFirstParameter">getFirstParameter()</a></li>
+      <li><a href="#getNext">getNext()</a></li>
+      <li><a href="#getNextParameter">getNextParameter()</a></li>
+      <li><a href="#location">location()</a></li>
+      <li><a href="#noSpace">noSpace()</a></li>
+      <li><a href="#resetGetNext">resetGetNext()</a></li>
+      <li><a href="#resetGetNextParameter">resetGetNextParameter()</a></li>
+      <li><a href="#toString">toString()</a></li>
+    </ul>
+  </li>
+  <li><a href="#POD-ERRORS">POD ERRORS</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>Parameter::Group</code> - Class to handle groups of parameters - either other sub-groups and/or variables.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code> use Parameter::Group;
+
+ # create instance
+ my $g=Parameter::Group-&gt;new();
+
+ # create a Parameter-object
+ my $v=Parameter::Variable-&gt;new();
+
+ # add a Parameter-object to the group
+ $g-&gt;add($v);
+
+ # create a variable object and add it to the group instance
+ $g=addVariable(&quot;myvariable&quot;,&quot;somevalue&quot;,&quot;.*&quot;);
+
+ # create a sub-group-object and add it to the group instance
+ $g-&gt;addGroup(&quot;mygroup&quot;);
+
+ # add variable to subgroup
+ $g-&gt;get(&quot;mygroup&quot;)-&gt;addVariable(&quot;somename&quot;,&quot;othervalue&quot;);
+ 
+ # add variable after another named variable
+ $g-&gt;addVariableAfter(&quot;myvariable&quot;,&quot;newvariablename&quot;,&quot;value&quot;);
+
+ # add variable before another named variable
+ $g-&gt;addVariableBefore(&quot;newvariablename&quot;,&quot;myvarname&quot;,&quot;a_value&quot;);
+
+ # make a variable required and public
+ $g-&gt;addVariable(&quot;mypublicvariable&quot;,&quot;somevalue&quot;,1,0);
+
+ # create a group and tell it to quote its content parameters (sub-groups and/or variables)
+ $g-&gt;addGroup(&quot;myquotedgroup&quot;,undef,1);
+
+ # remove a named parameter
+ $g-&gt;remove(&quot;mypublicvariable&quot;);
+
+ # enumerate objects (sub-groups and variables)
+ my $e=$g-&gt;enum();
+
+ # get next parameter
+ while (my $par=$g-&gt;getNextParameter()) {
+    print &quot;Parameter value is: $par\n&quot;;
+ }
+ 
+ # enumerate objects
+ my $pars=$g-&gt;enumObjects();
+
+ # enumerate unique objects
+ my $uni=$g-&gt;enumUniqueObjects();
+
+ # enumerate required objects
+ my $r=$g-&gt;enumRequiredObjects();
+
+ # enumerate private objects
+ $p=$g-&gt;enumPrivateObjects();
+
+ # get a specific named object
+ my $o=$g-&gt;get(&quot;objectname&quot;);
+
+ # check if an object exists (sub-groups or variables)
+ if ($g-&gt;exists(&quot;objectname&quot;)) {}
+
+ # get if group is to have no space between parameters or not?
+ my $ns=$g-&gt;noSpace();
+
+ # get all parameters in group as a string
+ my $s=$g-&gt;toString();
+
+ # get number of objects in group (sub-groups and/or variables)
+ my $c=$g-&gt;count();</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Class to handle groups of parameters, either other sub-groups and/or variables.</p>
+
+<p>This class is a sub-class of the Parameter-class. Usually when using the Parameter-class one only instantiates a Parameter::Group-class.</p>
+
+<p>A parameter-group can contain both other sub-groups as well as parameters. It does not allow the creation or addition of groups or variables that have the same name as other groups and variables already added. This is to ensure unique naming in the entire parameter-group, so that one can use the objects by referring to them by name (ie. parameter-name). One can circumvent this requirement in several ways, but we admonish the user to adhere to a group- and parameter unique use.</p>
+
+<p>When addressing Parameter-objects in this class, you can refer to them or get them by using the get()-method. It works hierarchically and will recurse into sub-groups to find the group or variable that you are looking for. Also methods that take parameter-name as an option will recurse to find the object if not otherwise stated. The expection is sub-groups where they will not recurse up the group-tree, only down the group-tree.</p>
+
+<p>An overview of concepts:</p>
+
+<ul>
+
+<li><p><b>Object</b> A Parameter-object that can be added to a group. It can be either a Parameter::Group or Parameter::Variable-class type.</p>
+
+</li>
+<li><p><b>Parameter</b> An item returned as a single entity to the user of the Parameter-class. It can consist of one or more Parameter::Variable-instances. The Parameter::Group-class decides if a collection of variables and/or sub-groups are to be returned as one parameter. Basically anything organized under a sub-group of the main-parameter-group will be returned as one parameter for that sub-group.</p>
+
+</li>
+<li><p><b>Group</b> A collection of sub-groups and/or variables. It has certain attributes that can be set on it, such as if it is to be escaped, quoted and/or have no space between its parameters.</p>
+
+</li>
+<li><p><b>Variable</b> A named value that can be set in a group. It has certain attributes that can be set on it, such as if it is to be escaped, quoted, be private or not and so on. Please see the Parameter::Variable-class documentation for more info on the Parameter::Variable-type.</p>
+
+</li>
+</ul>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>The method is inherited from the parent Parameter-class, but in addition sets some internal settings that are unique to the Parameter::Group-class.</p>
+
+<p>This method returns an instantiated class upon success. Please refer to the documentation of the Parameter-class for more information.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="add">add()</h2>
+
+<p>Adds a parameter object to the group.</p>
+
+<p>Accepts the following input in this order:</p>
+
+<ul>
+
+<li><p><b>object</b> Reference to the Parameter-class object to add (either Parameter::Group or Parameter::Variable-class).</p>
+
+</li>
+<li><p><b>parname</b> Parameter name of where to add this object. If none given it will be added to the end of all current objects in the Parameter::Group-instance. This parameter is used together with the before/after-parameter to exactly signify where to add the object.</p>
+
+</li>
+<li><p><b>beforeafter</b> Sets if to add the object before or after given parameter name (see the parname- option to add(). If none given it defaults to after. The method only accepts 0 (=before) or 1 (=after).</p>
+
+</li>
+</ul>
+
+<p>This method returns 1 upon success, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="remove">remove()</h2>
+
+<p>Attempt to remove named parameter.</p>
+
+<p>Accepts the following input: name. This is the name of the parameter to attempt to locate and remove.</p>
+
+<p>This method returns 1 upon success, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+<p>Please note that all instances of a named parameter is removed when invoking this method.</p>
+
+<h2 id="addGroup">addGroup()</h2>
+
+<p>Adds a sub-group object to the group at the end of current objects.</p>
+
+<p>Accepts the following parameters in this order:</p>
+
+<ul>
+
+<li><p><b>name</b> Name of parameter to add.</p>
+
+</li>
+<li><p><b>escape</b> Escape the parameters in this group or not? 1 means true, 0 means false. Default is 0.</p>
+
+</li>
+<li><p><b>quote</b> Quote the parameters in this group or not? 1 means true, 0 means false. Default is 0.</p>
+
+</li>
+<li><p><b>nospace</b> Sets if the parameters in this group are to have no space between them or not? 1 means true, 0 means false. It defaults to 0 and does not remove all spacing between the parameters. In some instances groups of parameters needs to have their space removed and render them together.</p>
+
+</li>
+<li><p><b>parname</b> Sets the name of the parameter where this group is to be added and it is used together with the beforeafter-option. It defaults to blank which means it is added to the end of all the current group-objects.</p>
+
+</li>
+<li><p><b>beforeafter</b> Sets if the parameter is to be added before or after the name given in the &quot;parname&quot;-option. 0 means before, 1 means after. This option defaults to after.</p>
+
+</li>
+</ul>
+
+<p>Upon success this method returns the group-instance it created and undef upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="addGroupAfter">addGroupAfter()</h2>
+
+<p>Adds a sub-group in this group after the given parameter name.</p>
+
+<p>This method is a wrapper for the addGroup-method for ease of use.</p>
+
+<p>Accepts the following parameters in this order:</p>
+
+<ul>
+
+<li><p><b>aftername</b> The parameter-name to add the group after.</p>
+
+</li>
+<li><p><b>name</b> Name of the group to add.</p>
+
+</li>
+<li><p><b>escape</b> Sets if the contents of this Parameter::Group is to be escaped or not? Defaults to 0. Accepts 1 for true, 0 for false.</p>
+
+</li>
+<li><p><b>quote</b> Sets if the contents of this Parameter::Group is to be quoted or not? Defaults to 0. Accepts 1 for true, 0 for false.</p>
+
+</li>
+<li><p><b>nospace</b> Sets if the group is to have no space between parameters in the group. Defaults to 0. Accepts 0 for false, 1 for true.</p>
+
+</li>
+</ul>
+
+<p>Returns the instance of the class-created upon success, undef upon failure. Please check the error()-method for more information.</p>
+
+<h2 id="addGroupBefore">addGroupBefore()</h2>
+
+<p>Adds a sub-group in this group before the given parameter name.</p>
+
+<p>This method is a wrapper for the addGroup-method for ease of use. It also works similarly to the addGroupAfter()-method. Check the documentation for that method for more information.</p>
+
+<h2 id="addVariable">addVariable()</h2>
+
+<p>Adds a variable in this group.</p>
+
+<p>If the variable name exists already, that Parameter::Variable-object is added to the group. Variables can be used several places, but all variables should still have unique names.</p>
+
+<p>Accepts the following options in this order:</p>
+
+<ul>
+
+<li><p><b>name</b> Name of variable to add. Must be unique.</p>
+
+</li>
+<li><p><b>value</b> Value of variable that is to be added.</p>
+
+</li>
+<li><p><b>regex</b> Regex of value that is added on variable. This regex is meant to be used when adding values on the parameter, although no checking is enforce in this class. It is up to the user of the class to enforce checking.</p>
+
+</li>
+<li><p><b>required</b> Sets if the variable is required or not to have a value. 0 means false, 1 means true. Defaults to 0. This option is ignored if variable already exists.</p>
+
+</li>
+<li><p><b>private</b> Sets if the variable is to be private or not. 0 means false, 1 means true. Defaults to 1. All variables are private if not otherwise stated. The privacy of the variable is not enforces by this class, but have to be enforced by the user of the Parameter-classes. Private here is meant that the normal user of an application is not allowed to change its value (protected). This option is ignored if variable already exists and that variable object is added.</p>
+
+</li>
+<li><p><b>escape</b> Sets if the variable is to have its value escaped or not. 0 means false, 1 means true. Defaults to 0. Please note that if the group using the variable is set to be escaped, it will override the setting here. This option is ignored if variable already exists and that variable object is added.</p>
+
+</li>
+<li><p></p>
+
+</li>
+<li><p><b>preescape</b> Sets if the variable is to have its value preescaped or not. 0 means false, 1 means true. Defaults to 1.</p>
+
+</li>
+<li><p><b>sandbox</b> Sets if the variable value is to be sandboxed or not. 0 means false, 1 means true. Defaults to 0. This option is ignored if variable already exists and that variable object is added.</p>
+
+</li>
+<li><p><b>parname</b> Sets parameter name of where to insert the variable. Defaults to blank which means to insert the variable at the end of the group.</p>
+
+</li>
+<li><p><b>beforeafter</b> Sets if the variable is to be added before or after name set in parname. 0 means before, 1 means after. Defaults to after. If parname and beforeafter is undefined the variable will be appended to the group.</p>
+
+</li>
+</ul>
+
+<p>Upon success returns 1, 0 on failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="addVariableAfter">addVariableAfter()</h2>
+
+<p>Adds a variable after the given parameter name.</p>
+
+<p>This is a wrapper around the addVariable()-method. It accepts options in the following order: parname (name of parameter after which to add this variable), name (variable name), value (value of variable), regex, required, private, escape, quote, sandbox and preescape. Please see the addVariable()-method for more information about the options.</p>
+
+<p>Please note that if given variable name already exists, that Parameter::Variable-instance is added. If it doesn&#39;t exist, it will be created and then added.</p>
+
+<p>Returns 1 upon success, 0 upon failure. Please see the error()-method for more information upon failure.</p>
+
+<h2 id="addVariableBefore">addVariableBefore()</h2>
+
+<p>Adds a variable before the given parameter name.</p>
+
+<p>This is a wrapper around the addVariable()-method. It accepts options in the following order: parname (name of parameter before which to add this variable), name (variable name), value (value of variable), regex, required, private, escape, quote, sandbox and preescape. Please see the addVariable()-method for more information about the options.</p>
+
+<p>Please note that if given variable name already exists, that Parameter::Variable-instance is added. If it doesn&#39;t exist, it will be created and then added.</p>
+
+<p>Returns 1 upon success, 0 upon failure. Please see the error()-method for more information upon failure.</p>
+
+<h2 id="count">count()</h2>
+
+<p>Returns the number of Parameter-objects in the group.</p>
+
+<p>No input accepted.</p>
+
+<h2 id="enum">enum()</h2>
+
+<p>Enumerate the objects that the group-instance contains.</p>
+
+<p>Accepts no input.</p>
+
+<p>Returns a LIST-reference of Parameter-classes</p>
+
+<h2 id="enumObjects">enumObjects()</h2>
+
+<p>Enumerate the object names of the group.</p>
+
+<p>Please note that object names enumerated can be repeated (for Parameter::Variable-objects) and show the actual order of the Parameter-group.</p>
+
+<p>Returns a reference to a LIST of object names. Please note that the list can be empty.</p>
+
+<h2 id="enumPrivateObjects">enumPrivateObjects()</h2>
+
+<p>Enumerate the private objects of the group.</p>
+
+<p>This returns the unique, private objects in the group and its sub-groups.</p>
+
+<p>No input is accepted.</p>
+
+<p>Returns a LIST-reference of object names.</p>
+
+<h2 id="enumRequiredObjects">enumRequiredObjects()</h2>
+
+<p>Enumerate the required objects of the group.</p>
+
+<p>This returns the unique and required objects of the group and its sub-groups.</p>
+
+<p>No input is accepted.</p>
+
+<p>Returns a LIST-reference of object names.</p>
+
+<h2 id="enumUniqueObject">enumUniqueObject()</h2>
+
+<p>Enumerate the unique objects of the group.</p>
+
+<p>This returns the unique object names of the group and its sub-groups.</p>
+
+<p>No input is accepted.</p>
+
+<p>Returns a LIST-reference of the object names.</p>
+
+<h2 id="exists">exists()</h2>
+
+<p>Checks if a given object name exists in group or its sub-groups.</p>
+
+<p>Accepts one input: object name.</p>
+
+<p>Returns 1 if it exists, 0 if it does not.</p>
+
+<h2 id="get">get()</h2>
+
+<p>Get a names object-instance.</p>
+
+<p>Accepts one input: object name.</p>
+
+<p>Returns the object-instance if the object exists in the top group or its sub-groups, undef upon failure. This method will go to the top-most parent-group and start asking for the object there while recursing down the possible groups in the Parameter-tree. It will return the first match from the top-down.</p>
+
+<p>Please check error()-method upon failure.</p>
+
+<h2 id="getFirst">getFirst()</h2>
+
+<p>Get the first object in the group.</p>
+
+<p>Accepts no input.</p>
+
+<p>Returns the object instance of the first object in the group.</p>
+
+<h2 id="getFirstParameter">getFirstParameter()</h2>
+
+<p>Get the first parameter of the group-instance, if any.</p>
+
+<p>Accepts no input.</p>
+
+<p>Returns the value of the first parameter if any. Undef if no value exists.</p>
+
+<h2 id="getNext">getNext()</h2>
+
+<p>Gets the next object in the group.</p>
+
+<p>Accepts no input.</p>
+
+<p>Gets the next object in the group after a call to getFirst(), resetGetNext() or getNext().</p>
+
+<p>Returns an object-reference upon success, undef if there are no more objects.</p>
+
+<h2 id="getNextParameter">getNextParameter()</h2>
+
+<p>Returns the next parameters value in the group.</p>
+
+<p>Accepts no input.</p>
+
+<p>Gets the next parameters value in the group or its sub-groups after a call to getFirstParameter(), resetgetNextParameter() or getNextParameter().</p>
+
+<p>Returns a value upon success, undef if there are no more parameter values to fetch.</p>
+
+<h2 id="location">location()</h2>
+
+<p>Get the location of a named object within group or sub-group.</p>
+
+<p>Accepts one input:</p>
+
+<ul>
+
+<li><p><b>name</b> Name of object to get location of.</p>
+
+</li>
+</ul>
+
+<p>Returns a LIST-reference. The list reference can be empty if the named object could not be found.</p>
+
+<p>The LIST-reference structure is as follows:</p>
+
+<pre><code>[GROUP-NAME,POSITION]</code></pre>
+
+<p>GROUP-NAME is the name of the first group or sub-group that contains the object (variables may exist in several places). POSITION is the first numbered position within GROUP-NAME that the object exists.</p>
+
+<h2 id="noSpace">noSpace()</h2>
+
+<p>Get or set if group is to have no space between its parameters.</p>
+
+<p>Accepts only one input: nospace. Nospace sets if the group is to have no space or not. 1 means true (no space), 0 means false. It defaults to 0 (parameters are to have space between them).</p>
+
+<p>If no input is given, the method returns the current noSpace-setting of the group. Setting the noSpace setting returns the setting after it has been set.</p>
+
+<h2 id="resetGetNext">resetGetNext()</h2>
+
+<p>Reset to get the next group object.</p>
+
+<p>Accepts no input.</p>
+
+<p>Resets the fetching of group objects by the method getNext().</p>
+
+<p>Returns 1.</p>
+
+<h2 id="resetGetNextParameter">resetGetNextParameter()</h2>
+
+<p>Resets the getting of next parameter value and starts at the beginning of the parameter list.</p>
+
+<p>Accepts no input.</p>
+
+<p>Always returns 1.</p>
+
+<h2 id="toString">toString()</h2>
+
+<p>Convert all the group- and sub-group parameters into a string.</p>
+
+<p>Accepts no input.</p>
+
+<p>Returns the rendered groups parameters and their values as a string.</p>
+
+<h1 id="POD-ERRORS">POD ERRORS</h1>
+
+<p>Hey! <b>The above document had some coding errors, which are explained below:</b></p>
+
+<dl>
+
+<dt id="Around-line-1003">Around line 1003:</dt>
+<dd>
+
+<p>=cut found outside a pod block.  Skipping to next block.</p>
+
+</dd>
+</dl>
+
+
+</body>
+
+</html>
+
+

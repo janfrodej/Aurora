@@ -1,0 +1,249 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#hash2Metadata">hash2Metadata()</a></li>
+      <li><a href="#metadata2Hash">metadata2Hash()</a></li>
+      <li><a href="#mergeHash">mergeHash()</a></li>
+      <li><a href="#template2Hash">template2Hash()</a></li>
+      <li><a href="#base">base()</a></li>
+      <li><a href="#error">error()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>StoreCollection</code> - A collection of stores and their name and parameters, including methods to convert to a from metadata representation.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use StoreCollection;
+
+# instantiate
+my $sc=StoreCollection-&gt;new();
+
+# get metadata hash from hash
+my $md=$sc-&gt;hash2Metadata($hash);
+
+# get hash from metadata
+my $md=$sc-&gt;metadata2Hash($metadata);
+
+# merge/inherit values from several hashes
+my $result=$sc-&gt;mergeHash($hash1,$hash2,$hash3...$hashn);</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Class to manage a Store-collection in hash- and metadata version and conversions between the two, including merging/inheritance functionality. It also cleans and ensures compliance with the AURORA StoreCollection structural format.</p>
+
+<p>A Store-collection when stored in the AURORA database are represented thus:</p>
+
+<pre><code>system.storecollection.name = SCALAR
+system.storecollection.get.1.name = SCALAR
+system.storecollection.get.1.store = ID (store-entity id)
+system.storecollection.get.1.whatever = SCALAR
+system.storecollection.get.1.classparam.p1 = SCALAR
+system.storecollection.get.1.param.p1 = SCALAR
+system.storecollection.get.1.param.p2 = SCALAR
+system.storecollection.get.1.param.p3 = SCALAR
+system.storecollection.get.1.param.p4 = SCALAR
+system.storecollection.get.1.param.pN = SCALAR
+system.storecollection.get.2.name = SCALAR
+system.storecollection.get.2.store = ID
+system.storecollection.get.2.param.p1 = SCALAR
+system.storecollection.get.2.param.pN = SCALAR
+.
+.
+system.storecollection.put.1.name = SCALAR
+system.storecollection.put.1.store = ID
+system.storecollection.put.1.whatever = SCALAR
+system.storecollection.put.1.classparam.p1 = SCALAR
+system.storecollection.put.1.param.p1 = SCALAR
+system.storecollection.put.1.param.p2 = SCALAR
+system.storecollection.put.1.param.pN = SCALAR
+.
+.
+system.storecollection.put.N.name = SCALAR 
+.
+.
+system.storecollection.del.1.name = SCALAR
+system.storecollection.del.1.store = ID
+system.storecollection.del.1.classparam.p1 = SCALAR
+system.storecollection.del.1.param.p1 = SCALAR
+system.storecollection.del.1.param.pN = SCALAR
+.
+.
+system.storecollection.del.2.name = SCALAR   
+.
+.
+etc..</code></pre>
+
+<p>This AURORA metadata namespace representation is converted to a normal HASH thus:</p>
+
+<pre><code>(
+  name =&gt; SCALAR,
+  get =&gt; { 1 =&gt; { name =&gt; SCALAR,
+                  store =&gt; ID,
+                  whatever =&gt; SCALAR,
+                  classparam =&gt; { p1 =&gt; SCALAR,
+                                },
+                  param =&gt; { p1 =&gt; SCALAR,
+                             p2 =&gt; SCALAR,
+                             p3 =&gt; SCALAR,
+                             p5 =&gt; SCALAR,
+                             pN =&gt; SCALAR,
+                           }
+                }
+           2 =&gt; { name =&gt; SCALAR,
+                  store =&gt; ID,
+                  param =&gt; { p1 =&gt; SCALAR, pN =&gt; SCALAR }
+                }
+  put =&gt; { 1 =&gt; { name =&gt; SCALAR,
+                  store =&gt; ID,
+                  whatever =&gt; SCALAR,
+                  classparam =&gt; { p1 =&gt; SCALAR,
+                                },
+                  param =&gt; { p1 =&gt; SCALAR,
+                             p2 =&gt; SCALAR,
+                             pN =&gt; SCALAR,
+                           }
+                }
+           N =&gt; { name =&gt; SCALAR,
+                }
+         }
+  del =&gt; { 1 =&gt; { name =&gt; SCALAR,
+                  store =&gt; ID,
+                  classparam =&gt; { p1 =&gt; SCALAR,
+                                },
+                  param =&gt; { p1 =&gt; SCALAR,
+                             .
+                             pN =&gt; SCALAR,
+                           }
+                }
+           2 =&gt; { name =&gt; SCALAR,
+                }
+         }
+)</code></pre>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Instantiates the StoreCollection-class.</p>
+
+<p>It takes the following parameters</p>
+
+<ul>
+
+<li><p><b>base</b> Sets the namespace base for converting back- and forth from the AURORA metadata namespace. If none is given it defaults to &quot;system.storecollection&quot;.</p>
+
+</li>
+</ul>
+
+<p>Returns the instantiated class.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="hash2Metadata">hash2Metadata()</h2>
+
+<p>This method turns the hash-format structure into a AURORA metadata structure (see DESCRIPTION).</p>
+
+<p>Input is a hash reference to the structure to convert into a metadata structure.</p>
+
+<p>Name- and store can be left non-existent in the hash reference that is given for conversion. It will then only convert potential param-values. But the hash-structure has to contain the starting keys of get and/or put and the subkeys has to be numbered to be accepted. The returned metadata hash might then only contain a parameter subkey setting, even an empty array if none is specified. This functionality is to allow for easy inheritance of param-values, where templates further down in the hierachy does not need to set any name or store entity id, only which parameters that are to be overridden/changed.</p>
+
+<p>It returns a metadata hash reference upon success, undef upon failure. Please check the error()-method for more information on a potential error.</p>
+
+<h2 id="metadata2Hash">metadata2Hash()</h2>
+
+<p>This method converts an AURORA metadata hash into a hash-format structure (see DESCRIPTION).</p>
+
+<p>As with hash2Metadata, the name- and store settings can be non-existent. It will always return a param-setting for any existing, numbered get- or put setting. The param-setting may be non-existing as well.</p>
+
+<p>It takes a AURORA metadata hash reference as input.</p>
+
+<p>The method returns the hash-format reference upon success, undef upon failure. Please check the error()-method upon any failure.</p>
+
+<h2 id="mergeHash">mergeHash()</h2>
+
+<p>This method merges two or more hash-format references into one hash.</p>
+
+<p>It takes any number of hash-reference as input in the form of a hash reference LIST.</p>
+
+<p>The hash-structures references will be iterated over in the order that they were input into the method. The last hash-structure to be checked will override any previous hash-structure setting, so that last in the list has precedence.</p>
+
+<p>It returns a resulting hash-reference to a hash-format structure upon success, undef upon failure. Please check the error()-method for more information upon failure.</p>
+
+<p>This method can also be used to a clean a hash that is of uncertain format and content. Since the method just iterates over the hash-references specified as input, by specifying just one hash reference to the method it will just clean that one and return the result (and valid keys and data).</p>
+
+<h2 id="template2Hash">template2Hash()</h2>
+
+<p>This method converts a template as returned from AuroraDB into a hash-format structure of store-collection definitions (if any exists).</p>
+
+<p>It takes the template hash-reference from AuroraDB as input.</p>
+
+<p>The method works similarily to the metadata2Hash()-method. See that method for more information. Instead of that method it takes the &quot;default&quot;-setting of the template and sets it as values for name, store and/or param.</p>
+
+<p>It returns the finished converted hash or undef upon failure. Please check the error()-method upon failure.</p>
+
+<h2 id="base">base()</h2>
+
+<p>This method returns or sets the AURORA database metadata base namespace for the store-collections used by this module for conversion. See the &quot;base&quot; option in the new()-method for more information.</p>
+
+<p>Upon set takes the base namespace as parameter (SCALAR). Upon get it takes no parameters.</p>
+
+<p>Returns the base namespace as a SCALAR.</p>
+
+<h2 id="error">error()</h2>
+
+<p>Returns the last error from the StoreCollection-class, if any.</p>
+
+<p>No input taken.</p>
+
+<p>Returns a SCALAR with the error message if any (blank if none).</p>
+
+
+</body>
+
+</html>
+
+

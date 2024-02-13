@@ -1,0 +1,93 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#param2Hash">param2Hash()</a></li>
+      <li><a href="#hash2Html">hash2Html()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>paramHash</code> Module with functions to convert to/from CGI-params and a HASH.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use paramHash;
+use CGI;
+
+my $c=CGI-&gt;new();
+
+my $h=param2Hash($c,&quot;PARAMSSTARTWITHTHIS&quot;);
+
+my $html=hash2Html($h,&quot;STARTPARAMSWITHTHIS&quot;);</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Module that offers conversion functions to/from CGI-param and a HASH.</p>
+
+<p>All functions are exported by default, so no need to instantiate, import or refer to module (besides a Use-statement);</p>
+
+<p>CGI parameter names should be just characters (a-zA-Z) and/or numbers (0-9) and no special characters. Please also be aware that underscore (&quot;_&quot;) is not allowed in the CGI parameter name, since that is reserved as hierarchical separator for keys in the hash when transformed into HTML hidden-statements.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="param2Hash">param2Hash()</h2>
+
+<p>Converts CGI-params to a HASH.</p>
+
+<p>The method takes these parameters in the following order: CGI-reference, base, array. The CGI-reference is the reference to the CGI-instance that are used in order to be able to fetch params coming in from the web-browser. The &quot;base&quot; defines the start-string from how the data in the web application are encoded. The &quot;array&quot; parameter sets if the last characters after an underscore &quot;_&quot; in a parameter name is only digits if that is to be intepreted as a element number in an array or not? The default is true which interprets this as element numbers in an array and puts the value-part of the param into an array. If the &quot;array&quot; parameter is set to false, the last characters after an underscore in the parameter name is interpreted as a subkey.</p>
+
+<p>Upon success returns a HASH with the key and values of the params starting with the specified base.</p>
+
+<h2 id="hash2Html">hash2Html()</h2>
+
+<p>Convert a HASH into HTML hidden input statements.</p>
+
+<p>The function takes the following parameters in this order: HASH-reference, base.</p>
+
+<p>The HASH-reference is the HASH to convert to HTML hidden input statements. The base- parameter specified what the hidden input statements are to start with.</p>
+
+<p>Upon success returns the HTML-encoded version of the HASH-reference. This text can be included in forms in order to contain/remember all values involved.</p>
+
+
+</body>
+
+</html>
+
+

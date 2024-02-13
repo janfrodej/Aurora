@@ -1,0 +1,122 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#map2az">map2az()</a></li>
+    </ul>
+  </li>
+  <li><a href="#POD-ERRORS">POD ERRORS</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>UnicodeTools</code> - Module for handling unicode tasks</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use UnicodeTools;
+
+# convert string to A-Za-z letters where relevant
+my $str=map2az($str);
+# convert string to A-Za-z letter mathematically where relevant
+$str=map2azmath($str);</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>A collection of functions to handle various unicode tasks.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<p>This class does not have an instantiator/constructor. Methods are exporeted by default.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="map2az">map2az()</h2>
+
+<p>Converts string characters to their ASCII a-zA-Z equivalents by looking at the base unicode name.</p>
+
+<p>Accepts these parameters in the following order:</p>
+
+<ul>
+
+<li><p><b>str</b> The string to be mapped to a-zA-Z. SCALAR. Required.</p>
+
+</li>
+</ul>
+
+<p>The method ignores characters that do not start with &quot;LATIN [CAPITAL|SMALL LETTER] [A-Z]&quot; and preserve them as they are in the string. The rest is converted to its a-zA-Z equivalent.</p>
+
+<p>Returns the mapped/converted string.</p>
+
+<p>Converts string characters to their ASCII a-zA-Z equivalents by applying a straight-forward mathematical algorithm.</p>
+
+<p>Accepts these parameters in the following order:</p>
+
+<ul>
+
+<li><p><b>str</b> The string to be mapped to a-zA-Z. SCALAR. Required.</p>
+
+</li>
+</ul>
+
+<p>The method mathematically forces characters to be converted to the a-ZA-Z space in the ASCII-table. Characters that are already a-zA-Z are ignored. It is &quot;unintelligent&quot; in comparison to the map2az-method.</p>
+
+<p>One option is to run map2az first and then run the map2azmath afterwards to pick up those characters that where not handled intelligently by the map2az-method, thus forcing all characters into the a-zA-Z space of the ASCII-table.</p>
+
+<p>Returns the mapped/converted string.</p>
+
+<h1 id="POD-ERRORS">POD ERRORS</h1>
+
+<p>Hey! <b>The above document had some coding errors, which are explained below:</b></p>
+
+<dl>
+
+<dt id="Around-line-119">Around line 119:</dt>
+<dd>
+
+<p>Unknown directive: =heda2</p>
+
+</dd>
+</dl>
+
+
+</body>
+
+</html>
+
+

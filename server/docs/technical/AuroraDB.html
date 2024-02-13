@@ -1,0 +1,1653 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#addEntityMember">addEntityMember()</a></li>
+      <li><a href="#assignEntityTemplate">assignEntityTemplate()</a></li>
+      <li><a href="#checkEntityTemplateCompliance">checkEntityTemplateCompliance()</a></li>
+      <li><a href="#clearBitmask">clearBitmask()</a></li>
+      <li><a href="#clearBits">clearBits()</a></li>
+      <li><a href="#connected">connected()</a></li>
+      <li><a href="#createBitmask">createBitmask()</a></li>
+      <li><a href="#createEntity">createEntity()</a></li>
+      <li><a href="#createMetadataKey">createMetadataKey()</a></li>
+      <li><a href="#createPermBitmask">createPermBitmask()</a></li>
+      <li><a href="#createTemplate">createTemplate()</a></li>
+      <li><a href="#deconstructBitmask">deconstructBitmask()</a></li>
+      <li><a href="#deleteEntity">deleteEntity()</a></li>
+      <li><a href="#deleteEntityMetadata">deleteEntityMetadata()</a></li>
+      <li><a href="#deleteTemplate">deleteTemplate()</a></li>
+      <li><a href="#doSQL">doSQL()</a></li>
+      <li><a href="#enumEntitiesByType">enumEntitiesByType()</a></li>
+      <li><a href="#enumEntityTypes">enumEntityTypes()</a></li>
+      <li><a href="#enumLoglevels">enumLoglevels()</a></li>
+      <li><a href="#enumPermTypes">enumPermTypes()</a></li>
+      <li><a href="#enumTemplateFlags">enumTemplateFlags()</a></li>
+      <li><a href="#error">error()</a></li>
+      <li><a href="#existsEntity">existsEntity()</a></li>
+      <li><a href="#getDBI">getDBI()</a></li>
+      <li><a href="#disconnect">disconnect()</a></li>
+      <li><a href="#getEntityByMetadataKeyAndType">getEntityByMetadataKeyAndType()</a></li>
+      <li><a href="#getEntityByPermAndType">getEntityByPermAndType()</a></li>
+      <li><a href="#getEntityChildren">getEntityChildren()</a></li>
+      <li><a href="#getEntityChildrenPerm">getEntityChildrenPerm()</a></li>
+      <li><a href="#getEntityMembers">getEntityMembers()</a></li>
+      <li><a href="#getEntityMetadata">getEntityMetadata()</a></li>
+      <li><a href="#getEntityMetadataList">getEntityMetadataList()</a></li>
+      <li><a href="#getEntityMetadataMultipleList">getEntityMetadataMultipleList()</a></li>
+      <li><a href="#getEntityParent">getEntityParent()</a></li>
+      <li><a href="#getEntityPath">getEntityPath()</a></li>
+      <li><a href="#getEntityPerm">getEntityPerm()</a></li>
+      <li><a href="#getEntityPermByObject">getEntityPermByObject()</a></li>
+      <li><a href="#getEntityPermByMetadataKeyAndType">getEntityPermByMetadataKeyAndType()</a></li>
+      <li><a href="#getEntityPermByPermAndMetadataKeyAndType">getEntityPermByPermAndMetadataKeyAndType</a></li>
+      <li><a href="#getEntityPermCheck">getEntityPermCheck()</a></li>
+      <li><a href="#getEntityPermsForObject">getEntityPermsForObject()</a></li>
+      <li><a href="#getEntityPermsForSubject">getEntityPermsForSubject()</a></li>
+      <li><a href="#getEntityPermsOnObject">getEntityPermsOnObject()</a></li>
+      <li><a href="#getEntityRoles">getEntityRoles()</a></li>
+      <li><a href="#getEntityTemplate">getEntityTemplate()</a></li>
+      <li><a href="#getEntityTemplateAssignments">getEntityTemplateAssignments</a></li>
+      <li><a href="#getEntityTemplateId">getEntityTemplateId()</a></li>
+      <li><a href="#getEntityTemplatePath">getEntityTemplatePath()</a></li>
+      <li><a href="#getEntityTree">getEntityTree()</a></li>
+      <li><a href="#getEntityType">getEntityType()</a></li>
+      <li><a href="#getEntityTypeIdByName">getEntityTypeIdByName()</a></li>
+      <li><a href="#getEntityTypeName">getEntityTypeName()</a></li>
+      <li><a href="#getEntityTypeNameById">getEntityTypeNameById()</a></li>
+      <li><a href="#getLogEntries">getLogEntries()</a></li>
+      <li><a href="#getLoglevelByName">getLoglevelByName()</a></li>
+      <li><a href="#getLoglevelNameByValue">getLoglevelNameByValue()</a></li>
+      <li><a href="#getMetadataKey">getMetadataKey()</a></li>
+      <li><a href="#getMtime">getMtime()</a></li>
+      <li><a href="#getPermTypeNameByValue">getPermTypeNameByValue()</a></li>
+      <li><a href="#getPermTypeValueByName">getPermTypeValueByName()</a></li>
+      <li><a href="#getTemplate">getTemplate()</a></li>
+      <li><a href="#getTemplateAssignments">getTemplateAssignments()</a></li>
+      <li><a href="#getTemplateAssignmentsTree">getTemplateAssignmentsTree()</a></li>
+      <li><a href="#getTemplateFlagBitByName">getTemplateFlagBitByName()</a></li>
+      <li><a href="#getTemplateFlagNameByBit">getTemplateFlagNameByBit()</a></li>
+      <li><a href="#maxDepth">maxDepth()</a></li>
+      <li><a href="#moveEntity">moveEntity()</a></li>
+      <li><a href="#removeEntityMember">removeEntityMember()</a></li>
+      <li><a href="#removeEntityPermsAndRoles">removeEntityPermsAndRoles()</a></li>
+      <li><a href="#sequenceEntity">sequenceEntity()</a></li>
+      <li><a href="#setBitmask">setBitmask()</a></li>
+      <li><a href="#setBits">setBits()</a></li>
+      <li><a href="#setEntityMetadata">setEntityMetadata()</a></li>
+      <li><a href="#setEntityPermByObject">setEntityPermByObject()</a></li>
+      <li><a href="#setLogEntry">setLogEntry()</a></li>
+      <li><a href="#setMtime">setMtime()</a></li>
+      <li><a href="#setTemplate">setTemplate()</a></li>
+      <li><a href="#unassignEntityTemplate">unassignEntityTemplate()</a></li>
+      <li><a href="#updateEffectivePerms">updateEffectivePerms()</a></li>
+      <li><a href="#updateEffectivePermsConditional">updateEffectivePermsConditional()</a></li>
+      <li><a href="#useDBItransaction">useDBItransaction()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>AuroraDB</code> - Interface methods to the AURORA database.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>my $dbfile=&quot;./aurora.db&quot;;
+my $db=AuroraDB-&gt;new(data_source=&gt;&quot;DBI:SQLite:dbname=$dbfile&quot;,user=&gt;&quot;&quot;,pw=&gt;&quot;&quot;);
+
+# create a entity of type GROUP
+my $id=$db-&gt;createEntity($db-&gt;getEntityTypeIdByName(&quot;GROUP&quot;));
+
+# set some metadata
+my %md;
+$md{&quot;.DublinCore.Creator&quot;}=&quot;Albert Einstein&quot;;
+$md{&quot;.DublinCore.Created&quot;}=&quot;20190101&quot;;
+if (!$db-&gt;setEntityMetadata($id,\%md)) {
+   print &quot;Failed to set entity $id&#39;s metadata: &quot;.$db-&gt;error().&quot;\n&quot;;
+}
+
+# get the metadata
+my $m;
+$m=$db-&gt;getEntityMetadata($id);
+use Data::Dumper;
+print &quot;METADATA: &quot;.Dumper($m);</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This module interfaces with the AURORA database. AURORA stands for Archive and Upload Research Objects for Retrieval and Alteration and was created at the Norwegian University of Science and Technology (NTNU) in Trondheim, Norway to facilite retrieval of data from science labs, storage of the datasets and the ability to flexibly add metadata on each dataset.</p>
+
+<p>The AURORA database module was written to be general enough to be used with most SQL engines, while still trying to optimize functions where necessary.</p>
+
+<p>The AURORA database module was written by B&aring;rd Tesaker and Jan Frode J&aelig;ger</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Instantiates the AuroraDB-class: new(data_source=&gt;P,pw=&gt;Q,pwfile=&gt;R,user=&gt;S,cachetime=&gt;T)</p>
+
+<p>Required parameters are:</p>
+
+<ul>
+
+<li><p><b>data_source</b> Perl DBI data_source parameter for the database chosen. See DBI&#39;s documentation.</p>
+
+</li>
+<li><p><b>pw</b> Password to login to database with.</p>
+
+</li>
+<li><p><b>pwfile</b> Filename to read password from. PW must be undef or blank.</p>
+
+</li>
+<li><p><b>user</b> Username to login to database with.</p>
+
+</li>
+<li><p><b>depth</b> Sets the maximum depth allowed on the entity tree. Optional. SCALAR. Default if not given is set to the global constant VIEW_DEPTH. This value should be set with care since it reflects what is possible to recurse with the various mandatory database views, such as ANCESTORS. The value should therefore reflect actual conditions in the AURORA database itself. Either this or expect a visit to the twilight zone, where entities both exists and do not exist at the same time. Or, is that just quantum reality even though we deny that entities are sub-atomic particles.</p>
+
+</li>
+<li><p><b>entitytypescache</b> How often to update the cache of entity types. Default is every 3600 seconds.</p>
+
+</li>
+<li><p><b>templatescache</b> How often to update template structures. Default is every 3600 seconds.</p>
+
+</li>
+<li><p><b>templateflagscache</b> How often to update the template flag types. Default is every 3600 seconds.</p>
+
+</li>
+<li><p><b>entitiescache</b> How often to update existing entity(ies). Default is every 120 seconds.</p>
+
+</li>
+</ul>
+
+<p>The method returns the reference to the instantiated class.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="addEntityMember">addEntityMember()</h2>
+
+<p>Adds a member to an entity.</p>
+
+<p>Accepts these inputs in the following order:</p>
+
+<ul>
+
+<li><p><b>object</b> The entity to add a member to. Required.</p>
+
+</li>
+<li><p><b>subjects</b> The entity(ies) to add as a member(s). Required. It can be one or more entity IDs as a LIST.</p>
+
+</li>
+</ul>
+
+<p>The method returns 1 upon success, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="assignEntityTemplate">assignEntityTemplate()</h2>
+
+<p>Assigns template(s) to an entity.</p>
+
+<p>Input is in the following order:</p>
+
+<ul>
+
+<li><p><b>entity</b> The entity id to assign the template(s) to.</p>
+
+</li>
+<li><p><b>type</b> The entity type that the template(s) are to be valid for. If not defined or 0 it will default to DATASET.</p>
+
+</li>
+<li><p><b>template</b> The template id(s) to assign to the given entity. The value expected here is a LIST of one or more ids. The order of the list defines the order in which the templates take effect. If template is set to undef it will remove any template assignment of the given type on the entity.</p>
+
+</li>
+</ul>
+
+<p>Previous assignment on the given entity and type are overwritten with the new assignment.</p>
+
+<p>Return value is 1 upon success or 0 upon failure. Check the error()-method for more information on the error.</p>
+
+<h2 id="checkEntityTemplateCompliance">checkEntityTemplateCompliance()</h2>
+
+<p>Checks a set of metadata key-&gt;value pairs compliance with an entity&#39;s aggregated template.</p>
+
+<p>Input for this method are in the following order:</p>
+
+<ul>
+
+<li><p><b>entity</b> The entity id to check the compliance for.</p>
+
+</li>
+<li><p><b>metadata</b> The metadata HASH-reference with key-&gt;value pairs to check against the entity&#39;s aggregated template.</p>
+
+</li>
+<li><p><b>type</b> The template type to use when checking the compliance. If type is undef, it will default to the entity id&#39;s type (see entity-option).</p>
+
+</li>
+<li><p><b>path</b> The path to use to aggregate a template. If none given it uses the path of the entity itself.</p>
+
+</li>
+</ul>
+
+<p>The return value is a HASH-reference. Undef is returned upon failure. Check the error()-method for more information upon failure.</p>
+
+<p>The format of the return HASH is as follows:</p>
+
+<pre><code>( compliance =&gt; VALUE,
+  noncompliance =&gt; LIST,
+  metadata =&gt; { KEYx =&gt; { value =&gt; SCALAR,
+                          compliance =&gt; BOOLEAN,
+                          default =&gt; SCALAR,
+                          regex =&gt; SCALAR,
+                          flags =&gt; BITMASK,
+                          min =&gt; SCALAR,
+                          max =&gt; SCALAR,
+                          comment =&gt; SCALAR,
+                        },
+                KEYy =&gt; { ... },
+              },
+)</code></pre>
+
+<p>The top compliance value gives the overall compliance of all the metadata in a boolean (1=success,0=failure). The noncompliance value is a LIST of keys that failed compliance (if any). The metadata sub-hash gives all the keys that the input metadata had and if they are compliant or not, their template and so on. It will also contain any missing keys and their value taken from the aggregated template of the entity when those keys are missing and the MANDATORY-flag has been set.</p>
+
+<p>See also the getTemplate and setTemplate methods for documentation upon the format of the templates.</p>
+
+<h2 id="clearBitmask">clearBitmask()</h2>
+
+<p>Clear bits in a bitmask.</p>
+
+<p>Input is the bitmask to modify and bitmask with bits to clear. Default parameters is &#39;&#39;.</p>
+
+<p>Return value is the resulting bitmask as a SCALAR. The input bitmask is unaltered.</p>
+
+<h2 id="clearBits">clearBits()</h2>
+
+<p>Clear bits in a bitmask.</p>
+
+<p>Input is the bitmask to modify and a list of bit numbers to clear. Default bitmask is &#39;&#39;.</p>
+
+<p>Return value is the resulting bitmask as a SCALAR. The input bitmask is unaltered.</p>
+
+<h2 id="connected">connected()</h2>
+
+<p>This method attempts to check if the we are connected to the database or not by quering the DBI-instance: connected()</p>
+
+<p>Returns 1 upon being connected and 0 upon not being connected.</p>
+
+<h2 id="createBitmask">createBitmask()</h2>
+
+<p>Creates a bitmask based upon the bit number specified in the input list - iterates on the vec-method in Perl.</p>
+
+<p>Input is the bit numbers to set as a LIST.</p>
+
+<p>Return value is the bitmask as a SCALAR.</p>
+
+<h2 id="createEntity">createEntity()</h2>
+
+<p>Creates an entity of a given type in the database: createEntity([type],[parent])</p>
+
+<p>Input are in the following order:</p>
+
+<ul>
+
+<li><p><b>type</b> Entity type id to create. Optional and it defaults to &quot;DATASET&quot;.</p>
+
+</li>
+<li><p><b>parent</b> Parent entity id for the newly created entity. Optional and will default to 1 if none specified.</p>
+
+</li>
+</ul>
+
+<p>Return value is the created entity&#39;s id or undef upon failure. Please call the error-method for more information on the failure.</p>
+
+<h2 id="createMetadataKey">createMetadataKey()</h2>
+
+<p>Creates a metadata key in the database.</p>
+
+<p>Input is the name of the metadata key to create (assign a metadata key id).</p>
+
+<p>Return value is the metadata key id created or if it already exists its existing key id. Undef is returned upon failure. Please call the error-method to get more information about the error.</p>
+
+<h2 id="createPermBitmask">createPermBitmask()</h2>
+
+<p>Creates a permission bitmask based upon a mix of names and bit position values.</p>
+
+<p>Input is a LIST fo permission name(s) and/or bit position value(s).</p>
+
+<p>Returns a bitmask of those name(s) and/or value(s). Undef is returned upon failure. Please check the error()-method in such cases.</p>
+
+<h2 id="createTemplate">createTemplate()</h2>
+
+<p>Creates a template in the database and sets the given constraints.</p>
+
+<p>Input for the method are these options in the following order:</p>
+
+<ul>
+
+<li><p><b>parent</b> The entity id of the parent which the template is to be created under.</p>
+
+</li>
+<li><p><b>constraints</b> The template constraints that are to be set for the template. This is a reference to a HASH. See the setTemplate()-method for more information.</p>
+
+</li>
+</ul>
+
+<p>The method creates the template and sets the template constraints on the template.</p>
+
+<p>Return value is the new template id upon success or 0 upon failure. Check the error-message by calling the error()-method.</p>
+
+<h2 id="deconstructBitmask">deconstructBitmask()</h2>
+
+<p>Deconstruct a given bitmask into the bit numbers that have been set.</p>
+
+<p>Input is the bitmask to deconstruct.</p>
+
+<p>Return value is a LIST of bit numbers that have been set.</p>
+
+<h2 id="deleteEntity">deleteEntity()</h2>
+
+<p>Deletes an entity of the given entity id from the database: deleteEntity(id)</p>
+
+<p>Input is entity id to delete or it will default to the invalid entity id of zero.</p>
+
+<p>It will delete all references to this entity in the database, including permission memberships, template assignments, log entries and metadata. A deletion will only succeed if the entity does not have any children entity(ies). Children must first be moved or deleted.</p>
+
+<p>Return value is 1 upon success, 0 upon failure. Call the error-method to get more information on the failure.</p>
+
+<h2 id="deleteEntityMetadata">deleteEntityMetadata()</h2>
+
+<p>Deletes metadata from an entity moderated by a set of metadata keys.</p>
+
+<p>Input is in the following order:</p>
+
+<ul>
+
+<li><p><b>entity</b> Id of the entity to delete metadata from.</p>
+
+</li>
+<li><p><b>keys</b> The metadata keys to remove as a LIST-reference. If no metadata keys are specified it will remove all of the entitys metadata. The metadata keys accept wildcards (*) in them.</p>
+
+</li>
+</ul>
+
+<p>Return value is 1 upon success, 0 when there are no rows to delete and undef upon failure. Please call the error-method to inquire about the details of the error in question.</p>
+
+<h2 id="deleteTemplate">deleteTemplate()</h2>
+
+<p>Deletes a template and its constraints and assignments to it.</p>
+
+<p>Input is the template id.</p>
+
+<p>Return value is 1 upon success, 0 upon failure. Check the error()-method for more information upon a failure.</p>
+
+<h2 id="doSQL">doSQL()</h2>
+
+<p>This method prepares and executes a SQL statement and then checks the result: doSQL(SQL-Statement)</p>
+
+<p>Input is the SQL statement to execute as a SCALAR. Return values are the DBI-class&#39;s statement handle upon success, undef upon failure. Please check the error-method to find out more about the issue.</p>
+
+<p>This method is called from most methods in the AuroraDB-class and handles every relevant side of executing SQL-statements and handling errors. It also connects to the database if not already connected.</p>
+
+<h2 id="enumEntitiesByType">enumEntitiesByType()</h2>
+
+<p>Returns all entities of a certain type.</p>
+
+<p>Input is entity type(s) as a LIST-reference. The entity type(s) are optional and if none is specified all entities will be returned.</p>
+
+<p>Return value is a reference to a LIST entity id(s), if any.</p>
+
+<p>It will return a reference to a LIST of entity id(s) upon success (it migth be an empty list), undef upon failure. Upon failure, call the error-method for more information on the failure.</p>
+
+<h2 id="enumEntityTypes">enumEntityTypes()</h2>
+
+<p>Enumerates the entity type ids of the AURORA database: enumEntityTypes(). Returns a LIST of entity type IDs.</p>
+
+<p>No input is required. It returns the list upon success, undef upon failure. Please check the error-method for more information on the failure.</p>
+
+<h2 id="enumLoglevels">enumLoglevels()</h2>
+
+<p>Enumerates the loglevels in the database.</p>
+
+<p>Input is none. It returns the loglevel ids on success as a LIST-reference, undef upon failure. Call the error()-method to check information on the error.</p>
+
+<h2 id="enumPermTypes">enumPermTypes()</h2>
+
+<p>Enumerates the permission type names that exists in the AURORA database.</p>
+
+<p>It accepts no input.</p>
+
+<p>Return value is a LIST of permission type names.</p>
+
+<h2 id="enumTemplateFlags">enumTemplateFlags()</h2>
+
+<p>Enumerates the template flags that exists in the database.</p>
+
+<p>Returns a sorted LIST of template flag values.</p>
+
+<h2 id="error">error()</h2>
+
+<p>Gets the last error message from the AuroraDB library and its methods. Its functionality is used and referred to by all methods.</p>
+
+<p>No input required and the return value is the last error message that has happened or &quot;&quot;/blank if no error message found.</p>
+
+<h2 id="existsEntity">existsEntity()</h2>
+
+<p>Checks to see if an entity exists or not? existsEntity(id).</p>
+
+<p>Input is entity id to check or it will default to the invalid entity id of zero.</p>
+
+<p>Return value is the entity id upon success, id zero if not existing, undef upon failure. Please call the error-method for more information.</p>
+
+<h2 id="getDBI">getDBI()</h2>
+
+<p>This method attempt to return the DBI-object that AuroraDB creates: getDBI(). If it is not already created it attempts to connect to the database and then return the instance.</p>
+
+<p>The method requires no input.</p>
+
+<p>Return value is the instance of the DBI-class. Returns undef upon error. Check the error-method to get more information on the issue.</p>
+
+<p>It is called from the most relevant method, such as doSQL.</p>
+
+<h2 id="disconnect">disconnect()</h2>
+
+<p>Attempts to disconnect from database if already connected.</p>
+
+<p>This method requires no input.</p>
+
+<p>Returns 1 upon success, 0 upon some failure and undef if database is not connected already. Please check the error()-method for more information upon failures.</p>
+
+<h2 id="getEntityByMetadataKeyAndType">getEntityByMetadataKeyAndType()</h2>
+
+<p>Retrieves the entity(ies) id that matches the criteria given. There must exist one or more metadata on the entity(ies) searched for in order for this method to succeed.</p>
+
+<p>The method takes the following parameters in the following order:</p>
+
+<ul>
+
+<li><p><b>metadata</b> This options gives the metadata key-&gt;value pairs to search for state in a SQLStruct format (see SQLStruct-module for more information). This option can be set to undef (get all metadata). When given it has to be a HASH-reference.</p>
+
+</li>
+<li><p><b>offset</b> This option gives the offset in a search result set to get. It optimizes search windows (where you want to only display a certain number of matches at a time) by using a SQL <i>LIMIT</i>-clause. Lowest value is 1. Can be undef (no LIMIT-clause used - all matches returned).</p>
+
+</li>
+<li><p><b>count</b> This option gives the number of entity(ies)/rows to fetch in the search result. SCALAR. Optional. Defaults to 2^64-1 if not specified. It is part of the optimization using a SQL <i>LIMIT</i>-clause (see the offset option).</p>
+
+</li>
+<li><p><b>orderby</b> This option specifies which metadata key to order the search matches after. It also optimizes searches by using the SQL <i>ORDER BY</i> clause. This option is mandatory as it is required for the method to work. The metadata key to order by <b>must</b> exist in all entity(ies) that are to be returned in the result. The orderby-option in conjunction with the offset- and count-options will give a ordered, SQL optimized search of entities based on metadata. The validity/existence of the orderby option is not checked. If set to undef it will default to &quot;system.dataset.time.created&quot;, which is <b>only</b> valid for datasets (this default referring to a higher level is the only one coded into the AuroraDB-library).</p>
+
+</li>
+<li><p><b>order</b> Sets the ordering part of the orderby-option. It refers to the SQL ordering keywords of ASC and DESC. Will default to &quot;ASC&quot; if invalid order-option specified or undef.</p>
+
+</li>
+<li><p><b>entities</b> Sets the entities to constrain the search result with. Type expected is a reference to a LIST of entity ids. It is optional and will constrain the search result, independant of metadata structure, to the entities in the given LIST.</p>
+
+</li>
+<li><p><b>types</b> Sets the entity types to return in the search result. Type expected is a reference to a LIST of type(s). It is optional and will constrain the search result only to entity(ies) of the given type(s). It can be undef and then no entity type constraints will be imposed.</p>
+
+</li>
+<li><p><b>tableopt</b> Select between including parent metadata or not. SCALAR. Optional. Defaults to 0. Value can be either 0 (false) or 1 (true).</p>
+
+</li>
+<li><p><b>debug</b> Sets if the method returns the actual SQL query being used or not. SCALAR. Optional. If not set it will default to false and no sql query will be returned. The settings is boolean, where something that evaluates to false or true, become that setting. When this option is set the method will return the debug string as the second reference after the result array:</p>
+
+<pre><code>$(myresult,$debug)=$db-&gt;getEntityMetadataByKeyAndType(.....,1)</code></pre>
+
+</li>
+<li><p><b>subject</b> Entity ID that the perm-parameter is to be valid for. SCALAR. Optional. Defaults to undef. If subject is specified the method will attempt to get entities that also match whatever value is in the perm-parameter.</p>
+
+</li>
+<li><p><b>perm</b> Permission mask that entities must match to be included. SCALAR. Optional.</p>
+
+</li>
+<li><p><b>lop</b> Logical operator for the permission mask in the perm-parameter. SCALAR. Optional. Defaults to &quot;ANY&quot;. Valid values are &quot;ANY&quot; (logical OR) or &quot;ALL&quot; (logical AND).</p>
+
+</li>
+<li><p><b>sorttype</b> Sets if the orderby-option is to be sorted alphanumerical or numerical. 0 means alphanumerical case-insensitive (default), 1 means numerical and 2 means alphanumerical case-sensitive. Please note that the sorting is case-insensitive.</p>
+
+</li>
+</ul>
+
+<p>The return value is a reference to a LIST of entity id(s) upon success in the order stated by the orderby- and order-options, or undef upon failure. Call the error-method to know more about the failure.</p>
+
+<p>When using the offset- and count-options to create search windows it will also set the total number of entity(ies) found independant of the search window. This count can be retrieved by calling the getLimitTotal()-method after a successful call to this method with the offset-options.</p>
+
+<h2 id="getEntityByPermAndType">getEntityByPermAndType()</h2>
+
+<p>Gets entity(ies) based upon a permission mask and entity type(s).</p>
+
+<p>The method takes these options in the following order:</p>
+
+<ul>
+
+<li><p><b>subject</b> This option specifies for which entity the permission mask is to be valid for? Typically it will be eg. a USER-entity id. This option is mandatory.</p>
+
+</li>
+<li><p><b>perm</b> This option specifies the permission mask to use in the search. See createBitmask()-method for more information. Option can be undef for no bits set.</p>
+
+</li>
+<li><p><b>permtype</b> This options specifies the search moderator type to use for the permission mask. It sets if the subject in question needs to have ALL the bits in the mask (logical AND) or ANY of the bits (logical OR). Valid setting is therefore either ALL or ANY. Will default to ALL if set to undef or an invalid value.</p>
+
+</li>
+<li><p><b>types</b> This option specifies the entity types to moderate for in the search. The option is optional and if not set will search for the permission mask in all entity(ies). Type expected for option is a reference to a LIST.</p>
+
+</li>
+<li><p><b>entities</b> Only include entities in this list if they match the other criteria. LIST-reference. Optional. Defaults to undef.</p>
+
+</li>
+</ul>
+
+<p>Return value from method is a reference to a HASH in the format: entity =&gt; PERM. The PERM gives the complete perm for the given entity for the stated subject.</p>
+
+<h2 id="getEntityChildren">getEntityChildren()</h2>
+
+<p>Gets an entity&#39;s children.</p>
+
+<p>Input is in the following order: entity id, entity type(s), recursive. The entity id is the entity parent to get the children of. The entity type(s) are the type(s) to get in the result (LIST-reference). It is optional and if not set will return entities of all types. The &quot;recursive&quot; sets if one is to fetch all children recursively for given parent and not only its immediate children.</p>
+
+<p>It returns the parents children entity ids upon success as a LIST-reference, undef upon some failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="getEntityChildrenPerm">getEntityChildrenPerm()</h2>
+
+<p>Gets an entitys perm on a given entity&#39;s children: getEntityChildrenPerm</p>
+
+<p>This method takes these options in the following order:</p>
+
+<ul>
+
+<li><p><b>subject</b> The ID of the entity that the permission mask is valid for.</p>
+
+</li>
+<li><p><b>object</b> The entity to get the childrens permissions of.</p>
+
+</li>
+<li><p><b>recursive</b> (optional) Specifies if one wants to recurse further down in the entity structure or not? It is optional and default to false. Set it to true for recursion.</p>
+
+</li>
+<li><p><b>types</b> (optional) Sets the entity type IDs to include in the result. ARRAY-reference.</p>
+
+</li>
+</ul>
+
+<p>The method returns a reference to a HASH-structure in the following format:</p>
+
+<pre><code>( ID =&gt; PERM,
+  ID =&gt; PERM,
+)</code></pre>
+
+<p>where ID is the entity ID of ones of the object&#39;s children (see object-option). PERM is the permission mask on that child, relative to the subject (see subject-option).</p>
+
+<p>Upon failure the method returns undef. Please check the error()-method for more information upon a failure.</p>
+
+<h2 id="getEntityMembers">getEntityMembers()</h2>
+
+<p>Get all members of given entity.</p>
+
+<p>Accepts one input and that is the entity id of the entity to list the members of.</p>
+
+<p>Returns a LIST-reference of entity ids that are members of the given entity:</p>
+
+<pre><code>(entity id,entity id, entity id)</code></pre>
+
+<p>The LIST can be empty. The LIST-reference is undef upon failure. Please check the error()-method for more information.</p>
+
+<h2 id="getEntityMetadata">getEntityMetadata()</h2>
+
+<p>Gets an entity&#39;s metadata moderated by a set of metadata keys.</p>
+
+<p>Required input is in the following order:</p>
+
+<ul>
+
+<li><p><b>entity</b> The id of the entity to get metadata of.</p>
+
+</li>
+<li><p><b>options</b> A HASH-reference of options to the method. HASH-reference. Optional. Can be used to specified options to the method. As of today only &quot;parent&quot; is supported (boolean). If parent is 1 (true) the metadata is fetched from METADATA_COMBINED instead of METADATA in the database. If parent is 0 or anything else metadata is fetched from METADATA.</p>
+
+</li>
+<li><p><b>keys</b> A LIST of metadata keys to be returned (instead of all). If no metadata LIST is specified it will default to undef (return all key-&gt;values of the entity). The metadata keys can contain wildcards (*).</p>
+
+</li>
+</ul>
+
+<p>Return value is the metadata HASH-referemce with key-&gt;values (it can be empty logically enough). Upon failure undef is returned. Please call the error-method to find out more about the error.</p>
+
+<h2 id="getEntityMetadataList">getEntityMetadataList()</h2>
+
+<p>Returns a HASH-reference of entities metadata value for a given metadata-key.</p>
+
+<p>Input is in the following order: metadata-keyname, entities. The metadata-keyname is the key-name for the key to get values for. The entities parameter is the entities to return that metadata-value for (LIST-ref). The entities-parameter is optional. If not given it will match against all entities in the database. And the last parameter accepted is &quot;parent&quot; that decides if the metadata is fetched from METADATA_COMBINED or just from METADATA. If parent is 1 (true) the metadata is fetched from METADATA_COMBINED instead of METADATA in the database. If parent is 0 or anything else metadata is fetched from METADATA.</p>
+
+<p>Returns a HASH-reference upon success, undef upon failure. Please check the error()-method for more information upon failure.</p>
+
+<p>The structure of the HASH returned is as follows:</p>
+
+<pre><code>(
+   entid =&gt; VALUE (SCALAR or LIST)
+   entid =&gt; VALUE (SCALAR or LIST)
+   .
+   .
+   entid =&gt; VALUE (SCALAR or LIST)
+)  </code></pre>
+
+<p>The VALUE will either be a SCALAR or a LIST, depending upon if the metadata key in question has multiple values or not (ARRAY or not).</p>
+
+<h2 id="getEntityMetadataMultipleList">getEntityMetadataMultipleList()</h2>
+
+<p>Returns a HASH-reference of entities metadata value for a given metadata-keys (or all keys).</p>
+
+<p>Input is in the following order: metadata-keyname(s), entities, parent. The metadata-keyname is the key-name(s) for the key(s) to get values for as a LIST-reference. It can be undefined or empty upon which all metadata keys will be fetched. The entities parameter is the entities to return that metadata-value for (LIST-ref). The entities-parameter is optional. If not given it will match against all entities in the database. And the last parameter accepted is &quot;parent&quot; that decides if the metadata is fetched from METADATA_COMBINED or just from METADATA. If parent is 1 (true) the metadata is fetched from METADATA_COMBINED instead of METADATA in the database. If parent is 0 or anything else metadata is fetched from METADATA.</p>
+
+<p>Returns a HASH-reference upon success, undef upon failure. Please check the error()-method for more information upon failure.</p>
+
+<p>The structure of the HASH returned is as follows:</p>
+
+<pre><code>(
+   entid =&gt; {
+              KEYNAMEa =&gt; VALUE (SCALAR or LIST)
+              .
+              .
+              KEYNAMEz =&gt; VALUE (SCALAR OR LIST)
+            }
+   entid =&gt; {
+              KEYNAMEa =&gt; VALUE (SCALAR or LIST)
+              .
+              .
+              KEYNAMEz =&gt; VALUE (SCALAR or LIST)
+)  </code></pre>
+
+<p>The VALUE will either be a SCALAR or a LIST, depending upon if the metadata key in question has multiple values or not (ARRAY or not). The metadata keys are given its full textual name which then points to the VALUE. Not all entities need to have all KEYNAME values present and depends upon what is available in the database for that given entity ID.</p>
+
+<h2 id="getEntityParent">getEntityParent()</h2>
+
+<p>Gets an entity&#39;s parent.</p>
+
+<p>Input is the entity id to get the parent of.</p>
+
+<p>It returns the parent entity id upon success, 0 upon some failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="getEntityPath">getEntityPath()</h2>
+
+<p>Gets entity(ies)&#39;s parent and their parents (ancestors): getEntityPath(id1,id2,id3..idN).</p>
+
+<p>Input is the entity id(s) that one wants to get the parent and ancestors of.</p>
+
+<p>Return value is dependant upon the number of IDs asked for. In all cases the return value for a given entity is a LIST of ancestral entities in descending order (including the entity itself).</p>
+
+<p>If the caller asked for just one ID, the return structure is a LIST as follows (backwards-compatible):</p>
+
+<pre><code>(ANCESTOR1,ANCESTOR2,ANCESTOR3..ID)</code></pre>
+
+<p>If the caller asked for more than just one ID, the return structure is a HASH-reference as follows:</p>
+
+<pre><code>(
+   ID1 =&gt; [ANCESTOR1,ANCESTOR2..ID1],
+   ID2 =&gt; [ANCESTOR1,ANCESTOR2,ANCESTOR3..ID2],
+   .
+   .
+   IDn =&gt; [ANCESTOR1..IDn],
+)</code></pre>
+
+<p>If some error occured the return value is undef. Check error()-method to get more information on a potential error.</p>
+
+<h2 id="getEntityPerm">getEntityPerm()</h2>
+
+<p>Gets an entitys permissions on a given object/entity: getEntityPerm(subject,object).</p>
+
+<p>Input is in the following order:</p>
+
+<ul>
+
+<li><p><b>subject</b> The id of the entity which you want to know which permission it has on the object.</p>
+
+</li>
+<li><p><b>object</b> The id of the entity to get permission on.</p>
+
+</li>
+</ul>
+
+<p>Returns a bitmask that is an aggregate of permissions from the entity tree. The DENY mask is added before the GRANT. Returns undef upon failure. Please call the error-method for more details upon errors.</p>
+
+<h2 id="getEntityPermByObject">getEntityPermByObject()</h2>
+
+<p>Gets the permissions on a specific entity (no ancestors):</p>
+
+<p>Input are in the follwing order:</p>
+
+<ul>
+
+<li><p><b>subject</b> The entity id of the subject that the permissions are valid for.</p>
+
+</li>
+<li><p><b>object</b> the id of the entity that the permissions are fetched from.</p>
+
+</li>
+</ul>
+
+<p>The return value is a LIST of grant and deny permission masks, in that order.</p>
+
+<p>Returns undef upon failure. Call the error-method to find more details on the error in question.</p>
+
+<h2 id="getEntityPermByMetadataKeyAndType">getEntityPermByMetadataKeyAndType()</h2>
+
+<p>Retrieves the entities that match the criteria of metadata and type and the permission on them for a given entity (subject). This method is a wrapper around the getEntityPerm()- and getEntityByMetadataKeyAndType()-methods.</p>
+
+<p>The method takes these options in the following order:</p>
+
+<ul>
+
+<li><p><b>subject</b> The entity id of the entity that the PERM mask is valid for. See the getEntityPerm()-method.</p>
+
+</li>
+<li><p><b>metadata</b> Metadata to moderate the search on. See explanation in the getEntityByMetadataKeyAndType()-method.</p>
+
+</li>
+<li><p><b>offset</b> Offset of a search window to use. See explanation in the getEntityByMetadataKeyAndType()-method.</p>
+
+</li>
+<li><p><b>count</b> Number of search entries to retrieve in a search window. See explanation in the getEntityByMetadataKeyAndType()-method.</p>
+
+</li>
+<li><p><b>orderby</b> Which metadata key to order the search result by. See explanation in the getEntityByMetadataKeyAndType()-method.</p>
+
+</li>
+<li><p><b>order</b> In what order to return the result in. See explanation in the getEntityByMetadataKeyAndType()-method.</p>
+
+</li>
+<li><p><b>types</b> Entity types to moderate the search on. See explanation in the getEntityByMetadataKeyAndType()-method.</p>
+
+</li>
+<li><p><b>tableopt</b> Select between including parent metadata or not. SCALAR. Optional. Defaults to 0. Value can be either 0 (false) or 1 (true).</p>
+
+</li>
+<li><p><b>sorttype</b> See the sorttype option of the getEntityByMetadataKeyAndType()-method.</p>
+
+</li>
+</ul>
+
+<p>Return value is a reference to a HASH of permissions for entity(ies). Upon failure undef is returned. Check the error()-method for more information on error.</p>
+
+<p>The format of the returned HASH is:</p>
+
+<pre><code>( POS =&gt; { entity =&gt; ID,
+           perm =&gt; PERM,
+         }
+)</code></pre>
+
+<p>where POS is the numbered position in the search result, ID the entity ID and PERM the permission mask on that entity ID.</p>
+
+<h2 id="getEntityPermByPermAndMetadataKeyAndType">getEntityPermByPermAndMetadataKeyAndType</h2>
+
+<p>Retrieves entity(ies) by a permission mask and moderated for by a metadata key-&gt;value structure and entity type(s). It is a wrapper around getEntityByPermAndType()- and getEntityByMetadataKeyAndType()-methods.</p>
+
+<p>The method takes these options in the following order:</p>
+
+<ul>
+
+<li><p><b>subject</b> Entity id that the permission mask is valid for. See explanation in the getEntityByPermAndType()-method.</p>
+
+</li>
+<li><p><b>perm</b> Permission mask. See explanation in the getEntityByPermAndType()-method.</p>
+
+</li>
+<li><p><b>permtype</b> Logical match type to use for the permission mask. See explanation in the getEntityByPermAndType()-method.</p>
+
+</li>
+<li><p><b>metadata</b> Metadata to moderate the search on. See explanation in the getEntityByMetadataKeyAndType()-method.</p>
+
+</li>
+<li><p><b>offset</b> Offset of a search window to use. See explanation in the getEntityByMetadataKeyAndType()-method.</p>
+
+</li>
+<li><p><b>count</b> Number of search entries to retrieve in a search window. See explanation in the getEntityByMetadataKeyAndType()-method.</p>
+
+</li>
+<li><p><b>orderby</b> Which metadata key to order the search result by. See explanation in the getEntityByMetadataKeyAndType()-method.</p>
+
+</li>
+<li><p><b>order</b> In what order to return the result in. See explanation in the getEntityByMetadataKeyAndType()-method.</p>
+
+</li>
+<li><p><b>types</b> Entity types to moderate the search on. See explanation in the getEntityByPermAndType()-method.</p>
+
+</li>
+<li><p><b>tableopt</b> Select between including parent metadata or not. SCALAR. Optional. Defaults to 0. Value can be either 0 (false) or 1 (true).</p>
+
+</li>
+<li><p><b>sorttype</b> Sets how the search is performed. See the &quot;sorttype&quot; option in the getEntityByMetadatakeyAndType()-method.</p>
+
+</li>
+</ul>
+
+<p>Returns a reference to a HASH-structure upon success, undef upon failure. Check the error()-method for more information on a potential error.</p>
+
+<p>The format of the returned HASH-structure is:</p>
+
+<pre><code>( POS =&gt; 
+   { entity =&gt; ID,
+     perm =&gt; PERM,
+   },
+)</code></pre>
+
+<p>Where POS is the numbered position in the returned and ordered result (always starting from 1, even with search windows). ID is the entity ID in position POS and PERM is the permission mask in the same position.</p>
+
+<h2 id="getEntityPermCheck">getEntityPermCheck()</h2>
+
+<p>This method checks if an entity has all the permission of the given bitmask on a specific object.</p>
+
+<p>The method have these options in the following order:</p>
+
+<ul>
+
+<li><p><b>subject</b> Entity id of the entity which the mask is valid for.</p>
+
+</li>
+<li><p><b>object</b> Entity id of the entity which you want to check if the subject entity have the required permissions on.</p>
+
+</li>
+<li><p><b>mask</b> The bitmask to check if the subject entity has on the object entity.</p>
+
+</li>
+</ul>
+
+<p>The method returns 1 if the subject entity has the required permissions, 0 if not. Undef is returned upon failure. Please check the error()-method in such a case.</p>
+
+<h2 id="getEntityPermsForObject">getEntityPermsForObject()</h2>
+
+<p>Gets the permissions on a object:</p>
+
+<p>Input are in the following order:</p>
+
+<ul>
+
+<li><p><b>object</b> The entity id of the object.</p>
+
+</li>
+<li><p><b>perm mask</b> An optional mask of permission bits we are looking for.</p>
+
+</li>
+<li><p><b>object type</b> An optional subject type to filter for.</p>
+
+</li>
+</ul>
+
+<p>The return value is a HASH of object =&gt; permission of objects thet match the criteras.</p>
+
+<p>Returns undef upon failure. Call the error-method to find more details on the error in question.</p>
+
+<h2 id="getEntityPermsForSubject">getEntityPermsForSubject()</h2>
+
+<p>Gets the permissions held by a subject:</p>
+
+<p>Input are in the follwing order:</p>
+
+<ul>
+
+<li><p><b>subject</b> The entity id of the subject.</p>
+
+</li>
+<li><p><b>perm mask</b> An optional mask of permission bits we are looking for.</p>
+
+</li>
+<li><p><b>object type</b> An optional object type to filter for.</p>
+
+</li>
+</ul>
+
+<p>The return value is a HASH of object =&gt; permission of objects thet match the criteras.</p>
+
+<p>Returns undef upon failure. Call the error-method to find more details on the error in question.</p>
+
+<h2 id="getEntityPermsOnObject">getEntityPermsOnObject()</h2>
+
+<p>Gets the permissions on an object:</p>
+
+<p>Input are in the follwing order:</p>
+
+<ul>
+
+<li><p><b>object</b> the id of the entity that the permissions are fetched from.</p>
+
+</li>
+</ul>
+
+<p>The return value is a HASHREF of subjects with permissions on an object. Take into account the objects inheritance, but not implisit or explisit subject membership. Hash key is subject id, value is a hash with mask for inherit, deny, grant and perm ( grant | inherit &amp; (~inherit ^ deny))</p>
+
+<p>Returns undef upon failure. Call the error-method to find more details on the error in question.</p>
+
+<h2 id="getEntityRoles">getEntityRoles()</h2>
+
+<p>Get a list of roles for an entity: getEntityRoles(id).</p>
+
+<p>Roles are the entity itself,its ancestors and any entity tied directly or indirectly to any of them through the databases MEMBER-table.</p>
+
+<p>Returns an unsorted list without duplicates. Undef upon error. Check the error()-method to get more information upon failure.</p>
+
+<h2 id="getEntityTemplate">getEntityTemplate()</h2>
+
+<p>Get an aggregated template for an entity.</p>
+
+<p>Input is in the following order:</p>
+
+<ul>
+
+<li><p><b>type</b> The entity type to get a template for. SCALAR. Optional. If not specified will attempt to default to DATASET-type.</p>
+
+</li>
+<li><p><b>entities</b> The entity(ies) to get template for. ARRAYM of SCALAR. Required. The options expects a LIST of one or more entity(ies). If just one entity is specified it will attempt to return the template that is valid on just that entity itself (if any). If multiple entities are specified it assumes that it is a tree list to aggregate template constraints from going from element 0 to element N (inheritance).</p>
+
+</li>
+</ul>
+
+<p>The return value is a HASH-reference to a set of template constraints. If any of the constraints on a given metadatakey has not been set, it will revert to defaults. The defaults are as follows:</p>
+
+<ul>
+
+<li><p><b>default</b> undef (no default(s) set/default(s) do not exist)</p>
+
+</li>
+<li><p><b>regex</b> .*</p>
+
+</li>
+<li><p><b>flags</b> undef (no bit set)</p>
+
+</li>
+<li><p><b>min</b> 0</p>
+
+</li>
+<li><p><b>max</b> 1</p>
+
+</li>
+<li><p><b>comment</b> Blank string.</p>
+
+</li>
+</ul>
+
+<p>Inheritance on templates works by going from the first entity specified in the entities-parameter LIST-ref to this method and down to the last entity in that list (often the entity you need to know the aggregated template of).</p>
+
+<p>Only whole key-constraints will supplant another one while recursing the tree defined in the entities-parameter. This means that parts of the key, like say max or min, will not replace just max and min. All the constraints for the key in question will be replaced upon finding a replacement key constraint definition, even undef.</p>
+
+<p>Similarly, the default-constraint will not accumulate defaults as in traverses down the entity tree, but replace any defaults earlier in the tree with the new defaults defined for that key in the template being processed.</p>
+
+<p>Let us assume we have the entities GROUP, USER, DATASET in addition to the special TEMPLATE-entity type.</p>
+
+<p>All entities in AuroraDB can have any number of templates assigned to them (up to the limits of the database), but all assignments are type- specific. This means that the templates assigned on an entity belong in an entity type group. Eg. one can assign any number of templates having effect for DATASET-entities on a GROUP-entity. The templates themselves are type- neutral and only gain templating effect once they are assigned on an entity (see the assignEntityTemplate()-method) and a entity type for that entity.</p>
+
+<p>All entities can have template assignments for entity types that are not the same as itself, since this is about aggregated templates and inheritance. When calling the getEntityTemplate()-method is called it will require the entity type to be specified in order to figure out the aggregated template.</p>
+
+<p>At the end of the aggregation process, any missing or undefined constraints for a specific key will be defaulted to standard values (see above).</p>
+
+<p>Upon success this method will return a HASH-reference to a aggregated entity template, undef will be returned upon any error. Please call the error()-method for more information upon failure.</p>
+
+<p>See the setTemplate()-method for more information on the format of the returned, aggregated template. Please note, however, that the getEntityTemplate()-method will add two fields to the template of each &quot;key&quot; that are called &quot;template&quot; and &quot;assignedto&quot;. The &quot;template&quot; fields tell which template affected the last change on the definition and &quot;assignedto&quot; says on which entity that this template was assigned. This information enables the user to know if the aggregated template result for a given &quot;key&quot; is defined on the entity that one asked for the aggregated template of, or if it was inherited from above (the assignedto id is not the same as the entity asked for). It also says which template effected that result.</p>
+
+<h2 id="getEntityTemplateAssignments">getEntityTemplateAssignments</h2>
+
+<p>Gets template assignment(s) on an entity</p>
+
+<p>Input is in the following order:</p>
+
+<ul>
+
+<li><p><b>entity</b> The entity id to get the assignments of. SCALAR. Required.</p>
+
+</li>
+<li><p><b>type</b> The entity type to get assignments of. SCALAR. Optional. If not specified the method will return all assignments of all types on the entity in question.</p>
+
+</li>
+</ul>
+
+<p>This method gets template assignment(s) on an entity and optionally just of a given type. All templates are assigned to entities based upon what type the template is to have effect for. By giving a set type, only the assignment(s) for that type on the entity in question are returned. If no type is specified this method will return all template assignments set on the entity.</p>
+
+<p>Upon success returns a HASH-reference of the assignments, undef upon failure. Please check the error()-method for more information upon failure.</p>
+
+<p>The return structure upon success is as follows:</p>
+
+<pre><code>(
+   TYPEa =&gt; [TEMPLATEID1,TEMPLATEID2 .. TEMPLATEIDn]
+   .
+   .
+   TYPEz =&gt; [TEMPLATEID4,TEMPLATEID5 .. TEMPLATEIDn]
+)</code></pre>
+
+<p>where TYPEa and so on are the entity type id of the type assignment. TEMPLATEID1 and so on is the entity id of the template that are assigned on the given type. This is an ARRAY-reference of template entity ids and the array returns the assignments in the order that they are set, starting from element 0 and up.</p>
+
+<p>If no assignments have been set on the entity in question (or of the chosen type), the HASH-structure will be empty.</p>
+
+<h2 id="getEntityTemplateId">getEntityTemplateId()</h2>
+
+<p>Retrieve template assignments on a given entity(ies). This is actual template id&#39;s and not an aggregated template.</p>
+
+<p>Input is entity type to fetch template for and entity id they belong to accordingly. Entity id is expected to be a LIST of one or more elements. We recommend not using more than one elements, since it will be impossible to know which template id belongs to which entity?</p>
+
+<p>Return value is a LIST reference upon success, undef upon failure. Check the error()-method for more information upon failure.</p>
+
+<p>The LIST returned contains template id&#39;s that belongs to the given entity. The list is ordered according to when the templates take effect.</p>
+
+<h2 id="getEntityTemplatePath">getEntityTemplatePath()</h2>
+
+<p>Retrieves the path for an entity&#39;s templates. As of writing a wrapper around getEntityPath.</p>
+
+<p>See getEntityPath()-method for more information.</p>
+
+<h2 id="getEntityTree">getEntityTree()</h2>
+
+<p>Gets the entity tree from given entity id.</p>
+
+<p>Input is in the following order:</p>
+
+<ul>
+
+<li><p><b>entity</b> Entity id to start from. 1 can be used to signify the top, ROOT entity. Defaults to 1 if none specified.</p>
+
+</li>
+<li><p><b>include</b> LIST-reference of entity types to consider. Default to undef which will include all of the tree.</p>
+
+</li>
+<li><p><b>exclude</b> LIST-reference of entity types to exclude from result. Default to no exluded.</p>
+
+</li>
+<li><p><b>depth</b> The maximum depth from the depth of the start entity to return in the result. SCALAR. Optional. If not specified it will return all entity children of start entity independant of depth. Depth 0 is the same as all entites on the same level as the start entity, 1 is all on the level below it and so on.</p>
+
+</li>
+</ul>
+
+<p>Returns a HASH-reference of the entities in the tree and their children with attributes.</p>
+
+<p>The return HASH-structure is as follows:</p>
+
+<pre><code>(
+  IDa =&gt; {
+          id =&gt; IDa,
+          type =&gt; INT,
+          children =&gt; [ IDb...IDn ],
+        }
+  IDb =&gt; {
+          id =&gt; IDb,
+          parent =&gt; IDa,
+          type =&gt; INT,
+          children =&gt; [],
+       &nbsp;}
+)</code></pre>
+
+<p>IDx is the INT entity id. The subhash specified the ID of that entity again in the key id. It also gives the entity&#39;s type and parent, except for the root entity 1 (IDa in example above), which has no parent (or technically itself). It also contains a LIST of children with IDs of its immediate children (that has it has its parent). The returned HASH is therefore flat and all entities in the tree can be addressed at its root level.</p>
+
+<p>Returns undef upon failure. Check error()-method for more information on the failure.</p>
+
+<h2 id="getEntityType">getEntityType()</h2>
+
+<p>Retrives the entity type of an entity id: getEntityType(entityid)</p>
+
+<p>Input is entity id or it will default to the invalid id of zero.</p>
+
+<p>Return value is the entity type of id referenced upon success, or 0 upon failure. Please call the error-method for more details.</p>
+
+<h2 id="getEntityTypeIdByName">getEntityTypeIdByName()</h2>
+
+<p>Retrieves the entity type id based upon the textual name input to the method: getEntiyTypeIdByName([name1,name2..nameN]);</p>
+
+<p>No input is required and then all entity type ids are returned. If one or more names are specified (comma separated), it will return the entity type ids as a LIST for the names it recognizes or undef for unknown ones.</p>
+
+<p>Return value is a LIST.</p>
+
+<h2 id="getEntityTypeName">getEntityTypeName()</h2>
+
+<p>Retrives the textual name of the entity type: getEntityTypeName (entityid)</p>
+
+<p>Input is the entity id or it will default to the invalid id of zero.</p>
+
+<p>Return value is the entity ids type name upon success, undef upon failure.</p>
+
+<p>Please call the error-method for more details of the error.</p>
+
+<h2 id="getEntityTypeNameById">getEntityTypeNameById()</h2>
+
+<p>Retrieves the entity type name by specifying the entity type id(s): getEntityTypeNameById([id1,i2..idN]).</p>
+
+<p>No input is required and it will then return all entity type textual names. If one or more type id(s) are specified (comma separated), it will return the entity type name(s) for the entity type id(s) specified.</p>
+
+<p>Return value is a LIST.</p>
+
+<h2 id="getLogEntries">getLogEntries()</h2>
+
+<p>Gets the log entries of entity or if none given all log entries in the database.</p>
+
+<p>Input is the entity id to get the logs for. If none given it will fetch log entries for all entites.</p>
+
+<p>Return value is a HASH pointer of the resulting log entries. The format of the HASH is:</p>
+
+<pre><code>( NO =&gt; { time =&gt; TIME,
+          loglevel =&gt; LEVEL,
+          message =&gt; SCALAR,
+          idx =&gt; SCALAR,
+          tag =&gt; SCALAR
+        }
+)</code></pre>
+
+<p>the NO is the auto increment value of the database. time is given in hires time, loglevel is the level value from possible loglevels (see enumLoglevels()-method), message is the message of the log entry and idx is the log entries auto increment index in the database.</p>
+
+<p>It will return undef upon failure. Please check the error()-method for more information in the case of an error.</p>
+
+<h2 id="getLoglevelByName">getLoglevelByName()</h2>
+
+<p>Gets the loglevel id by giving its name.</p>
+
+<p>Input is the loglevel name. Defaults to &quot;&quot; and will result in a &quot;0&quot; return value (does not exist).</p>
+
+<p>Returns the id upon success, 0 if it does not exist, undef upon failure. Please check the error()-method for information on a potential error.</p>
+
+<h2 id="getLoglevelNameByValue">getLoglevelNameByValue()</h2>
+
+<p>Gets the loglevel name by giving its value. Input is the loglevel value. If none given it defaults to 0 which will result in a &quot;&quot; return value (does not exist).</p>
+
+<p>Return value is the loglevel name upon success, &quot;&quot; or blank if it does not exist, undef upon failure. Check the error-method for more information on an error.</p>
+
+<h2 id="getMetadataKey">getMetadataKey()</h2>
+
+<p>Get the metadata key id by specifying the metadata key name.</p>
+
+<p>Input is the metadata key name.</p>
+
+<p>Return value is the metadata key id upon success, 0 if it does not exist, undef upon failure. Please call the error-method to find out more about the error.</p>
+
+<h2 id="getMtime">getMtime()</h2>
+
+<p>This methods read modification time for tables and return the newest one.</p>
+
+<p>Optional parameter: table names - tables to get mtime for, default all tables with set mtime.</p>
+
+<p>Return value: the newest mtime found.</p>
+
+<p>Time format is floating unis time.</p>
+
+<h2 id="getPermTypeNameByValue">getPermTypeNameByValue()</h2>
+
+<p>Returns the permission type name(s) for the given permission type value(s).</p>
+
+<p>Input is a LIST of permission type value(s).</p>
+
+<p>Return value is a LIST of permission type name(s) for those value(s).</p>
+
+<h2 id="getPermTypeValueByName">getPermTypeValueByName()</h2>
+
+<p>Returns the permission type value(s) for the given permission type name(s).</p>
+
+<p>Input is a LIST of permission type name(s).</p>
+
+<p>Return value is a LIST of permission type value(s) for those name(s).</p>
+
+<h2 id="getTemplate">getTemplate()</h2>
+
+<p>Get a template and its constraints.</p>
+
+<p>Input is the template id to get the constraints for.</p>
+
+<p>Return value is HASH-reference with the constraints upon success (see setTemplate for more information on structure), or undef upon failure. Check the error()-method for more information upon failure. Undef-values in the keys are to be understood as there are no more values for that &quot;value&quot;.</p>
+
+<h2 id="getTemplateAssignments">getTemplateAssignments()</h2>
+
+<p>Retrieves all entities that the given template has been assigned to as well as type.</p>
+
+<p>Input parameters are in the following order: template id (SCALAR, required), type (SCALAR, optional), duplicates (SCALAR, optional)</p>
+
+<p>Template ID is the template that one wishes to get all assignments of. Type is the type id that one wishes to get assignments of (other type assignments of given template id are omitted). Duplicates sets if any duplicates of entities on the same entity type assignment will be removed or not? It is possible to assign the same template several times on the same entity and entitytype and this parameter controls if this will be visible in the returned result or not? It is evaluated as a boolean and if true will remove duplicates and if false will not remove duplicates. If parameter is undef it will default to true and duplicates will be removed.</p>
+
+<p>Returns a HASH-reference upon success, undef upon failure. Please check the error()-method for more information upon failure.</p>
+
+<p>The HASH structure is as follows:</p>
+
+<pre><code>( 
+   all =&gt; [entity1,entity2,entity3 .. entityN]
+   types =&gt; { 
+              typeA =&gt; [entity1 .. entityN]
+              typeB =&gt; [entity2, entity3 .. entityN]
+              .
+              .
+              typeZ
+            }
+)</code></pre>
+
+<p>Please note that the &quot;all&quot; key contains all the entities that have the given template assigned to them, without duplicates (no matter what the duplicates-parameter says). The &quot;types&quot; key contains the entity assignments ordered into entity types, so that one can easily check eg. what &quot;DATASET&quot; assignments have been put in place with the given template.</p>
+
+<h2 id="getTemplateAssignmentsTree">getTemplateAssignmentsTree()</h2>
+
+<p>Gets a tree of template assignments and their metadata key definitions.</p>
+
+<p>This method accepts the following parameters in this order:</p>
+
+<ul>
+
+<li><p><b>entities</b> Entity og entities ID(s) to get template assignments of. ARRAY-reference. Required. It can be one or more elements. If just one element is specified it will get the entity tree path down to that entity and generate a tree of assignments based on that. If more than one element is specified it will use that as the entity tree and generate assignments based on that.</p>
+
+</li>
+<li><p><b>type</b> Entity type ID to get template assignments to. SCALAR. Optional. Will default to &quot;DATASET&quot;. This decides which entity type to get template for, since all template assignments are assigned as a type and have effect on a given entity type in the tree.</p>
+
+</li>
+<li><p><b>include</b> Moderates which template IDs to include in the result. ARRAY-reference. Optional. If not specified will include all template assignments found. If specified it will only include those template IDs that are specified in the ARRAY-reference. This makes it possible to analyze how just some template IDs have effect down the entity tree.</p>
+
+</li>
+<li><p><b>prune</b> Decides if an empty entity in the generated tree should be included or not if it has no template assignments. SCALAR. Optional. If not specified will not prune away entities with no template assignments. The value is interpreted as a boolean and must be either true or false.</p>
+
+</li>
+</ul>
+
+<p>This method returns a tree of template assignments on the entity(ies) specified according to the use of the &quot;entities&quot;-parameter. It will also return the metadata key-definitions of all the template assignments.</p>
+
+<p>Upon success this method returns a HASH-reference, undef upon failure. Please check the error()-method for more information upon failure.</p>
+
+<p>The HASH-structure returned upon success looks like this:</p>
+
+<pre><code>   (
+      1 =&gt; entity =&gt; SCALAR,
+           assigns =&gt; {
+                         1 =&gt; { 
+                                 TMPLIDa =&gt; {
+                                               KEYNAMEa =&gt; {
+                                                              default =&gt; ...
+                                                              regex =&gt; ...
+                                                              flags =&gt; ...
+                                                              min =&gt; ...
+                                                              max =&gt; ...
+                                                              comment =&gt; ...                                  
+                                                           }
+                                              .
+                                              .
+                                              KEYNAMEz
+ 
+                                            }
+                                 .
+                                 .
+                                 TMPLIDz                                                                                  
+                              }
+                         .
+                         .
+                         N
+                      }
+      .
+      .
+      N
+   )</code></pre>
+
+<p>The assignmenst are ordered from 1 to N in order to know which order to iterate on it. Inside each initial order number is two fields: &quot;entity&quot; and &quot;assigns&quot;. &quot;entity&quot; defines which entity these assignments are valid for, if any? &quot;assigns&quot; gives the template assignments for that entity given any constraints set in the method-parameters (see above). The &quot;assigns&quot; sub-structure is also numbered from 1 to N and gives the order in which the template(s) are valid. After the number comes the template ID (TMPLIDa .. TMPLIDz) from the database. Each ordered assignment will only have one template ID here and is only there to inform what the template ID is for that assignment. After the template ID comes the textual metadata key-name (KEYNAMEa .. KEYNAMEz) and after that comes the actual definition of the key name (see the setTemplate()-method for more information).</p>
+
+<p>If one uses the include-parameter the numbering in the assigns sub-structure will reflect which template that are included and are not a numbering reflecting the actual assignment order on that entity if the output then have been moderated.</p>
+
+<p>This method optimizes the use of the getTemplate()-method to get the definition of the template by caching the response and eliminates the need to call it many times for the same template id. The method will be further optimized if one uses the include-parameter to narrow down which template ids that are to be included in the response.</p>
+
+<h2 id="getTemplateFlagBitByName">getTemplateFlagBitByName()</h2>
+
+<p>Returns the template flag bit number(s) for the given name(s)</p>
+
+<p>Input is a LIST of flag bit name(s) to get flag value for.</p>
+
+<p>Return value is a LIST of flag bit position values of those names or undef for non-existing ones.</p>
+
+<h2 id="getTemplateFlagNameByBit">getTemplateFlagNameByBit()</h2>
+
+<p>Returns the template flag bit name(s) for the given flag bit position value(s).</p>
+
+<p>Input is a LIST of flag bit position value(s) to get name(s) for.</p>
+
+<p>Return value is a LIST of flag bit name(s) for those flag bit value(s) or undef for non-existing ones.</p>
+
+<h2 id="maxDepth">maxDepth()</h2>
+
+<p>Returns the maximum depth allowed on the entity tree.</p>
+
+<p>No input is accepted.</p>
+
+<p>Returns the maximum depth allowed on the tree as set through the constructor new() or the default from the global constant $VIEW_DEPTH. The value set through the constructor new() takes precedence if valid.</p>
+
+<h2 id="moveEntity">moveEntity()</h2>
+
+<p>This methods moves an entity provided the new parent or to-entity exists.</p>
+
+<p>Input are in the following order:</p>
+
+<ul>
+
+<li><p><b>entity</b> The entity to move.</p>
+
+</li>
+<li><p><b>parent</b> The parent to move the entity to.</p>
+
+</li>
+</ul>
+
+<p>Returns 1 upon success, 0 upon failure. Call the error-method to get more information on the failure.</p>
+
+<h2 id="removeEntityMember">removeEntityMember()</h2>
+
+<p>Removes member(s) from an entity.</p>
+
+<p>The method accepts these parameters in the following order:</p>
+
+<ul>
+
+<li><p><b>object</b> The id of the entity to remove member(s) from. Required.</p>
+
+</li>
+<li><p><b>subjects</b> The id of the entity(ies) to remove as member(s). Optional. If not set (not undef) all members of the object-entity will be removed. It can be one or more entity ids as a LIST.</p>
+
+</li>
+</ul>
+
+<p>Returns 1 upon success, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="removeEntityPermsAndRoles">removeEntityPermsAndRoles()</h2>
+
+<p>Remove all of an entity&#39;s permissions and roles in the AURORA database. Optionally all permissions other entity(ies) has/have on that entity.</p>
+
+<p>This method accepts the following parameters in this order: id,others. ID is the entity ID of the entity to remove all permissions and roles of, SCALAR, Required. Others is the flag to tell the method to also remove all permissions and memberships that other entity(ies) might have on the given entity, BOOLEAN, optional. If not given will default to 0/false and do not remove permissions and roles others have on the given entity.</p>
+
+<p>Returns 1 upon success, 0 upon not being able to remove it, undef upon some failure. Please check the error()-method for more information upon failure.</p>
+
+<h2 id="sequenceEntity">sequenceEntity()</h2>
+
+<p>(Re)sequence an entity and any descendants. Done on createEntity and moveEntity to ensure parents is sequenced before child.</p>
+
+<p>Input is entity. Returns count of sequenced entitys on success, 0 on failure.</p>
+
+<h2 id="setBitmask">setBitmask()</h2>
+
+<p>Sets bits in a bitmask.</p>
+
+<p>Input is the bitmask to modify and bitmask with bits to set. Default parameters is &#39;&#39;.</p>
+
+<p>Return value is the resulting bitmask as a SCALAR. The input bitmask is unaltered.</p>
+
+<h2 id="setBits">setBits()</h2>
+
+<p>Sets bits in a bitmask.</p>
+
+<p>Input is the bitmask to modify and a list of bit numbers to set. Default bitmask is &#39;&#39;.</p>
+
+<p>Return value is the resulting bitmask as a SCALAR. The input bitmask is unaltered.</p>
+
+<h2 id="setEntityMetadata">setEntityMetadata()</h2>
+
+<p>Sets an entitys metadata. Old metadata keys are overwritten with new value or new keys are added. The values allowed to be set are moderated by the templates for this entity.</p>
+
+<p>The method accepts these options in the following order:</p>
+
+<ul>
+
+<li><p><b>entity</b> The entity id of the entity to set the metadata on.</p>
+
+</li>
+<li><p><b>metadata</b> The metadata HASH-reference of key-&gt;values to set on the entity. Can be undef.</p>
+
+</li>
+<li><p><b>type</b> Template type to check the metadata entered against. If set to undef it will default to the entity id&#39;s type itself (see entity option).</p>
+
+</li>
+<li><p><b>path</b> Entity-path to use for the aggregated template that the metadata is checked against as a LIST-reference. If set to undef it will use the path of the entity id itself (see entity option).</p>
+
+</li>
+<li><p><b>override</b> Override template checking for metadata being set. Optional, default to false. If statement here evaluates to true it will ignore any template definitions that are valid for the metadata being set. This setting is to allow for critical system-updates and should be used with care. Should normally be false.</p>
+
+</li>
+</ul>
+
+<p>The method checks the metadata compliance against relevant aggregated template and if it fails returns the metadata keys it failed on in the error message (call the error()-method to read it). Please note that if the entity in question already have metadata on it, the existing metadata will be collected and used for the keys that are not in the input to the method. The input keys and values together with the keys that are not in the input will be checked against the aggregated template for compliance. This ensures that one can update just one key in the metadata without getting template compliance issues, since existing metadata will fill missing key-values.</p>
+
+<p>This way of handling setting metadata on an entity means that the update follow the rule of the three musketeers: all for one and one for all. An update of a key or an addition of key value(s) will need to check all of the metadata for template compliance.</p>
+
+<p>Please also be aware, that if you want to delete a metadata key while updating other keys, you can set that key to an empty LIST reference. Eg:</p>
+
+<pre><code>$hash-&gt;{KEYNAME}=\@list</code></pre>
+
+<p>The reason for this is that the method handles all value setting as lists (as does the database) and tries to optimize for using UPDATE/REPLACE-statements in SQL, so after setting values for a key, it removes any extra LIST values that are not needed anymore. If you set zero LIST values, it removes all LIST values afterwards since they are not needed anymore. Ergo thereby in effect performing a deletion of a key.</p>
+
+<p>It return 1 upon success, 0 upon failure. Please call the error()-method to get more information on the error.</p>
+
+<p>This function is simplified to work with basic and standardized SQL like UPDATE, INSERT and DELETE (no REPLACE or INSERT...on DUPLICATE UPDATE) for compability reasons. It is also optimized to favour UPDATE of values where possible (were there are existing metadatakeys), even for arrays. When no existing key or index of that key (in case of arrays) exists, it will insert new values. If the new array contains less values than the previous it will delete away surplus rows in the database. In addition it will skip running an UPDATE on values that are the same as before for a given key. This optimizes the function to work on most database engines, while also optimizing its speed and functionality. The working of the function is based upon some assumptions:</p>
+
+<ul>
+
+<li><p>Most databases handles &quot;REPLACE&quot; or &quot;INSERT on some conflict UPDATE&quot; (and its variants) as a delete followed by an insert. This is sub-optimal if one can in many cases just execute a UPDATE statement.</p>
+
+</li>
+<li><p>Most metadata hashes given to the method contains key-&gt;value pairs that are already stored in the database. Ergo no need to either update or insert, but to skip.</p>
+
+</li>
+<li><p>We would rather want to update a row with a new value, than delete and then insert it of speed reasons.</p>
+
+</li>
+<li><p>It is faster to first read all metadata key-value pairs of an entity from the database (SELECT) and then do mostly skip or UPDATE, than use the &quot;REPLACE&quot; or &quot;INSERT on some conflict UPDATE&quot; strategy.</p>
+
+</li>
+<li><p>&quot;REPLACE&quot; and &quot;INSERT on some conflict UPDATE&quot; do not handle surplus values of a key (arrays). In order to know of the surplus one has to either fetch data by using SELECT or run a compulsive DELETE after each ended key-&gt;value writing to the database (all elements of array written). This is is circumvented by reading all key-&gt;value pairs before beginning in the method (the DELETE will be skipped if not needed).</p>
+
+</li>
+</ul>
+
+<p>These are the main considerations for the workings of the method.</p>
+
+<h2 id="setEntityPermByObject">setEntityPermByObject()</h2>
+
+<p>Set the permissions on a specific entity.</p>
+
+<p>This methods takes these options in the following order:</p>
+
+<ul>
+
+<li><p><b>subject</b> Entity id of the entity which the permission masks are to be set for. Required.</p>
+
+</li>
+<li><p><b>object</b> Entity id of the entity witch the permission masks are set on. Required.</p>
+
+</li>
+<li><p><b>grant</b> The grant mask to set. Accepts undef (no bits set).</p>
+
+</li>
+<li><p><b>deny</b> The deny mask to set. Accepts undef (no bits set).</p>
+
+</li>
+<li><p><b>operation</b> Defines how to apply the bitmasks. undef means replace bits, true (eg. 1) means set bits and false (eg. 0) means clear bits.</p>
+
+</li>
+</ul>
+
+<p>The method returns a reference to a LIST of the grant and deny permission masks after completion of the operation (in that order).</p>
+
+<p>Undef is returned upon failure. Please check the exact error message by calling the error()-method.</p>
+
+<h2 id="setLogEntry">setLogEntry()</h2>
+
+<p>Sets a log entry.</p>
+
+<p>Input is in the following order:</p>
+
+<ul>
+
+<li><p><b>time</b> Time of log entry. If undef will default to current time.</p>
+
+</li>
+<li><p><b>entity</b> Entity id which the log entry concerns. Required.</p>
+
+</li>
+<li><p><b>loglevel</b> loglevel of the log entry. See the enumLogLevels()-method.</p>
+
+</li>
+<li><p><b>tag</b> Tag the message entry in the log. Optional. SCALAR. Will default to &quot;NONE&quot;. Valid characters are A-Z, a-z, 0-9, &quot;-&quot; and &quot;_&quot;. Maximum size is 16 characters.</p>
+
+</li>
+<li><p><b>message</b> Textual message for the log entry. Defaults to a blank string.</p>
+
+</li>
+</ul>
+
+<p>Return value is 1 upon success, 0 upon failure. Check the error-method for more information upon error.</p>
+
+<h2 id="setMtime">setMtime()</h2>
+
+<p>This methods updates set modification time for a table.</p>
+
+<p>Required parameter: table name - table to update mtime for.</p>
+
+<p>Optional parameter: mtime - time to set, defaults to now.</p>
+
+<p>Time format is floating unix time.</p>
+
+<p>Return value: undef on failure, 1 otherwise.</p>
+
+<h2 id="setTemplate">setTemplate()</h2>
+
+<p>Sets the constraints of a template.</p>
+
+<p>Input parameters are in the following order:</p>
+
+<ul>
+
+<li><p><b>id</b> Entity ID of the template to set/change. SCALAR. Required.</p>
+
+</li>
+<li><p><b>constraints</b> Constraint definition(s) to set on template. HASH-reference. Optional. If not set, will just not set any constraints on the template in question.</p>
+
+</li>
+<li><p><b>reset</b> Whether to reset/delete all existing template contraints, before applying new ones (or do nothing). BOOLEAN. Optional. If not specified the method will just apply the new constraints given, ignoring keys that have been already set. Since booleans does not exist as a type in Perl, it is enough that the expression in &quot;reset&quot; evaluates to true, but is technically just a SCALAR.</p>
+
+</li>
+</ul>
+
+<p>The template constraints HASH has the following format:</p>
+
+<pre><code>( KEY =&gt; { 
+           default =&gt; VALUE,
+           regex =&gt; VALUE,
+           flags =&gt; VALUE,
+           min =&gt; VALUE,
+           max =&gt; VALUE,
+           comment =&gt; VALUE,
+         }
+)</code></pre>
+
+<p>You can set any number of these KEY-constraints that you want on a given template. With KEY here is meant the textual name of the metadata key on an entity.</p>
+
+<p>Please note that the values undef and not exists are interchangable concepts when it comes to templates. Undef is the same as the key does not exist and/or is not defined. So when setting a template, a value not specified will appear as an undef-value when loading that same template again (see the getTemplate-method). The exception to this behaviour is when getting the aggregated template of an entity by calling the getEntityTemplate()-method. Here it will default values at the end that has not been defaulted by the metadata definition. There are in other words no valid value in AuroraDB for undef. Undef just means that it is not existing or defined.</p>
+
+<p>This method will also strip away flags bit-combinations that are not allowed, such as SINGULAR at the same time as MULTIPLE. Singular is preferred (conservative approach).</p>
+
+<p>The meaning of the KEY-constraints are as follow:</p>
+
+<ul>
+
+<li><p><b>default</b> Default value(s) for the template key in question. Defaults to undef. It sets which values to be set by the template if user does not fill in anything. This constraint can contain one or more values. If it contains more than one value it is to be a pointer to a LIST. Several values can also be combined with the SINGULAR and MULTIPLE flag to indicate that the value entered is to be chosen from one or more values in this default (see the flags constraint). Then the default-constraint will act database-like (but not storing an ID or identifier like a database would).</p>
+
+</li>
+<li><p><b>regex</b> The regex for checking the template key value in question (when used). Defaults to undef. You are not to include the slashes of the regex, just the regex-expression itself.</p>
+
+</li>
+<li><p><b>flags</b> The flags of the template key in question (bitmask). Defaults to undef (no flag bit set). Supported flags are: MANDATORY, NONOVERRIDE, SINGULAR, MULTIPLE, PERSISTENT and OMIT. The meaning of these flags are as follows:</p>
+
+<ul>
+
+<li><p><b>MANDATORY</b> The key is mandatory to be answered. If default is defined, this will be chosen in the event of a missing value.</p>
+
+</li>
+<li><p><b>NONOVERRIDE</b> The key definition is not allowed to be overridden. Template further down are not allowed to change the constraints and defaults of this key.</p>
+
+</li>
+<li><p><b>SINGULAR</b> States that the key is to have a value from one of the value(s) in the constraint &quot;default&quot;. The key will then act like in a database and the value entered will be checked against the default(s).</p>
+
+</li>
+<li><p><b>MULTIPLE</b> States that the key is to have a value from one or more of the value(s) in the constraint &quot;default&quot;. If enabled together with the SINGULAR-flag, the SINGULAR-flag will take precedence and the MULTIPLE-flag will be stripped away.</p>
+
+</li>
+<li><p><b>PERSISTENT</b> States that key value is not to change once it has been set by any updates later on.</p>
+
+</li>
+<li><p><b>OMIT</b> Omits a key from the template. This can be used to remove key-constraints further down the entity-tree.</p>
+
+</li>
+</ul>
+
+</li>
+<li><p><b>min</b> The minimum number of values to enter for this template key. Defaults to undef (not defined/default does not exist).</p>
+
+</li>
+<li><p><b>max</b> The maximum number of values to enter for this template key. Defaults to undef (not defined/default does not exist). Multiple values on a template key equates to an array.</p>
+
+</li>
+<li><p><b>comment</b> Textual comment upon the constraint that explain what is expected in a normal and understandable language. Defaults to undef (not defined/default does not exist).</p>
+
+</li>
+</ul>
+
+<p>Return value is 1 upon success, 0 upon failure. Check the error()-method for more information on a potential error.</p>
+
+<h2 id="unassignEntityTemplate">unassignEntityTemplate()</h2>
+
+<p>Removes template assignment of given type on entity. A wrapper around assignEntityTemplate.</p>
+
+<p>Input is entity id and entity type. See assignEntityTemplate()-method for more information.</p>
+
+<p>Return value is 1 on success, 0 on failure. Check the error()-method for more information.</p>
+
+<h2 id="updateEffectivePerms">updateEffectivePerms()</h2>
+
+<p>Updates the PERM_EFFECTIVE_* tables to keep PERM_EFFECTIVE up to date.</p>
+
+<p>No input parameters</p>
+
+<p>Return 1 on success, undef on failure.</p>
+
+<h2 id="updateEffectivePermsConditional">updateEffectivePermsConditional()</h2>
+
+<p>Calls updateEffectivePerms() if mtime of the source tables differ from mtime of PERM_EFFECTIVE_PERMS.</p>
+
+<p>Updates mtime for PERM_EFFECTIVE_PERMS to the mtime of the sources and return true on success.</p>
+
+<p>Return undef on failure.</p>
+
+<h2 id="useDBItransaction">useDBItransaction()</h2>
+
+<p>This methods returns a DBItransaction instance that keep track of who started a transaction, committing transaction and handling rollback and so no with minimal code in the methods: useDBItransaction()</p>
+
+<p>The methods requires no input. Returns a DBItransaction-instance.</p>
+
+<p>See the DBItransaction module for more information.</p>
+
+
+</body>
+
+</html>
+
+

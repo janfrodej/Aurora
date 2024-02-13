@@ -1,0 +1,272 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#addEntityMember">addEntityMember()</a></li>
+      <li><a href="#deleteEntity">deleteEntity()</a></li>
+      <li><a href="#enumEntities">enumEntities()</a></li>
+      <li><a href="#enumPermTypesByEntityType">enumPermTypesByEntityType()</a></li>
+      <li><a href="#getEntitiesByPermAndType">getEntitiesByPermAndType()</a></li>
+      <li><a href="#getEntityAggregatedPerm">getEntityAggregatedPerm()</a></li>
+      <li><a href="#getEntityMembers">getEntityMembers()</a></li>
+      <li><a href="#getEntityMetadataByPerm">getEntityMetadataByPerm()</a></li>
+      <li><a href="#getEntityName">getEntityName()</a></li>
+      <li><a href="#getEntityPerm">getEntityPerm()</a></li>
+      <li><a href="#getEntityPermsOnObject">getEntityPermsOnObject()</a></li>
+      <li><a href="#getEntityTaskAssignments">getEntityTaskAssignments()</a></li>
+      <li><a href="#moveEntity">moveEntity()</a></li>
+      <li><a href="#removeEntityMember">removeEntityMember()</a></li>
+      <li><a href="#setEntityName">setEntityName()</a></li>
+      <li><a href="#setEntityPerm">setEntityPerm()</a></li>
+      <li><a href="#setEntityTaskAssignments">setEntityTaskAssignments()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>MethodsReuse</code> Module with shared REST-server methods that are reused by the various Methods-files.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use MethodsReuse;</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Collection of shared REST-server methods that are reused by the various Methods-files.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="addEntityMember">addEntityMember()</h2>
+
+<h2 id="deleteEntity">deleteEntity()</h2>
+
+<p>Deletes a given entity</p>
+
+<p>Accepts the following input: content, query, db, userid, cfg, log (these comes from the REST-server and are just passed on by the caller).</p>
+
+<p>This method uses these parameters from query input: id, type. Id is entity ID from the AURORA database. Type is the textual entity type that the entity Id must fulfill in order to be allowed to delete. It is also used to check the TYPE_DELETE-permission on the entity.</p>
+
+<p>Returns a HASH-reference with the success/data from the method as any other REST-method.</p>
+
+<h2 id="enumEntities">enumEntities()</h2>
+
+<p>Enumerate entities of a given type.</p>
+
+<p>Accepts the following input: content, query, db, userid, cfg, log (these comes from the REST-server and are just passed on by the caller).</p>
+
+<p>This method uses these parameters from query input: type, perm. Type is the textual entity type of the entity-types you want to enumerate. Perm is the permission that the user in the userid-input above must fulfill on the entities being enumerated.</p>
+
+<p>Returns a HASH-reference with the success/data from the method as any other REST-method.</p>
+
+<h2 id="enumPermTypesByEntityType">enumPermTypesByEntityType()</h2>
+
+<p>Enumerate permission types for a given entity type.</p>
+
+<p>Accepts the following input: content, query, db, userid, cfg, log (these comes from the REST-server and are just passed on by the caller).</p>
+
+<p>This method uses these parameters from query input: type. Type is the entity type to enumerate the permission types for.</p>
+
+<p>Returns a HASH-reference with the success/data from the method as any other REST-method.</p>
+
+<h2 id="getEntitiesByPermAndType">getEntitiesByPermAndType()</h2>
+
+<p>Get entities by permission- and type.</p>
+
+<p>Accepts the following input: content, query, db, userid, cfg, log (these comes from the REST-server and are just passed on by the caller).</p>
+
+<p>This method uses these parameters from query input: root, perm, permtype, entitytype. Root is the entity id of where to start in the entity tree to find entities. Perm is the LIST-reference of textual permission types to match. Permtype is the logical operator to use on the Perm-parameter - either &quot;ANY&quot; (logical OR) or &quot;ALL&quot; (logical AND).</p>
+
+<p>Returns a HASH-reference with the success/data from the method as any other REST-method.</p>
+
+<h2 id="getEntityAggregatedPerm">getEntityAggregatedPerm()</h2>
+
+<p>Get an entity&#39;s aggregated permissions.</p>
+
+<p>Accepts the following input: content, query, db, userid, cfg, log (these comes from the REST-server and are just passed on by the caller).</p>
+
+<p>This method uses these parameters from query input: id, user, type, Id is the entity to get the aggregated perms on. User is the user entity id from the AURORA database that the we want the aggregated permissions to be valid for. If none is given or the user id is invalid, it will default to the id in userid (logged in user in the REST-server). Type is the texatual entity type to get permissions on (used for checking type, messages etc.).</p>
+
+<p>Returns a HASH-reference with the success/data from the method as any other REST-method.</p>
+
+<h2 id="getEntityMembers">getEntityMembers()</h2>
+
+<p>Get members of an entity.</p>
+
+<p>Accepts the following input: content, query, db, userid, cfg, log (these comes from the REST-server and are just passed on by the caller).</p>
+
+<p>This method uses these parameters from query input: id, type. Id is the entity ID from the AURORA database to get the members of. Type is the textual entity type that the Id is to conform to (used for checking type, messages etc).</p>
+
+<p>Returns a HASH-reference with the success/data from the method as any other REST-method.</p>
+
+<h2 id="getEntityMetadataByPerm">getEntityMetadataByPerm()</h2>
+
+<p>Get an entity&#39;s metadata if permission is fulfilled.</p>
+
+<p>Accepts the following input: content, query, db, userid, cfg, log (these comes from the REST-server and are just passed on by the caller).</p>
+
+<p>This method uses these parameters from query input: id, perm, permtype. Id is the entity ID from the AURORA database to get the metadata of. Perm is a LIST-reference of the permission(s) that must be fulfilled by the userid-input for metadata to be returned. Permtype is the logical operator to use on the permission(s) set in the Perm-parameter. It defaults to &quot;ALL&quot;. Valid values are &quot;ALL&quot; (logical AND) or &quot;ANY&quot; (logical OR).</p>
+
+<p>Returns a HASH-reference with the success/data from the method as any other REST-method.</p>
+
+<h2 id="getEntityName">getEntityName()</h2>
+
+<p>Get an entity&#39;s display name.</p>
+
+<p>Accepts the following input: content, query, db, userid, cfg, log (these comes from the REST-server and are just passed on by the caller).</p>
+
+<p>This method uses these parameters from query input: id, type. Id is the entity ID from the AURORA database that one wants to get the display name of. Type is the textual entity type that the Id-parameter must fulfill (used for checking, messages etc.).</p>
+
+<p>Returns a HASH-reference with the success/data from the method as any other REST-method.</p>
+
+<h2 id="getEntityPerm">getEntityPerm()</h2>
+
+<p>Get a users permissions on an entity.</p>
+
+<p>Accepts the following input: content, query, db, userid, cfg, log (these comes from the REST-server and are just passed on by the caller).</p>
+
+<p>This method uses these parameters from query input: id, user, type. Id is the entity ID from the AURORA database that one wants to get the permissions on. User is the entity ID from the AURORA database that one wants to check the permissions of. If not specified or invalid, it will default to the userid-input (logged on user in the REST-server. Type is the textual entity type that the Id-parameter must fulfill (used for checking, messages etc.).</p>
+
+<p>Returns a HASH-reference with the success/data from the method as any other REST-method. The returned permission(s) are in the keys &quot;grant&quot; and &quot;deny&quot;.</p>
+
+<h2 id="getEntityPermsOnObject">getEntityPermsOnObject()</h2>
+
+<p>Get entities permission(s) on an object.</p>
+
+<p>Accepts the following input: content, query, db, userid, cfg, log (these comes from the REST-server and are just passed on by the caller).</p>
+
+<p>This method uses these parameters from query input: id, type. Id is the entity ID from the AURORA database that one wants to get the permission(s) of (object). Type is the textual entity type that the Id-parameter must fulfill (used for checking, messages etc.). This method returns all permission of an object on all entities that have permission(s) set on it.</p>
+
+<p>Returns a HASH-reference with the success/data from the method as any other REST-method.</p>
+
+<p>The return structure comes in the sub-hash called &quot;perms&quot; as follows:</p>
+
+<pre><code>perms =&gt; (
+           entityid1 =&gt; { 
+                          inherit =&gt; [&quot;PERMISSIONa&quot; .. &quot;PERMISSIONz&quot;],
+                          grant =&gt; [&quot;PERMISSIONa&quot; .. &quot;PERMISSIONz&quot;],
+                          deny =&gt; [&quot;PERMISSIONa&quot; .. &quot;PERMISSIONz&quot;],
+                          perm =&gt; [&quot;PERMISSIONa&quot; .. &quot;PERMISSIONz&quot;]
+                        },
+           .
+           .
+           entityidN =&gt; { .. }
+         )</code></pre>
+
+<h2 id="getEntityTaskAssignments">getEntityTaskAssignments()</h2>
+
+<p>Get task assignments of a given entity on COMPUTER-entities.</p>
+
+<p>Accepts the following input: content, query, db, userid, cfg, log (these comes from the REST-server and are just passed on by the caller).</p>
+
+<p>This method uses these parameters from query input: id, type. Id is the entity ID from the AURORA database that one wants to get the assignments on. Type is the textual entity type that the Id-parameter must fulfill (used for checking, messages etc.).</p>
+
+<p>Returns a HASH-reference with the success/data from the method as any other REST-method.</p>
+
+<p>The return structure has the following format:</p>
+
+<pre><code>assignments =&gt; (
+                 COMPUTERID1 =&gt; [TASKIDa .. TASKIDz]                    
+                 .
+                 .
+                 COMPUTERIDN =&gt; [TASKIDa .. TASKIDz]
+               )</code></pre>
+
+<h2 id="moveEntity">moveEntity()</h2>
+
+<p>Move an entity in the entity tree.</p>
+
+<p>Accepts the following input: content, query, db, userid, cfg, log (these comes from the REST-server and are just passed on by the caller).</p>
+
+<p>This method uses these parameters from query input: id, parent, type, parenttype. Id is the entity ID from the AURORA database that one wants to move. Parent is the entity ID from the AURORA database which is to be the new parent of the entity. Type is the textual entity type that the Id-parameter must fulfill (used for checking, messages etc.). Parenttype is the textual entity type that the parent-parameter must fulfill (used for checking, messages etc.).</p>
+
+<p>In order for this method to success the user in userid must have the [type]_MOVE-permission on the current parent and the [parenttype]_CREATE-permission on the new parent that the entity is being moved to.</p>
+
+<p>Returns a HASH-reference with the success/data from the method as any other REST-method. Returns 1 upon success, 0 upon failure (err).</p>
+
+<h2 id="removeEntityMember">removeEntityMember()</h2>
+
+<p>Remove member(s) from a given entity.</p>
+
+<p>Accepts the following input: content, query, db, userid, cfg, log (these comes from the REST-server and are just passed on by the caller).</p>
+
+<p>This method uses these parameters from query input: object, subject, type. Object is the entity id from the AURORA database of which to remove member(s) from. Subject is the LIST-reference of entity(ies) Id from the AURORA database to remove as members of the given object. Type is textual type that the object must meet (used for checking, messages etc.).</p>
+
+<p>In order for the method to work, the user in userid needs to have the [type]_MEMBER_ADD-permission on the object-entity.</p>
+
+<p>Returns a HASH-reference with the success/data from the method as any other REST-method. Returns 1 upon success, 0 upon failure (err).</p>
+
+<h2 id="setEntityName">setEntityName()</h2>
+
+<p>Sets the entity&#39;s display name.</p>
+
+<p>Accepts the following input: content, query, db, userid, cfg, log (these comes from the REST-server and are just passed on by the caller).</p>
+
+<p>This method uses these parameters from query input: id, type, name, duplicates. Id is the entity id from the AURORA database of which one wants to set the display name of. Type is the textual entity type that the entity id must fulfill (used for checking, messages etc.). Name is the display name that one wants to set on the entity. Duplicates decides if it is allowed with duplicate names on the given entity type. Valid values for duplicates are undef (no duplicates in entire tree), 0 (no duplicates within same group) or 1 (duplicates ok).</p>
+
+<p>Returns a HASH-reference with the success/data from the method as any other REST-method. Returns 1 upon success, 0 upon failure (err). The new and cleaned name is returned in the &quot;name&quot; key.</p>
+
+<h2 id="setEntityPerm">setEntityPerm()</h2>
+
+<p>Sets an entity&#39;s permissions.</p>
+
+<p>Accepts the following input: content, query, db, userid, cfg, log (these comes from the REST-server and are just passed on by the caller).</p>
+
+<p>This method uses these parameters from query input: id, user, grant, deny, operation, type. Id is the entity id from the AURORA database of which one wants to set the permissions on (object). User is the entity id of the subject of which to set the permission(s) for. If invalid or none is specified, it will default to userid (logged in user of the REST-server). Grant is a LIST-reference of the textual permission(s) to grant. Deny is a LIST-reference of the textual permission(s) to deny. Operation is applying logic to use when setting the permission(s). Valid values are: replace, append or remove. Append is default. Type is the textual entity type of the entity to set the permissions on (used for checking, messages etc.)</p>
+
+<p>In order for the method to succeed the user needs to have the [type]_PERM_SET-permission on the entity in question and he needs to have all the permissions that he is trying to set himself on that entity (either directly or through inheritance). One can only give away what one oneself has.</p>
+
+<p>Returns a HASH-reference with the success/data from the method as any other REST-method. Returns 1 upon success, 0 upon failure (err). The resulting permissions set are returned in the keys &quot;grant&quot; and &quot;deny&quot; as LIST-references of textual permissions.</p>
+
+<h2 id="setEntityTaskAssignments">setEntityTaskAssignments()</h2>
+
+<p>Set assignments of tasks on computers for a given entity.</p>
+
+<p>Accepts the following input: content, query, db, userid, cfg, log (these comes from the REST-server and are just passed on by the caller).</p>
+
+<p>This method uses these parameters from query input: id, type, assigns. Id is the entity id from the AURORA database of which one wants to set the task assignments of. Type is the textual entity type that the entity must fulfill (for checking, message etc.). Assigns is a HASH-reference of task assignments for computers to set on the given entity. See the getEntityTaskAssignments()-method for its structure.</p>
+
+<p>In order for the method to succeed the user in userid needs to have the [type]_CHANGE-permission on the entity in question. Please also note that this method is destructive and all existing assignments are replaced with the new one(s).</p>
+
+<p>Returns a HASH-reference with the success/data from the method as any other REST-method. Returns 1 upon success, 0 upon failure (err). The set assignments are returned in the key &quot;assignments&quot;.</p>
+
+
+</body>
+
+</html>
+
+

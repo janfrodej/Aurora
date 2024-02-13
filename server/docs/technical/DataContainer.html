@@ -1,0 +1,241 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#reset">reset()</a></li>
+      <li><a href="#open">open()</a></li>
+      <li><a href="#opened">opened()</a></li>
+      <li><a href="#close">close()</a></li>
+      <li><a href="#set">set()</a></li>
+      <li><a href="#get">get()</a></li>
+      <li><a href="#load">load()</a></li>
+      <li><a href="#save">save()</a></li>
+      <li><a href="#delete">delete()</a></li>
+      <li><a href="#mode">mode()</a></li>
+      <li><a href="#name">name()</a></li>
+      <li><a href="#location">location()</a></li>
+      <li><a href="#error">error()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><b>DataContainer</b> - Placeholder class to represent various ways of loading and storing data.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use DataContainer;
+
+my $dc=DataContainer-&gt;new();
+
+$dc-&gt;load(&quot;whatever&quot;);
+
+$dc-&gt;save(&quot;something&quot;);</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>A collection of functions to handle the conversion to and from unixtime and iso8601-time.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Instantiates the class</p>
+
+<p>The method supports the following parameters:</p>
+
+<ul>
+
+<li><p><b>location</b> The location of the data. SCALAR. Only has meaning to the inheriting class.</p>
+
+</li>
+<li><p><b>name</b> The name of the data container. SCALAR. Only has meaning to the inheriting class.</p>
+
+</li>
+<li><p><b>collection</b> The collection instance to use for this DataContainer. See the ContentCollection-class&#39;s documentation.</p>
+
+</li>
+</ul>
+
+<p>Returns an instanciated class upon success.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="reset">reset()</h2>
+
+<p>Reset the data that has been loaded into the DataContainer.</p>
+
+<p>No input accepted.</p>
+
+<p>Returns 1.</p>
+
+<h2 id="open">open()</h2>
+
+<p>Open the DataContainer for reading and/or saving.</p>
+
+<p>Accepts only one parameter &quot;name&quot;. SCALAR. Optional. If it is specified it overrides the name specified to the constructor. Name only has meaning to the overriding sub-class.</p>
+
+<p>Return 1 upon success, 0 upon failure. Please check the error()-method upon failure.</p>
+
+<p>This is a placeholder method that is to be overridden and given meaning by the inheriting sub-class.</p>
+
+<h2 id="opened">opened()</h2>
+
+<p>Returns if the DataContainer has been opened or not?</p>
+
+<p>Accepts no input parameters.</p>
+
+<p>Returns 1 if opened, 0 if not.</p>
+
+<h2 id="close">close()</h2>
+
+<p>Close the DataContainer.</p>
+
+<p>Accepts only one optional parameter &quot;name&quot; SCALAR. If it is specified it overrides the name specified to the constructor. Name only has meaning to the overriding/ inheriting class.</p>
+
+<p>Returns 1 upon success, 0 upon failure. Please check the error()-method upon failure.</p>
+
+<p>This is a placeholder method that is to be overridden and given meaning by the inheriting sub-class.</p>
+
+<h2 id="set">set()</h2>
+
+<p>Sets the ContentCollection instance of the object.</p>
+
+<p>Input is the ContentCollection instance to set.</p>
+
+<p>Returns 1 upon success, 0 upon failure.</p>
+
+<h2 id="get">get()</h2>
+
+<p>Get the ContentCollection instance for the object.</p>
+
+<p>No input is accepted.</p>
+
+<p>Returns the ContentCollection-instance. If it has not been set at any point it returns a new ContentCollection-instance.</p>
+
+<h2 id="load">load()</h2>
+
+<p>Load data into the DataContainer using the ContentCollection-instance.</p>
+
+<p>Accepts one parameter &quot;name&quot;. SCALAR. Optional. If not specified defaults to the name-parameter of the constructor. The meaning of &quot;name&quot; is up to the inheriting sub-class.</p>
+
+<p>Returns 1 upon success, 0 upon failure. Please check the error()-method for more information upon failure.</p>
+
+<p>This is a placeholder class and is to be overridden by the inheriting sub-class.</p>
+
+<h2 id="save">save()</h2>
+
+<p>Save data to the DataContainer using the ContentCollection-instance.</p>
+
+<p>Accepts one parameter &quot;name&quot;. SCALAR. Optional. If not specified defaults to the name-parameter of the constructor. The meaning of &quot;name&quot; is up to the inheriting sub-class.</p>
+
+<p>Returns 1 upon success, 0 upon failure. Please check the error()-method upon failure.</p>
+
+<p>This is a placeholder class and is to be overridden by the inheriting sub-class.</p>
+
+<h2 id="delete">delete()</h2>
+
+<p>Delete data from the DataContainer.</p>
+
+<p>Accepts one parameter &quot;name&quot;. SCALAR. Optional. If not specified defaults to the name-parameter of the constructor. The meaning of &quot;name&quot; is up to the inheriting class.</p>
+
+<p>Returns 1 upon success, 0 upon failure. Please check the error()-method upon failure.</p>
+
+<p>This is a placeholder class and is to be overridden by the inheriting sub-class.</p>
+
+<h2 id="mode">mode()</h2>
+
+<p>Get or set the mode of the DataContainer.</p>
+
+<p>Accepted input is the parameter &quot;mode&quot; that specifies the mode to set.</p>
+
+<p>The following mode-constants are acceptable:</p>
+
+<ul>
+
+<li><p><b>$MODE_READ</b> (only reading allowed)</p>
+
+</li>
+<li><p><b>$MODE_READWRITE</b> (read/write allowed)</p>
+
+</li>
+<li><p><b>$MODE_OVERWRITE</b> (overwrite any existing file)</p>
+
+</li>
+<li><p><b>$MODE_APPEND</b> (add data to the DataContainer, do not overwrite)</p>
+
+</li>
+</ul>
+
+<p>Returns the value of the mode set if success, 0 upon failure. Please check the error()-method for more information upon any failure.</p>
+
+<h2 id="name">name()</h2>
+
+<p>Get or set the name of the DataContainer.</p>
+
+<p>Accepts only one parameter. SCALAR. Optional. If one parameter is specified, it will be interpreted as a set-operation.</p>
+
+<p>Returns 1 upon success setting the name, or the name of the DataContainer upon success getting it.</p>
+
+<h2 id="location">location()</h2>
+
+<p>Gets or sets the location parameter.</p>
+
+<p>Accepts only one parameter. SCALAR. Optional. If a parameter is specified, it will be interpreted as a set-operation.</p>
+
+<p>Returns 1 upon success setting the location, or the location of the DataContainer upon success getting it.</p>
+
+<h2 id="error">error()</h2>
+
+<p>Gets the last error that the package/instance did.</p>
+
+<p>Accepts no input.</p>
+
+<p>Upon success returns the last known error as a SCALAR.</p>
+
+
+</body>
+
+</html>
+
+

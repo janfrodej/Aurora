@@ -1,0 +1,147 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#FUNCTIONS">FUNCTIONS</a>
+    <ul>
+      <li><a href="#createDistLogEntry">createDistLogEntry()</a></li>
+      <li><a href="#parseDistLogEntry">parseDistLogEntry()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>DistLogEntry</code> Module to manipulate distribution log entries.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>use DistLog;
+
+my $entry=createDistLogEntry(event=&gt;&quot;REMOVE&quot;,
+                             from=&gt;&quot;Store::RSyncSSH&quot;,
+                             fromid=&gt;1234,
+                             fromhost=&gt;1.2.3.4,
+                             fromhostid=&gt;0,
+                             fromhostname=&gt;&quot;MyStorageServer&quot;;
+                             fromloc=&gt;&quot;/somewhere/over/the/rainbow&quot;,
+                             uid=&gt;56
+                            );
+
+my $ref=parseDistLogEntry($entry);</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>Module creating and manipulating distribution log entries in the correct way. createDistLogEntry is exported as default.</p>
+
+<h1 id="FUNCTIONS">FUNCTIONS</h1>
+
+<h2 id="createDistLogEntry">createDistLogEntry()</h2>
+
+<p>create a proper distribution log entry based upon a set of parameter input.</p>
+
+<p>Possible parameters are:</p>
+
+<ul>
+
+<li><p><b>event</b> Defines the event-type of the log entry. SCALAR. Optional. Defaults to &quot;TRANSFER&quot;. Valid values are &quot;TRANSFER&quot;, &quot;REMOVE&quot; and &quot;RESURRECT&quot;.</p>
+
+</li>
+<li><p><b>sc</b> StoreCollection entity ID. SCALAR. Optional. Defaults to 0 (unknown/invalid).</p>
+
+</li>
+<li><p><b>from</b> From-class of the event. SCALAR. Optional. Defaults to &quot;FILEINTERFACE&quot;. This should be the textual name of the Store-class that was used for the event. Some special class-names are allowed: FILEINTERFACE and UNKNOWN. FILEINTERFACE is not a Store-class, but signifies the local fileinterface of AURORA. UNKNOWN means that the from-class of the event is unknown, typically only used in the case of manual datasets were the data is put in place manually by the user.</p>
+
+</li>
+<li><p><b>fromid</b> The entity id of the from-class of the event. SCALAR. Optional. Defaults to -6 (FILEINTERFACE). Valid values are usually anything above 0 that corresponds with an entity in the AURORA database. Lower values than zero are only used to signify special from-entities that are not Store-classes, such as FILEINTERFACE (-6) and UNKNOWN (0).</p>
+
+</li>
+<li><p><b>fromhost</b> Host-address/DNS of the from-host that the event is working with. SCALAR. Optional. Defaults to blank string.</p>
+
+</li>
+<li><p><b>fromhostid</b> Entity ID of the from-host, if any. SCALAR. Optional. Defaults to 0 (UNKNOWN). Valid values are entity IDs over 0 from the AURORA database.</p>
+
+</li>
+<li><p><b>fromhostname</b> The textual name of the from-host, if any. SCALAR. Optional. Defaults to blank string.</p>
+
+</li>
+<li><p><b>fromloc</b> The location that the event worked with on the from-host. SCALAR. Optional. Defaults to 0. The location string only have meaning for the from-class being used. It can be an integer or a string, depending upon circumstance.</p>
+
+</li>
+<li><p><b>to</b> The to-class being used with the event. SCALAR. Optional. Defaults to FILEINTERFACE. This should be the textual name of the Store-class in the to-point. Some special class-names are allowed: FILEINTERFACE.</p>
+
+</li>
+<li><p><b>toid</b> The entity id of the to-class of the event. SCALAR. Optional. Defaults to -6 (FILEINTERFACE). Valid values are usually anything above 0 that corresponds with an entity in the AURORA database. Lower values than zero are only used to signify special to-entities that are not Store-classes, such as FILEINTERFACE (-6).</p>
+
+</li>
+<li><p><b>tohost</b> Host-address/DNS of the to-host that the event is working with. SCALAR. Optional. Defaults to blank string.</p>
+
+</li>
+<li><p><b>tohostid</b> Entity ID of the to-host, if any. SCALAR. Optional. Defaults to 0 (UNKNOWN). Valid values are entity IDs over 0 from the AURORA database.</p>
+
+</li>
+<li><p><b>tohostname</b> The textual name of the to-host, if any. SCALAR. Optional. Defaults to blank string.</p>
+
+</li>
+<li><p><b>toloc</b> The location that the event worked with on the to-host. SCALAR. Optional. Defaults to 0. The location string only have meaning for the to-class being used. It can be an integer or a string, depending upon circumstance.</p>
+
+</li>
+</ul>
+
+<p>Returns a ready formatted string of the distribution log entry that can be given to the Log-service of AURORA upon success. Blank string upon failure.</p>
+
+<p>The formatted string is in JSON format and looks like this:</p>
+
+<pre><code>[
+   STRING, (SHORT-FORM INFO of the distlog event)
+   {HASH} (HASH with all the key-value pairs of the event)
+]</code></pre>
+
+<h2 id="parseDistLogEntry">parseDistLogEntry()</h2>
+
+<p>Parses a textual distlog entry that has been created with the createDistLogEntry()-method.</p>
+
+<p>Input parameter: DistLog-string</p>
+
+<p>Returns the parsed JSON-data as a ARRAY-reference upon success, undef upon failure.</p>
+
+<p>The format of the ARRAY-reference is the same as the JSON format, mentioned in createDistLogEntry.</p>
+
+
+</body>
+
+</html>
+
+

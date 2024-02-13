@@ -1,0 +1,44 @@
+# Copyright (C) 2024 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+#
+# This file is part of AURORA, a system to store and manage science data.
+#
+# AURORA is free software: you can redistribute it and/or modify it under 
+# the terms of the GNU General Public License as published by the Free 
+# Software Foundation, either version 3 of the License, or (at your option) 
+# any later version.
+#
+# AURORA is distributed in the hope that it will be useful, but WITHOUT ANY 
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with 
+# AURORA. If not, see <https://www.gnu.org/licenses/>. 
+#
+# settings for the AURORA WEB-Client
+#
+aurora.rest.server    : "myauroraserver.mydomain:9393"
+
+# some general settings
+www.domain              : "mydomain"
+www.base                : "https://mydomain"
+www.cookiename          : "MyDomainAuroraWebClient"
+www.cookie.timeout      : 31536000
+www.timeout             : 36000
+www.tree.timeout        : 120
+www.makeannouncements   : true
+www.helppages           : "/docs/user/"
+www.webmaster           : "orakel@ntnu.no"
+www.maintenance         : false
+
+
+# dataset cache in Manage-view
+dataset.cache.size      : 100000
+
+# oauth login details
+oauth.script            : "/feide.cgi"
+
+# gatekeeper ipv4 resolver
+gatekeeper.ipv4resolver          : "https://ipv4resolverdomain:8055"
+
+privacy.www.questions            : "https://mydomain/whereever/questions.html"
+privacy.www.ombud                : "https://mydomain/whereever/contacts.html"

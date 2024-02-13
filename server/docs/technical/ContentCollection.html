@@ -1,0 +1,150 @@
+<!--
+	Copyright (C) 2019-2022 Jan Frode Jæger <jan.frode.jaeger@ntnu.no>, NTNU, Trondheim, Norway
+	Copyright (C) 2019-2022 Bård Tesaker <bard.tesaker@ntnu.no>, NTNU, Trondheim, Norway
+
+       This file is part of AURORA, a system to store and manage science data.
+
+       AURORA is free software: you can redistribute it and/or modify it under
+       the terms of the GNU General Public License as published by the Free
+       Software Foundation, either version 3 of the License, or (at your option)
+       any later version.
+
+       AURORA is distributed in the hope that it will be useful, but WITHOUT ANY
+       WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+       FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+       You should have received a copy of the GNU General Public License along with
+       AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CONSTRUCTOR">CONSTRUCTOR</a>
+    <ul>
+      <li><a href="#new">new()</a></li>
+    </ul>
+  </li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#reset">reset()</a></li>
+      <li><a href="#add">add()</a></li>
+      <li><a href="#remove">remove()</a></li>
+      <li><a href="#type">type()</a></li>
+      <li><a href="#resetnext">resetnext()</a></li>
+      <li><a href="#next">next()</a></li>
+      <li><a href="#size">size()</a></li>
+      <li><a href="#error">error()</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p><code>ContentCollection</code> - Class to hold a collection of Content-instances and manipulation of that collection.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>my $content=Content::JSON-&gt;new();
+my $coll=ContentCollection-&gt;new(type=&gt;$content);
+
+$coll-&gt;resetnext();
+while (my $c=$coll-&gt;next()) {
+   my $hash=$c-&gt;decode();
+}
+
+$coll-&gt;size();
+$coll-&gt;type();</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>A class to hold a collection of Content-instances of a given type (no mixing). The type is set upon instantiation. It has methods to iterate over the contents of the collection and add- or remove from it.</p>
+
+<h1 id="CONSTRUCTOR">CONSTRUCTOR</h1>
+
+<h2 id="new">new()</h2>
+
+<p>Constructor of ContentCollection-class.</p>
+
+<p>Input is type-parameter that sets the Content-class type to use in the collection. The type parameter must be a Content-class.</p>
+
+<p>Creates ContentCollection instance. If wrong or no type of content-instance is specified, an empty Content-class is created.</p>
+
+<p>After Content-class type has been saved it is expected that all additions of Content-classes are of the same type. If one wants to change type one needs to call the reset()-method (see description).</p>
+
+<p>Return value is the instance of ContentCollection.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="reset">reset()</h2>
+
+<p>Resets the ContentCollection list of Content-instances.</p>
+
+<p>No input is required, but if one wants one can add an instance of a Content-class. The ContentCollection will then expect all future classes that are added to be of this type.</p>
+
+<p>If no Content-class is specified the reset()-method keeps the already set Content-class type.</p>
+
+<p>Return value is 1 for success.</p>
+
+<h2 id="add">add()</h2>
+
+<p>Adds a Content-class instance to the ContentCollection list.</p>
+
+<p>Return value is 1 upon success and 0 upon failure. Please check the error()-method to establish exact reason.</p>
+
+<h2 id="remove">remove()</h2>
+
+<p>Removes a Content-class instance from the ContentCollection list.</p>
+
+<p>A parameter that gives the Content-class instance is expected as input. If no input is given or wrong Content-class type it will result in failure.</p>
+
+<p>Return valyes are 1 upon success and 0 upon failure. Please call the error()-method to establish the full reason.</p>
+
+<h2 id="type">type()</h2>
+
+<p>Returns the Content-class type that the ContentCollection consists of or expects to be used.</p>
+
+<p>No input required.</p>
+
+<h2 id="resetnext">resetnext()</h2>
+
+<p>Resets the next()-methods position counter, so that one can start giving out Content-class from the beginning of the list.</p>
+
+<p>Return value is 1 for success.</p>
+
+<h2 id="next">next()</h2>
+
+<p>Retrives the next Content-class instance from the ContentCollection list.</p>
+
+<p>Return the Content-class instance upon success and undef upon failure.</p>
+
+<h2 id="size">size()</h2>
+
+<p>No input needed. Returns the number of Content-class elements in the collection.</p>
+
+<h2 id="error">error()</h2>
+
+<p>Returns the last error message from the ContentCollection-class.</p>
+
+<p>No input is required.</p>
+
+
+</body>
+
+</html>
+
+
