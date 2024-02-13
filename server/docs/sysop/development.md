@@ -44,6 +44,8 @@ whole package needed to setup a complete AURORA-system on your own computer.
 
 In order to install these dockers, you do the following:
 
+1. Install necesary packages to use Docker on your system. For Ubuntu 22.04 this means the package 
+"docker.io". Install on Ubuntu by running: "sudo apt install docker.io".
 1. Have the AURORA git code/repo sync available in some folder on your computer.
 1. Create a folder somewhere on your computer (eg. /home/USER/aurora).
 1. Copy the aurora_dockers.tar.gz to the new folder.
@@ -58,13 +60,15 @@ In order to install these dockers, you do the following:
 1. Answer all the questions asked, but be careful to get the working folder/AURORA docker root 
 location (the one you created for the tar-set above)`and the AURORA git code locations correctly. These 
 locations are written into the configuration of the dockers, so it needs to be correct. Also say yes 
-to all patching and creation of FileInterface structure as well as other folder areas needed.
+to all patching and creation of FileInterface structure as well as other folder areas needed. Also ensure 
+that the docker network and volume is created as needed. Several of the tasks being executed needs sudo 
+permissions. The docker volume is used by the database for its files.
 1. Start the aurora-db container by going into the aurora-db-folder and cat the ref.txt file:
 
         cd aurora-db
         cat ref.txt
 
-1. Write the command for running the container as referenced in the ref.txt-file.
+1. Write the command for running the container as referenced in the ref.txt-file (starts with "sudo docker run").
 1. Inside the aurora-db container, do the following:
 
         mysql
@@ -93,4 +97,21 @@ AURORA)
 vice and store-service).
 - aurora-web (the server with apache2 and the aurora web-client)
 
-The AURORA web-client should upon starting the aurora-web docker image be available through https://10.0.10.12 on your host machine or alternately in addition https://auroradev if you added that to your hosts-file. Please do not mess around with this name, because it is also used for configurations, web certificates and such. The certificates used are self-signed, so accept this in your browser.
+Please note that the ref.txt-files within each of the container folders have two docker commands. The first is to 
+build the docker image (which has already been done by the config-script) and the second is to run the docker 
+container.
+
+The AURORA web-client should upon starting the aurora-web docker image be available through https://10.0.10.12 on your host machine or alternately in addition https://auroradev if you added that to your hosts-file. Please do not mess around with this name, because it is also used for configurations, web certificates and such.
+
+When you attempt to run the Web-client by accessing the web-server on 10.0.10.12, please note that you will have to add
+exceptions to the certificates being offered. They are self-signed and part of the docker distribution. There are two 
+stages to this. The first is to accept the certificate for the aurora-server site itself (10.0.10.12/auroradev) and the 
+second is to accept the certificate of the REST-server (10.0.10.11). For this to happen, it might be an advantage in 
+several browsers to either add this exception manually in the site certificate store or to attempt to contact both 
+the web- and rest-servers by writing https://auroradev and https://10.0.10.11:9393 respectively in the address box 
+of the browser and then accept an exception. Without these security exceptions added, you will not be able to serve 
+the web-client and/or the rest-server. The AURORA web-client relies on the AURORA REST-server to do all its tasks.
+
+When you change the code, remember that services needs to be restarted or alternately exit one of the dockers and 
+start the docker again. This is especially something to consider when changing the code for the aurora-server 
+container.
