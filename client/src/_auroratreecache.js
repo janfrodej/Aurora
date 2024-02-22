@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License along with
 // AURORA. If not, see <https://www.gnu.org/licenses/>.
 //
-// class to cache entity tree in memory and read from AURORA
-// REST-server when needed
+// Description: Class to cache entity tree in memory and read from AURORA REST-server when needed
+//
 import { AuroraDataLoader } from "./_auroradataloader";
 
 export class AuroraTreeCache {

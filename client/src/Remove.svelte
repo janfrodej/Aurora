@@ -14,6 +14,8 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+    Description: Handle and initiate an AURORA dataset removal process.
 -->
 <script context="module">
     // unique counter for instances of component
@@ -25,7 +27,7 @@
     let compname="Remove";
     // create a random id number of this instance of component
     let myrand = counter++;    
-    import { onMount } from "svelte/internal";
+    import { onMount } from "svelte";
     import { getConfig } from "./_config";    
     import { call_aurora } from "./_aurora.js";
     import { unixtime2ISO } from "./_iso8601";

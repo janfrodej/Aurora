@@ -14,6 +14,8 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+    Description: Show a tree arrangement based upon a set of folder data.
 -->
 <script>   
     import { unixtime2ISO } from "./_iso8601";

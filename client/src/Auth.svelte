@@ -14,6 +14,8 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+    Description: Handle changing an Authenticator-type's authentication credentials - ie. set a new password.
 -->
 <script> 
     import { getConfig } from "./_config";       

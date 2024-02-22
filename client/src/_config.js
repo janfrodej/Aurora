@@ -15,6 +15,9 @@
 // AURORA. If not, see <https://www.gnu.org/licenses/>.
 //
 // settings for the AURORA Web-client
+//
+// Description: Fetches the AURORA configuration file. Used by the whole AURORA application.
+//
 import YAML from 'yaml';
 
 // read config information from file

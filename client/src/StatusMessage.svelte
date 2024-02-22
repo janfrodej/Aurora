@@ -14,6 +14,8 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+    Description: Display a status message on screen when a statusmessage-event triggers.
 -->
 <script>  
     // Remember to define class statusmessage_colors in your css-file and include background-color and color.  

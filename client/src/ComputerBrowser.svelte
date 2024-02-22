@@ -14,6 +14,8 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+    Description: Browse a computer by calling the AURORA REST-server, selecting a file or folder.
 -->
 <script context="module">
     // unique counter for instances of component
