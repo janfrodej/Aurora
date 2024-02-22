@@ -30,3 +30,4 @@ it can be found here:
 - [Overview (general overview of how the AURORA-system is designed)](./overview/index.md)
 - [SysOp and DevOp (documentation for the system- and development operator, such as diagnostics, installation and development)](./sysop/index.md)
 - [Technical (REST-server method documentation and class-level documentation)](./technical/index.md)
+- [Technical Overview of the Svelte Web-Client](./webclient/index.md)
