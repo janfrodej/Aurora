@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License along with
 // AURORA. If not, see <https://www.gnu.org/licenses/>.
 //
+// Description: Global state data that are used across components. In this case only the selected route/which parts of the app to open and its parameteres are eventually stored here.
+//
 import { writable } from 'svelte/store'
 
 // page to go to

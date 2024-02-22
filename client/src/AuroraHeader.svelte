@@ -14,6 +14,8 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+    Description: Show the AURORA header visible throughout the entire application.
 -->
 <script type="ts">
   import { onMount } from 'svelte';

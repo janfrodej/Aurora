@@ -189,11 +189,14 @@ All entries in the "Manage Dataset" have a separate column for "Dataset ID". Thi
 
 Please also note that what choices are available in the drop-down menus in the "Manage Datasets" view (modify, retrieve or view) are entirely dependant upon what phase the dataset is in (open, closed, acquiring etc.) and what permissions the user has. To get more permissions than what you might already have - talk to the laboratory administrators or research group admin.
 
-The status-column show icons for the state of the dataset. The dataset is either in an open (orange, open padlock) or closed (green, closed and crossed out padlock) state. Furthermore the data of the dataset is either present locally in AURORA (green storage symbol) or not present locally in AURORA (red, crossed out storage symbol). By being present locally means that the data is stored in any of AURORAs storage areas. If they are not present locally, they might still exist somewhere else outside of AURORA.
-
-In addition there is a blue and gray symbol that says either "M" or "A" for Manual or Automated dataset type accordingly. This will quickly tell the user what way of acquiring/storing data on the dataset has been selected at the time of creating it. It will also tell the one if the dataset is still waiting for data to be put manually to it while being open, versus an automated dataset still working on acquiring the data for it. It will also show why eg a "close"-option is not available for an automated set beyond a permission issue, since manual closing is only available for manual datasets. Automated datasets are closed by AURORA when it is finished transferring data in the acquire-phase.
+The status-column show icons for the state of the dataset. The dataset is either in an open (orange, open padlock) or closed (gray, closed padlock) state. Furthermore the data of the dataset is either present locally in AURORA (gray folder symbol) or not present locally in AURORA (gray, crossed out folder symbol). By being present locally means that the data is stored in any of AURORAs storage areas. If they are not present locally, they might still exist somewhere else outside of AURORA.
 
 ![Manage Datasets Status Icons](../../media/aurora_svelte_manage_dataset_status_icons.png)
+
+
+In addition there is a automated symbol (gray, round arrow with a hour- and minute hand in the center) that are either crossed out or not. If it is crossed out, it is a manual dataset and if it not crossed out it is automated. This will quickly tell the user what way of acquiring/storing data on the dataset has been selected at the time of creating it. Because of this It will also tell the user if the dataset is still waiting for data to be put manually to it while being open, versus an automated dataset still working on acquiring the data for it. It will also show why eg a "close"-option is not available for an automated set beyond a permission issue, since manual closing is only available for manual datasets. Automated datasets are closed by AURORA when it is finished transferring data in the acquire-phase.
+
+![Manage Dataset Status Icons Alternative](../../media/aurora_svelte_manage_dataset_status_icons_alt.png)
 
 ### Datetime format
 

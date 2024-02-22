@@ -14,6 +14,8 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+    Description: Show a status message overlay with a suitable icon to follow.
 -->
 <script>    
     import { onMount } from 'svelte';

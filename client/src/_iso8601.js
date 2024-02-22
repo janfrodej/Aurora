@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License along with
 // AURORA. If not, see <https://www.gnu.org/licenses/>.
 //
+// Description: Handles timedate data by converting between unixtime, javascript Date and ISO-8601.
+//
 // highest date in ms according to ECMA262
 export const ECMA262_MAX_DATE = 8640000000000000;
 export const ECMA262_MAX_DATE_SEC = Math.floor(ECMA262_MAX_DATE / 1000);

@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License along with
 // AURORA. If not, see <https://www.gnu.org/licenses/>.
 //
+// Description: AURORA database schema data which tells where to find and store metadata.
+//
 // System-Wide Definitions
 //
 // AURORA metadata namespace definitions
