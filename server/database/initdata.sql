@@ -48,12 +48,14 @@ INSERT INTO `ENTITY` VALUES (1,1,1),
    (90,28,5),
    (91,28,5),
    (92,28,5),
-   (93,28,5)
+   (93,28,5),
    (96,1,9),
    (333,17,1),
    (439,28,5),
    (440,28,5),
-   (441,28,5);
+   (441,28,5),
+   (442,1,1),
+   (443,28,5);
 /*!40000 ALTER TABLE `ENTITY` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -181,7 +183,12 @@ INSERT INTO `METADATA` VALUES (1,21,1,'root'),
    (441,21,1,'GLOBAL Notification Intervals'),
    (441,124,1,'5'),
    (441,125,1,'441'),
-   (441,126,1,'28');
+   (441,126,1,'28'),
+   (442,21,1,'scripts'),
+   (443,21,1,'GLOBAL SCRIPT create'),
+   (443,20,1,443),
+   (443,22,1,5),
+   (443,24,1,442);
 /*!40000 ALTER TABLE `METADATA` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -350,7 +357,8 @@ INSERT INTO `TMPLASSIGN` VALUES (1,1,1,89),
    (1,3,4,43),
    (1,4,1,91),
    (1,5,1,93),
-   (1,9,1,92);
+   (1,9,1,92),
+   (1,10,1,443);
 /*!40000 ALTER TABLE `TMPLASSIGN` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -360,12 +368,12 @@ UNLOCK TABLES;
 
 LOCK TABLES `TMPLCON` WRITE;
 /*!40000 ALTER TABLE `TMPLCON` DISABLE KEYS */;
-INSERT INTO `TMPLCON` VALUES (43,1,'[^\\000-\\037\\177]*','^X',1,0,'This field type describes the creator(s) of the dataset. It accepts any non-special characters'),
+INSERT INTO `TMPLCON` VALUES (43,1,'[^\\000-\\037\\177]*','',1,0,'This field type describes the creator(s) of the dataset. It accepts any non-special characters'),
    (43,2,'[^\\000-\\037\\177]*',NULL,0,0,'This field type describes who has contributed to the creation of the dataset. It accepts any non-special characters'),
    (43,3,'[^\\000-\\037\\177]*','\0',0,0,'This field type contains the publisher(s) of the dataset.'),
    (43,4,'[^\\000-\\037\\177]*','\0',0,1,'This field type describes the title of the dataset. It accepts any non-special characters'),
-   (43,5,'[0-9]{4}\-(0[1-9]|1[0-2])\-(0[1-9]|[12][0-9]|3[01])T(0[0-9]|[1][0-9]|2[0-3])\:(0[0-9]|[1-5][0-9])\:(0[0-9]|[1-5][0-9])((Z|(\+(0[0-9]|1[0-4])|\-(0[0-9]|1[0-2]))\:(0[0-9]|[1-5][0-9])))','^X',0,1,'This field type contains the date(s) of the dataset. Primarily the creation date. All date entries must comply with the ISO-8601 standard.'),
-   (43,6,'[a-z]*','�',1,0,'This field type contains language(s) of the dataset in accordance with the ISO-639-2 standard.'),
+   (43,5,'[0-9]{4}\\-(0[1-9]|1[0-2])\\-(0[1-9]|[12][0-9]|3[01])T(0[0-9]|[1][0-9]|2[0-3])\\:(0[0-9]|[1-5][0-9])\\:(0[0-9]|[1-5][0-9])((Z|(\\+(0[0-9]|1[0-4])|\\-(0[0-9]|1[0-2]))\\:(0[0-9]|[1-5][0-9])))','',1,1,'This field type contains the date(s) of the dataset. Primarily the creation date. All date entries must comply with the ISO-8601 standard.'),
+   (43,6,'[a-z]*','X',1,0,'This field type contains language(s) of the dataset in accordance with the ISO-639-2 standard.'),
    (43,7,'[^\\000-\\037\\177]*','\0',0,0,'This field type contains format(s) of the dataset, such as file formats of its content.'),
    (43,8,'[^\\000-\\037\\177]+','X',1,1,'This field type contains the subject(s) of the dataset, such as Chemistry, Physics etc.'),
    (43,9,'[^\\000-\\037\\177]+','',1,1,'This field type describes what the dataset contains. Accepts any non-special characters'),
@@ -391,7 +399,8 @@ INSERT INTO `TMPLCON` VALUES (43,1,'[^\\000-\\037\\177]*','^X',1,0,'This field t
    (439,130,'\\d+',NULL,1,1,''),
    (440,131,'\\d+',NULL,1,1,''),
    (440,132,'\\d+',NULL,1,1,''),
-   (441,133,'\\d+',NULL,1,0,'');
+   (441,133,'\\d+',NULL,1,0,''),
+   (443,21,'[^\\000-\\037\\177]+','^X',1,1,'Sets the name of the SCRIPT. Accepts any non-special characters.');
 /*!40000 ALTER TABLE `TMPLCON` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -457,7 +466,8 @@ INSERT INTO `TMPLDEF` VALUES (43,1,1,''),
    (441,133,1,'86400'),
    (441,133,2,'604800'),
    (441,133,3,'1209600'),
-   (441,133,4,'2592000');
+   (441,133,4,'2592000'),
+   (443,21,1,'');
 /*!40000 ALTER TABLE `TMPLDEF` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -473,7 +483,7 @@ UNLOCK TABLES;
 
 -- File interface mode mapping
 
-LOCK TABLES `FI_MODE` WRITE;
+LOCK TABLES `FI_MODE` WRITE, `PERMTYPE` READ;
 insert into FI_MODE select PERMTYPE,"rw" from PERMTYPE where PERMNAME="DATASET_CHANGE";
 insert into FI_MODE select PERMTYPE,"ro" from PERMTYPE where PERMNAME="DATASET_READ";
 UNLOCK TABLES;
