@@ -2260,8 +2260,8 @@ sub signalHandler {
 }
 
 sub size {
-   my $k = shift() / 1024;
-   my $f = int(log($k || 1)/log(1024));
+   my $k = shift() / 1000;
+   my $f = int(log($k || 1)/log(1000));
    my $u = (qw(KB MB GB TB EB))[$f];
-   return sprintf("%0.1f$u", $k/1024**$f);
+   return sprintf("%0.1f$u", $k/1000**$f);
 }

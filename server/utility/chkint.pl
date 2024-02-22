@@ -78,8 +78,9 @@ if ($db->getEntityTypeName($id) ne "DATASET") {
 
 # get checksum type to use when checking files against
 # log entries.
-my $chksum = ($opts{c} eq "md5" || $opts{c} eq "sha256" || $opts{c} eq "xxh32" || 
-              $opts{c} eq "xxh64" || $opts{c} eq "xxh128" ? $opts{c} : "md5");
+my $copt=(defined $opts{c} ? $opts{c} : "");
+my $chksum = ($copt eq "md5" || $copt eq "sha256" || $copt eq "xxh32" || 
+              $copt eq "xxh64" || $copt eq "xxh128" ? $copt : "md5");
 
 # start by getting entity metadata
 my $md = $db->getEntityMetadata($id, { parent => 1 });
@@ -503,8 +504,8 @@ sub help {
 }
 
 sub size {
-   my $k = shift() / 1024;
-   my $f = int(log($k || 1)/log(1024));
+   my $k = shift() / 1000;
+   my $f = int(log($k || 1)/log(1000));
    my $u = (qw(KB MB GB TB EB))[$f];
-   return sprintf("%0.1f$u", $k/1024**$f);
+   return sprintf("%0.1f$u", $k/1000**$f);
 }
