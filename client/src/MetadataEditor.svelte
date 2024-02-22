@@ -14,6 +14,8 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
+
+    Description: Edit metadata of any given AURORA entity, template handling, checking etc.
 -->
 <script context="module">
    // unique counter for instances of component
@@ -667,15 +669,15 @@
                <div class="ui_row ui_margin_bottom_large">
                   <div class="ui_input">
                   <input type="text" list={compname+"_datalist_"+getCounter()+"_"+myrand} bind:value={addkey} name="addmdkey" size={93} maxlength={1024}>
-                  <datalist id={compname+"_datalist_"+getCounter()+"_"+myrand}>
-                     <select size=8>               
-                        {#each presetslist as item}
-                           <option key={compname+"_"+myrand+"_option_"+getCounter()+"_"+item.id} data-id={item.id} value={item.id}>{item.text}</option>
-                        {/each}               
-                     </select>           
-                  </datalist>
-                  <button class="ui_button" on:click={() => { addMetadataKey() }} name={compname+"_addmdkey_"+myrand}><Icon name="add" fill="#FFFFFF" size="24" /></button>
+                     <datalist id={compname+"_datalist_"+getCounter()+"_"+myrand}>
+                        <select size=8>               
+                           {#each presetslist as item}
+                              <option key={compname+"_"+myrand+"_option_"+getCounter()+"_"+item.id} data-id={item.id} value={item.id}>{item.text}</option>
+                           {/each}               
+                        </select>           
+                     </datalist>
                   </div>
+                  <button class="ui_button" on:click={() => { addMetadataKey() }} name={compname+"_addmdkey_"+myrand}><Icon name="add" fill="#FFFFFF" size="24" /></button>                  
                </div>
             </div>
          {/if}
