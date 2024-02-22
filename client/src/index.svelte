@@ -14,8 +14,6 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
-
-    Description: Handle login to the AURORA web-client.
 -->
 <script>    
    import { getConfig } from "./_config";

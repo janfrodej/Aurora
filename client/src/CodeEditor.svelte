@@ -14,8 +14,6 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
-
-    Description: A simple code-editor with numbered lines based on the textarea html tag.
 -->
 <script context="module">
     // unique counter for instances of component

@@ -14,8 +14,6 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
-
-    Description: Create a AURORA dataset, selecting file/folder if applicable and setting metadata.
 -->
 <script> 
     import { getConfig } from "./_config";    

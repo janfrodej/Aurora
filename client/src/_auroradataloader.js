@@ -14,9 +14,8 @@
 // You should have received a copy of the GNU General Public License along with
 // AURORA. If not, see <https://www.gnu.org/licenses/>.
 //
-// Description: Class to load data through a REST-call from an AURORA REST-server
-//
-import { call_aurora } from "./_aurora.js";
+// _auroradataloader.js - class to load data through a method from an AURORA REST-server
+import { call_aurora } from "./_aurora.js";   
 
 export class AuroraDataLoader {
     constructor(method) {

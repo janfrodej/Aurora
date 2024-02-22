@@ -14,8 +14,6 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
-
-    Description: Loading, running and viewing a Lua script inside the AURORA environment.
 -->
 <script context="module">
     // unique counter for instances of component

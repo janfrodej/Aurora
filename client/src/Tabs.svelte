@@ -14,8 +14,6 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
-
-    Description: Handle and show a tab bar.
 -->
 <script>
     // this component gently "stolen" from https://progressivewebninja.com/create-a-svelte-reusable-tab-component/

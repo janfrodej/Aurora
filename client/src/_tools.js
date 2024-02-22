@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License along with
 // AURORA. If not, see <https://www.gnu.org/licenses/>.
 //
-// Description: Utility functions of AURORA such as sorting arrays and into arrays, conversion and sending application messages and more.
-//
 // exported functions. variables and constants
 //
 // hash2Array(hash)
@@ -160,7 +158,7 @@ export function sortArrayOfArray (arr,dir=1,orderby=0,lexical=true) {
  
 // convert byte integer to correct SI unit
 export function int2SI (value) {
-   value=(value != undefined && /^\d+$/.test(value) ? value : 0);
+   value=(value != undefined && /^\d+$/.test(value) ? value : 0)
    let index=Math.floor(Math.log(value||1)/Math.log(1000));
    index=(index < 0 ? 0 : index);
    let units=["B","KB","MB","GB","TB","PB","EB"];
@@ -197,9 +195,6 @@ export function SI2Int (value) {
    }
 }
 
-// this function enables the application to send 
-// a message to the screen of the user. The event 
-// is caught by the StatusMessage.svelte component
 export function sendStatusMessage (msg,level) {
    // create event object
    const errorEvent = new Event('statusmessage', {

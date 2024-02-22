@@ -14,8 +14,9 @@
 // You should have received a copy of the GNU General Public License along with
 // AURORA. If not, see <https://www.gnu.org/licenses/>.
 //
-// Description: Class to cache dataset entries in memory and read from AURORA REST-server when needed this gives results as if it was the REST-server (same return structure)
-//
+// class to cache dataset entries in memory and read from AURORA
+// REST-server when needed
+// this gives results as if it was the REST-server (same return structure)
 import { AuroraDataLoader } from "./_auroradataloader";
 
 export class AuroraDatasetCache {

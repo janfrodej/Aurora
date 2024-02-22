@@ -14,8 +14,6 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
-
-    Description: View a AURORA dataset folder structure and render and download the selected data output.
 -->
 <script context="module">
     // unique counter for instances of component

@@ -14,8 +14,6 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
-
-    Description: Show any announcements that are written in the public/announcement.log-file.
 -->
 <script context="module">
     // unique counter for instances of component

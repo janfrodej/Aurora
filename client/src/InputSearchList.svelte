@@ -14,8 +14,6 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
-
-    Description: Show a selection dropdown box with the option to function as both a search box and a regular selection box.
 -->
 <script context="module">
    // unique counter for instances of component

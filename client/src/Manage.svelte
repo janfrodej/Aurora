@@ -14,8 +14,6 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
-
-    Description: Show the manage dataset view. 
 -->
 <script> 
     import { getConfig } from "./_config";            

@@ -15,9 +15,6 @@
 // AURORA. If not, see <https://www.gnu.org/licenses/>.
 //
 // getCookie-function gracefully stolen from www.w3schools.com
-//
-// Description: Handles cookies in AURORA, reading them, writing them.
-//
 export function getCookie(cname) {
     let name = cname + "=";
     //let decodedCookie = decodeURIComponent(document.cookie);

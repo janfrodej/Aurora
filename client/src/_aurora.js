@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License along with
 // AURORA. If not, see <https://www.gnu.org/licenses/>.
 //
-// Description: Handles calling the AURORA REST-server, waiting for result, handling returns, errors and more. Used by the whole of the web-client application when calling AURORA
-//
 import { VERSION } from "./_version.js";
 import { getConfig } from "./_config.js";
 import { getCookieValue, setCookieValue } from "./_cookies.js";

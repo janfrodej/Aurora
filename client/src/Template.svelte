@@ -14,8 +14,6 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
-
-    Description: View and edit a template in AURORA.
 -->
 <script context="module">
     // unique counter for instances of component

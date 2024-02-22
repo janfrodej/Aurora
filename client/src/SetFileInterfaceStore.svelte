@@ -14,8 +14,6 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
-
-    Description: Set the fileinterface store on a group in the AURORA entity tree.
 -->
 <script context="module">
     // unique counter for instances of component

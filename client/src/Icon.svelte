@@ -14,8 +14,6 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
-
-    Description: Display a named icon with a set of attributes. Mostly uses Google Material fonts.
 -->
 <script>
   import { createEventDispatcher } from 'svelte';

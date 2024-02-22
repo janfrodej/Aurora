@@ -14,8 +14,6 @@
 
     You should have received a copy of the GNU General Public License along with
     AURORA. If not, see <https://www.gnu.org/licenses/>.
-
-    Description: Render a SQLStruct search-structure. See the REST documentation of the AURORA REST-server for more information on SQLStruct.
 -->
 <script context="module">
     // unique counter for instances of component
